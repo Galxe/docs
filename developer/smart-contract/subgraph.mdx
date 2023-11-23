@@ -1,0 +1,141 @@
+---
+title: "Subgraph"
+description: "💁 Subgraph is a concept by The Graph, used to query blockchain data. The Graph is a protocol for building decentralized applications (dApps) quickly on Ethereum and IPFS using GraphQL. More infomation can be found in [https://thegraph.com/docs/en/](https://thegraph.com/docs/en/)"
+---
+
+Galxe uses multiple subgraphs for indexing and organizing data from out smart contracts. These subgraphs are hosted on The Graph hosted service and can be used to query our smart data.
+
+## Explorer[](#explorer "Direct link to heading")
+
+| Chain     | URL                                                                                                                                              |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Ethereum  | [https://thegraph.com/hosted-service/subgraph/vincentpc/playgroundeth](https://thegraph.com/hosted-service/subgraph/vincentpc/playgroundeth)     |
+| Polygon   | [https://thegraph.com/hosted-service/subgraph/vincentpc/playgroundmatic](https://thegraph.com/hosted-service/subgraph/vincentpc/playgroundmatic) |
+| BNB Chain | [https://thegraph.com/hosted-service/subgraph/vincentpc/playgroundbsc](https://thegraph.com/hosted-service/subgraph/vincentpc/playgroundbsc)     |
+
+## GraphQL Endpoints[](#graphql-endpoints "Direct link to heading")
+
+| Chain     | URL                                                                                                                                    |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Ethereum  | [https://api.thegraph.com/subgraphs/name/vincentpc/playgroundeth](https://api.thegraph.com/subgraphs/name/vincentpc/playgroundeth)     |
+| Polygon   | [https://api.thegraph.com/subgraphs/name/vincentpc/playgroundmatic](https://api.thegraph.com/subgraphs/name/vincentpc/playgroundmatic) |
+| BNB Chain | [https://api.thegraph.com/subgraphs/name/vincentpc/playgroundbsc](https://api.thegraph.com/subgraphs/name/vincentpc/playgroundbsc)     |
+
+## GraphQL Schema[](#graphql-schema "Direct link to heading")
+
+### Campaign Participation[](#campaign-participation "Direct link to heading")
+
+```
+type Campaign @entity {
+  id: ID!
+  cid: String! # campaign id
+  count: Int! # participation count in the specific campaign
+  nft_count: Int! # nft count in the specific campaign
+  address_list: [String!]! # address that participate in the specific campaign
+}
+
+```
+
+### Wallet Participation[](#wallet-participation "Direct link to heading")
+
+```
+type Address @entity {
+  id: ID! # Wallet Address
+  participate_campaign_count: Int!
+  participate_nft_count: Int!
+  participate_nftid: [BigInt!]!
+  participate_cid: [String!]!
+  participate_tx: [String!]!
+}
+
+```
+
+### Mint Transaction[](#mint-transaction "Direct link to heading")
+
+```
+type Mint @entity {
+  id: ID! # mint transaction hash
+  address: String!
+  cid: String!
+  nft_count: Int!
+  timestamp: BigInt!
+}
+
+```
+
+### Transfer Transaction[](#transfer-transaction "Direct link to heading")
+
+> Only supported in ethereum
+
+```
+type Mint @entity {
+  id: ID! # mint transaction hash
+  address: String!
+  cid: String!
+  nft_count: Int!
+  timestamp: BigInt!
+}
+
+```
+
+### NFT Information[](#nft-information "Direct link to heading")
+
+> Only supported in ethereum
+
+```
+type ContractNFTPair @entity {
+  id: ID!
+  owner: String! # current owner of this nft
+  cid: String! # campagin id of the nft
+  nftid: BigInt! # nft id
+  starNFT: String!
+  transfer_count: Int!
+  tx: String! #last transfer transaction hash
+}
+
+```
+
+## Examples[](#examples "Direct link to heading")
+
+### Number of NFT minted per campaign[](#number-of-nft-minted-per-campaign "Direct link to heading")
+
+```
+campaign(id:1003) {
+    id
+    cid
+    count
+    nft_count
+  }
+
+```
+
+### Wallet's campaign participation count[](#wallets-campaign-participation-count "Direct link to heading")
+
+```
+address(id:"0x0000000002732779240fe05873611dc4203dfb71") {
+    id
+    participate_campaign_count
+    participate_nft_count
+    participate_nftid
+  }
+
+```
+
+### Get owner of NFT[](#get-owner-of-nft "Direct link to heading")
+
+> Only supported in ethereum
+
+```
+{
+  contractNFTPairs(
+    where: { owner: "0xe9b3c292904114e6e6f04a363ae4c0f800f3236d" }
+  ) {
+    nftid
+    starNFT
+    owner
+    tx
+    transfer_count
+  }
+}
+
+```

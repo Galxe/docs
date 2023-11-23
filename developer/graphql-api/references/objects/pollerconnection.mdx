@@ -1,0 +1,34 @@
+---
+title: "PollerConnection"
+---
+
+No description
+
+```
+type PollerConnection {
+  id: ID!
+  sourceType: PollerConnectionSourceType!
+  sourceConfig: PollerConnectionSourceConfig!
+  transformationConfig: PollerConnectionTransformationConfig!
+  destinationCredId: ID!
+  frequency: String!
+  status: PollerConnectionStatus!
+}
+
+```
+
+### Fields[](#fields "Direct link to heading")
+
+#### `id` ([ID](/developer/graphql-api/references/scalars/id))[](#id-id "Direct link to heading")
+
+#### `sourceType` ([PollerConnectionSourceType](/developer/graphql-api/references/enums/poller-connection-source-type))[](#sourcetype-pollerconnectionsourcetype "Direct link to heading")
+
+#### `sourceConfig` ([PollerConnectionSourceConfig](/developer/graphql-api/references/objects/poller-connection-source-config))[](#sourceconfig-pollerconnectionsourceconfig "Direct link to heading")
+
+#### `transformationConfig` ([PollerConnectionTransformationConfig](/developer/graphql-api/references/objects/poller-connection-transformation-config))[](#transformationconfig-pollerconnectiontransformationconfig "Direct link to heading")
+
+#### `destinationCredId` ([ID](/developer/graphql-api/references/scalars/id))[](#destinationcredid-id "Direct link to heading")
+
+#### `frequency` ([String](/developer/graphql-api/references/scalars/string))[](#frequency-string "Direct link to heading")
+
+#### `status` ([PollerConnectionStatus](/developer/graphql-api/references/enums/poller-connection-status))[](#status-pollerconnectionstatus "Direct link to heading")

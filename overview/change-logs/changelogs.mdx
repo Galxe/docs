@@ -1,0 +1,129 @@
+---
+title: "Change Logs"
+---
+
+Welcome to the official Galxe **Change Log** document. This informational document will be updated weekly with the latest release notes, bug fixes, and product updates pertaining to our dashboard/products. Each weekly release note will be titled and dated for accuracy and organization. Along with this document being updated each week, these notes will be released on Twitter and included in our Bi-Weekly Newsletter.
+
+## Week Of: 08/15-08/21[](#week-of-0815-0821 "Direct link to heading")
+
+### **New Networks: Optimism & loTeX**[](#new-networks-optimism--lotex "Direct link to heading")
+
+The new networks we now support include: [Optimism ](https://www.optimism.io/)and[ IoTeX](https://iotex.io/start?gclid=Cj0KCQjw3eeXBhD7ARIsAHjssr-nYakDZe4BVCMkMj5XMj9GD%5FPGNu129kCIVR5pXWmvPGAOKicYAToaAgt2EALw%5FwcB).
+
+\-Optimism is an Ethereum-based decentralized infrastructure platform that allows for instant transactions and scale-able smart contracts.
+
+\-IoTex is a scale-able blockchain network that takes the internet of things (IoT) landscape to a new level.
+
+### **Explore Page**[](#explore-page "Direct link to heading")
+
+The Galxe campaign explore page has been updated to include an “Available to Claim” function. This ensures users don't ever miss an opportunity to participate in an upcoming/current campaign.
+
+### **Snapshot.org Plugin**[](#snapshotorg-plugin "Direct link to heading")
+
+With the [snapshot.org](http://snapshot.org) plugin, users can easily create a campaign related to snapshot and integrate it into snapshot. This update will incentive communities to participate in the proposal vote by rewarding them with OATs (On-Chain Achievement Tokens). Note: The Space Admin can add this plugin into your space. After users vote, they can claim an OAT directly from the Galxe Plugin section on the proposal page Snapshot. Follow the instructions below to set up this plugin:
+
+#### 1\. Preparation[](#1-preparation "Direct link to heading")
+
+1. Create a Snapshot proposal on [](https://snapshot.org/)[https://snapshot.org/](https://snapshot.org/)
+2. Create a Snapshot Credential with the proposal ID created from step1 on [](https://galxe.com/)[https://galxe.com/](https://galxe.com/)
+3. Create an OAT campaign ONLY with the credential created from step2 on [](https://galxe.com/)[https://galxe.com/](https://galxe.com/)
+
+#### 2\. Add Galxe Plugin to your space[](#2-add-galxe-plugin-to-your-space "Direct link to heading")
+
+In Snapshot space setting, you can search and find the Galxe Plugin in the plugins section, and add it to your space.
+
+#### 3\. Set config JSON[](#3-set-config-json "Direct link to heading")
+
+Add campaign and proposal info to your plugin.
+
+First, click the plugin, then you will see an editor section. See example below:
+
+![](/images/change-logs/screen-shot-2022-08-08-at-8.56.26-am-41f0e848bc68f94498cbd74b9169b2bf.png)
+
+Second, fill it with the proposal ID and the information of the Campaign which you would like to link with the proposal. If you have multiple proposals which all distribute OATs to voters, you can also add multiple proposalID-campaignInfo pairs at one time.
+
+**Note:** if you delete a proposalID-campaignInfo pair, people won’t see the OAT information on the page of your proposal even if the proposal ends or the OATs have already been distributed.
+
+_DEMO:_
+
+![](/images/change-logs/screen-shot-2022-08-08-at-8.56.52-am-2--79781014913d5267dfa4d66747c3f0f0.png)
+
+### **Google Sheets**[](#google-sheets "Direct link to heading")
+
+Galxe continues to support more and more credential types to allow communities to interact/grow in unique ways. Our platform now supports Google Sheets as one of our newest credentials sources. Communities can now track when Users interact with Google Forms/ Type Forms and can reward accordingly. This feature connects to the google API to read a specified column on the google sheet. The column can include a wallet, email, EVM, or Solana address. It can also include a Twitter ID or Discord ID.
+
+### **Discord Role**[](#discord-role "Direct link to heading")
+
+The Galxe Discord Bot has been upgraded and now supports setting a Discord role for a user based on the credentials a user holds. All current credentials are supported in this Discord role feature.
+
+### **CSV File Upload**[](#csv-file-upload "Direct link to heading")
+
+Galxe has now optimized the speed of uploading csv files when creating credentials. Essentially, uploading credentials is much faster now!
+
+## **Week Of: 08/22-08/28**[](#week-of-0822-0828 "Direct link to heading")
+
+### **Galxe Web Updates**[](#galxe-web-updates "Direct link to heading")
+
+\-CI changes have been reverted and gql types have been updated. card UI bugs have been fixed as well. 
+
+\-Users can now share campaign/campaign details along with space detail pages. This means that users can now share campaigns powered by Galxe to Twitter, or copy the campaign link to share elsewhere.
+
+![](/images/change-logs/%E6%88%AA%E5%B1%8F2022-08-15-14.02.45-1--b9d04d3a8bdbe4cd31cc201c008366c6.png)
+
+![](/images/change-logs/%E6%88%AA%E5%B1%8F2022-08-15-14.03.05-1--0903933d467384664292c7adc6fa5c2a.png)
+
+\-Galxe's developers added clearer documentation guidance when users create subgraph credentials.
+
+\-When partners want to integrate an OAT campaign onto their own website, they can turn on the switch which will integrate the campaign to an external website. After doing so, users can claim OATs on the external website.
+
+![](/images/change-logs/untitled-29-1--7e65dd79b15e24dcfbc5aaa6be520cc3.png)
+
+![](/images/change-logs/untitled-30-1--29b3757c74a5053d28016c4e382a49ab.png)
+
+### **Discord Message Credential**[](#discord-message-credential "Direct link to heading")
+
+Members who send messages in Discord have the opportunity to be awarded an OAT (On-Chain Achievement Token) for their participation. Currently, this feature can only be utilized from the backend.
+
+## **Week Of: 08/29-09/04**[](#week-of-0829-0904 "Direct link to heading")
+
+### **Discord Verification Process**[](#discord-verification-process "Direct link to heading")
+
+This week, Galxe has changed the verification process of Discord accounts to OAuth. OAuth, or **open authorization,** is a widely adopted authorization framework that allows users to consent to an application interacting with another without having to reveal their passwords. The framework does this by providing access tokens to third-party services without exposing user credentials. This change means that partners now have a simpler way to verify discord accounts.
+
+### **ENS & Space ID Integration**[](#ens--space-id-integration "Direct link to heading")
+
+Galxe integrated ENS and Space ID to our dashboard. Users can now set their ENS or Space ID domain as their Galxe ID name.
+
+### **Github Verification Process**[](#github-verification-process "Direct link to heading")
+
+Galxe has also changed the verification process of Github accounts to OAuth. OAuth, or **open authorization,** is a widely adopted authorization framework that allows users to consent to an application interacting with another without having to reveal their passwords. The framework does this by providing access tokens to third-party services without exposing user credentials. This change means that partners now have a simpler way to verify discord accounts.
+
+### **Discord AMA Bot Optimization**[](#discord-ama-bot-optimization "Direct link to heading")
+
+![](/images/change-logs/image-2-1--17050744a2b69f452717b1fdfa4a9a4a.png)
+
+Galxe’s Discord AMA bot optimization is officially online!
+
+\-If a user quits aAMA, and joins again, they will still be eligible for the credential if they meet the minimum participation time.
+
+\-If a user is in the voice channel and doesn’t quit even though the AMA has ended, they will still be eligible for the credential if they have met the minimum participation time.
+
+\-Users can also use the command line to inquire about their eligibility after an AMA ends. The command line will return their participation and requirement time.
+
+## **Week Of: 10/03-09**[](#week-of-1003-09 "Direct link to heading")
+
+### **Improvements**[](#improvements "Direct link to heading")
+
+\-Galxe has optimized the social account verification path
+
+\-Galxe has optimized the campaign explore page. This page will now remember the current filter status and the page position
+
+\-Galxe has optimized the “more” button on the campaign details page to make it clearer and easier to use
+
+![](/images/change-logs/untitled-c823628ee0414e35a633ae7f5635143f.png)
+
+\-Galxe has optimized the GALXE Passport encryption process to make data more secure
+
+\-Galxe has optimized the Discord Voice Channel credential. Users don’t need to stay in the whole session. They still can get this credential as long as they meet the minimum participation time.
+
+\-Galxe has added further instruction on how to create a Google Sheets source credential.

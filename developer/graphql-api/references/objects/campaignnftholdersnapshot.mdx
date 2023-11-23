@@ -1,0 +1,30 @@
+---
+title: "CampaignNFTHolderSnapshot"
+---
+
+No description
+
+```
+type CampaignNFTHolderSnapshot {
+  holders(
+  block: Int!
+  first: Int
+  after: String = ""
+): SnapshotNFTConnection!
+  holderSnapshotBlock: Int!
+  holdersCount: Int!
+}
+
+```
+
+### Fields[](#fields "Direct link to heading")
+
+#### `holders` ([SnapshotNFTConnection](/developer/graphql-api/references/objects/snapshot-nftconnection))[](#holders-snapshotnftconnection "Direct link to heading")
+
+* ##### `block` ([Int](/developer/graphql-api/references/scalars/int))[](#block-int "Direct link to heading")
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string "Direct link to heading")
+
+#### `holderSnapshotBlock` ([Int](/developer/graphql-api/references/scalars/int))[](#holdersnapshotblock-int "Direct link to heading")
+
+#### `holdersCount` ([Int](/developer/graphql-api/references/scalars/int))[](#holderscount-int "Direct link to heading")

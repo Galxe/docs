@@ -1,0 +1,32 @@
+---
+title: "listCampaigns"
+---
+
+No description
+
+```
+listCampaigns(
+  status: CampaignStatus!
+  listType: ListType!
+  showDynamic: Boolean! = "false"
+  first: Int
+  after: String
+): CampaignConnection!
+
+```
+
+### Arguments[](#arguments "Direct link to heading")
+
+#### `status` ([CampaignStatus](/developer/graphql-api/references/enums/campaign-status))[](#status-campaignstatus "Direct link to heading")
+
+#### `listType` ([ListType](/developer/graphql-api/references/enums/list-type))[](#listtype-listtype "Direct link to heading")
+
+#### `showDynamic` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#showdynamic-boolean "Direct link to heading")
+
+#### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int "Direct link to heading")
+
+#### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string "Direct link to heading")
+
+### Type[](#type "Direct link to heading")
+
+#### [CampaignConnection](/developer/graphql-api/references/objects/campaign-connection)[](#campaignconnection "Direct link to heading")

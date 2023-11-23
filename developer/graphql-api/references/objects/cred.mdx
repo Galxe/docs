@@ -1,0 +1,140 @@
+---
+title: "Cred"
+---
+
+No description
+
+```
+type Cred {
+  id: ID!
+  name: String!
+  description: String!
+  chain: Chain!
+  type: String!
+  referenceLink: String!
+  eligible(
+  address: String!
+): Int!
+  staticEligible(
+  value: String!
+): Int!
+  itemCount: Int!
+  subgraph: CredSubgraph
+  credentialItems(
+  first: Int = 1000
+  after: String = ""
+  searchString: String = ""
+): CredItemConnection!
+  lastUpdate: Int!
+  syncRate: Float!
+  lastSyncedBlock: Int!
+  syncStatus: SyncStatus!
+  credVersion: CredVersion!
+  credType: CredType!
+  credSource: CredSource!
+  credDiscordAMA: CredDiscordAMA
+  credSnapshot: CredSnapshot
+  credDiscordMember: CredDiscordMember
+  credTwitter: CredTwitter
+  credGraphQL: CredGraphQL
+  credSubgraph: CredSubgraph
+  credGoogleSheet: CredGoogleSheet
+  credCampaignNFTHolder: CredCampaignNFTHolder
+  credContractNFTHolder: CredContractNFTHolder
+  credGithubContributor: CredGithubContributor
+  credDynamicContractNFTHolder: CredDynamicContractNFTHolder
+  credDynamicCampaignNFTHolder: CredDynamicCampaignNFTHolder
+  credDiscordMessage: CredDiscordMessage
+  credQuiz: CredQuiz
+  curatorSpaceID: Int!
+  curatorSpace: Space!
+  multiDimensionCredConfig: MultiDimensionCredConfig
+  credValueSchema: String
+  credValueData: String
+}
+
+```
+
+### Fields[](#fields "Direct link to heading")
+
+#### `id` ([ID](/developer/graphql-api/references/scalars/id))[](#id-id "Direct link to heading")
+
+#### `name` ([String](/developer/graphql-api/references/scalars/string))[](#name-string "Direct link to heading")
+
+#### `description` ([String](/developer/graphql-api/references/scalars/string))[](#description-string "Direct link to heading")
+
+#### `chain` ([Chain](/developer/graphql-api/references/enums/chain))[](#chain-chain "Direct link to heading")
+
+#### `type` ([String](/developer/graphql-api/references/scalars/string))[](#type-string "Direct link to heading")
+
+#### `referenceLink` ([String](/developer/graphql-api/references/scalars/string))[](#referencelink-string "Direct link to heading")
+
+#### `eligible` ([Int](/developer/graphql-api/references/scalars/int))[](#eligible-int "Direct link to heading")
+
+* ##### `address` ([String](/developer/graphql-api/references/scalars/string))[](#address-string "Direct link to heading")
+
+#### `staticEligible` ([Int](/developer/graphql-api/references/scalars/int))[](#staticeligible-int "Direct link to heading")
+
+* ##### `value` ([String](/developer/graphql-api/references/scalars/string))[](#value-string "Direct link to heading")
+
+#### `itemCount` ([Int](/developer/graphql-api/references/scalars/int))[](#itemcount-int "Direct link to heading")
+
+#### `subgraph` ([CredSubgraph](/developer/graphql-api/references/objects/cred-subgraph))[](#subgraph-credsubgraph "Direct link to heading")
+
+#### `credentialItems` ([CredItemConnection](/developer/graphql-api/references/objects/cred-item-connection))[](#credentialitems-creditemconnection "Direct link to heading")
+
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string "Direct link to heading")
+* ##### `searchString` ([String](/developer/graphql-api/references/scalars/string))[](#searchstring-string "Direct link to heading")
+
+#### `lastUpdate` ([Int](/developer/graphql-api/references/scalars/int))[](#lastupdate-int "Direct link to heading")
+
+#### `syncRate` ([Float](/developer/graphql-api/references/scalars/float))[](#syncrate-float "Direct link to heading")
+
+#### `lastSyncedBlock` ([Int](/developer/graphql-api/references/scalars/int))[](#lastsyncedblock-int "Direct link to heading")
+
+#### `syncStatus` ([SyncStatus](/developer/graphql-api/references/enums/sync-status))[](#syncstatus-syncstatus "Direct link to heading")
+
+#### `credVersion` ([CredVersion](/developer/graphql-api/references/enums/cred-version))[](#credversion-credversion "Direct link to heading")
+
+#### `credType` ([CredType](/developer/graphql-api/references/enums/cred-type))[](#credtype-credtype "Direct link to heading")
+
+#### `credSource` ([CredSource](/developer/graphql-api/references/enums/cred-source))[](#credsource-credsource "Direct link to heading")
+
+#### `credDiscordAMA` ([CredDiscordAMA](/developer/graphql-api/references/objects/cred-discord-ama))[](#creddiscordama-creddiscordama "Direct link to heading")
+
+#### `credSnapshot` ([CredSnapshot](/developer/graphql-api/references/objects/cred-snapshot))[](#credsnapshot-credsnapshot "Direct link to heading")
+
+#### `credDiscordMember` ([CredDiscordMember](/developer/graphql-api/references/objects/cred-discord-member))[](#creddiscordmember-creddiscordmember "Direct link to heading")
+
+#### `credTwitter` ([CredTwitter](/developer/graphql-api/references/objects/cred-twitter))[](#credtwitter-credtwitter "Direct link to heading")
+
+#### `credGraphQL` ([CredGraphQL](/developer/graphql-api/references/objects/cred-graph-ql))[](#credgraphql-credgraphql "Direct link to heading")
+
+#### `credSubgraph` ([CredSubgraph](/developer/graphql-api/references/objects/cred-subgraph))[](#credsubgraph-credsubgraph "Direct link to heading")
+
+#### `credGoogleSheet` ([CredGoogleSheet](/developer/graphql-api/references/objects/cred-google-sheet))[](#credgooglesheet-credgooglesheet "Direct link to heading")
+
+#### `credCampaignNFTHolder` ([CredCampaignNFTHolder](/developer/graphql-api/references/objects/cred-campaign-nftholder))[](#credcampaignnftholder-credcampaignnftholder "Direct link to heading")
+
+#### `credContractNFTHolder` ([CredContractNFTHolder](/developer/graphql-api/references/objects/cred-contract-nftholder))[](#credcontractnftholder-credcontractnftholder "Direct link to heading")
+
+#### `credGithubContributor` ([CredGithubContributor](/developer/graphql-api/references/objects/cred-github-contributor))[](#credgithubcontributor-credgithubcontributor "Direct link to heading")
+
+#### `credDynamicContractNFTHolder` ([CredDynamicContractNFTHolder](/developer/graphql-api/references/objects/cred-dynamic-contract-nftholder))[](#creddynamiccontractnftholder-creddynamiccontractnftholder "Direct link to heading")
+
+#### `credDynamicCampaignNFTHolder` ([CredDynamicCampaignNFTHolder](/developer/graphql-api/references/objects/cred-dynamic-campaign-nftholder))[](#creddynamiccampaignnftholder-creddynamiccampaignnftholder "Direct link to heading")
+
+#### `credDiscordMessage` ([CredDiscordMessage](/developer/graphql-api/references/objects/cred-discord-message))[](#creddiscordmessage-creddiscordmessage "Direct link to heading")
+
+#### `credQuiz` ([CredQuiz](/developer/graphql-api/references/objects/cred-quiz))[](#credquiz-credquiz "Direct link to heading")
+
+#### `curatorSpaceID` ([Int](/developer/graphql-api/references/scalars/int))[](#curatorspaceid-int "Direct link to heading")
+
+#### `curatorSpace` ([Space](/developer/graphql-api/references/objects/space))[](#curatorspace-space "Direct link to heading")
+
+#### `multiDimensionCredConfig` ([MultiDimensionCredConfig](/developer/graphql-api/references/objects/multi-dimension-cred-config))[](#multidimensioncredconfig-multidimensioncredconfig "Direct link to heading")
+
+#### `credValueSchema` ([String](/developer/graphql-api/references/scalars/string))[](#credvalueschema-string "Direct link to heading")
+
+#### `credValueData` ([String](/developer/graphql-api/references/scalars/string))[](#credvaluedata-string "Direct link to heading")

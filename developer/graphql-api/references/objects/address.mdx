@@ -1,0 +1,262 @@
+---
+title: "Address"
+---
+
+No description
+
+```
+type Address {
+  id: String!
+  address: String!
+  solanaAddress: String!
+  aptosAddress: String!
+  username: String!
+  avatar: String!
+  hasEvmAddress: Boolean!
+  hasSolanaAddress: Boolean!
+  hasAptosAddress: Boolean!
+  hasEmail: Boolean!
+  hasTwitter: Boolean!
+  hasGithub: Boolean!
+  hasDiscord: Boolean!
+  displayEmail: Boolean!
+  displayTwitter: Boolean!
+  displayGithub: Boolean!
+  displayDiscord: Boolean!
+  hasPassport: Boolean!
+  passportStatus: PassportStatus!
+  passportPendingRedactAt: Int
+  passportID: String!
+  passport: AddressPassport!
+  email: String!
+  twitterUserID: String!
+  twitterUserName: String!
+  githubUserID: String!
+  githubUserName: String!
+  discordUserID: String!
+  discordUserName: String!
+  accessToken: String!
+  participatedCampaignIDs: [Int!]
+  participatedCampaigns(
+  first: Int = 10
+  after: String = ""
+): CampaignConnection!
+  private(
+  sig: String
+): PrivateInfo!
+  addressEligibleCredentials(
+  first: Int
+  after: String = ""
+): CredConnection!
+  balance(
+  chain: Chain!
+  block: Int!
+): String!
+  spaces(
+  input: ListSpaceInput
+): SpaceConnection!
+  spacesFollowing(
+  first: Int
+  after: String
+): SpaceConnection!
+  credentials(
+  input: ListCredInput
+): CredConnection!
+  bookmarks: [Bookmark!]
+  isVerified: Boolean!
+  isWhitelisted: Boolean!
+  isInvited: Boolean!
+  isAdmin: Boolean!
+  isVerifiedTwitterOauth2: Boolean!
+  subscriptions: [SubscriptionType!]
+  displayNamePref: DisplayNamePrefType!
+  isVerifiedDiscordOauth2: Boolean!
+  enableEmailSubs: Boolean!
+  recap: String!
+  secondaryAccounts(
+  type: AddressType
+): [String!]
+  isChannelMember(
+  channelId: String!
+): Boolean!
+  loyaltyPointsRanks(
+  first: Int
+  after: String
+): LoyaltyPointsRankConnection!
+  recentlyClaimedLoyaltyPointsRecords(
+  spaceId: Int
+  first: Int
+  after: String
+): ClaimedLoyaltyPointsConnection!
+  recentlyClaimedLoyaltyPointsSpaces(
+  first: Int
+  after: String
+  searchString: String
+): SpaceConnection!
+  nfts(
+  option: ListNFTInput!
+): NFTConnection!
+  recentParticipation(
+  input: ListParticipationInput!
+): ParticipationConnection!
+  participatedCampaignCount(
+  input: ParticipatedCampaignCountInput!
+): Int!
+}
+
+```
+
+### Fields[](#fields "Direct link to heading")
+
+#### `id` ([String](/developer/graphql-api/references/scalars/string))[](#id-string "Direct link to heading")
+
+#### `address` ([String](/developer/graphql-api/references/scalars/string))[](#address-string "Direct link to heading")
+
+#### `solanaAddress` ([String](/developer/graphql-api/references/scalars/string))[](#solanaaddress-string "Direct link to heading")
+
+#### `aptosAddress` ([String](/developer/graphql-api/references/scalars/string))[](#aptosaddress-string "Direct link to heading")
+
+#### `username` ([String](/developer/graphql-api/references/scalars/string))[](#username-string "Direct link to heading")
+
+#### `avatar` ([String](/developer/graphql-api/references/scalars/string))[](#avatar-string "Direct link to heading")
+
+#### `hasEvmAddress` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#hasevmaddress-boolean "Direct link to heading")
+
+#### `hasSolanaAddress` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#hassolanaaddress-boolean "Direct link to heading")
+
+#### `hasAptosAddress` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#hasaptosaddress-boolean "Direct link to heading")
+
+#### `hasEmail` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#hasemail-boolean "Direct link to heading")
+
+#### `hasTwitter` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#hastwitter-boolean "Direct link to heading")
+
+#### `hasGithub` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#hasgithub-boolean "Direct link to heading")
+
+#### `hasDiscord` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#hasdiscord-boolean "Direct link to heading")
+
+#### `displayEmail` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#displayemail-boolean "Direct link to heading")
+
+#### `displayTwitter` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#displaytwitter-boolean "Direct link to heading")
+
+#### `displayGithub` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#displaygithub-boolean "Direct link to heading")
+
+#### `displayDiscord` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#displaydiscord-boolean "Direct link to heading")
+
+#### `hasPassport` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#haspassport-boolean "Direct link to heading")
+
+#### `passportStatus` ([PassportStatus](/developer/graphql-api/references/enums/passport-status))[](#passportstatus-passportstatus "Direct link to heading")
+
+#### `passportPendingRedactAt` ([Int](/developer/graphql-api/references/scalars/int))[](#passportpendingredactat-int "Direct link to heading")
+
+#### `passportID` ([String](/developer/graphql-api/references/scalars/string))[](#passportid-string "Direct link to heading")
+
+#### `passport` ([AddressPassport](/developer/graphql-api/references/objects/address-passport))[](#passport-addresspassport "Direct link to heading")
+
+#### `email` ([String](/developer/graphql-api/references/scalars/string))[](#email-string "Direct link to heading")
+
+#### `twitterUserID` ([String](/developer/graphql-api/references/scalars/string))[](#twitteruserid-string "Direct link to heading")
+
+#### `twitterUserName` ([String](/developer/graphql-api/references/scalars/string))[](#twitterusername-string "Direct link to heading")
+
+#### `githubUserID` ([String](/developer/graphql-api/references/scalars/string))[](#githubuserid-string "Direct link to heading")
+
+#### `githubUserName` ([String](/developer/graphql-api/references/scalars/string))[](#githubusername-string "Direct link to heading")
+
+#### `discordUserID` ([String](/developer/graphql-api/references/scalars/string))[](#discorduserid-string "Direct link to heading")
+
+#### `discordUserName` ([String](/developer/graphql-api/references/scalars/string))[](#discordusername-string "Direct link to heading")
+
+#### `accessToken` ([String](/developer/graphql-api/references/scalars/string))[](#accesstoken-string "Direct link to heading")
+
+#### `participatedCampaignIDs` ([Int](/developer/graphql-api/references/scalars/int))[](#participatedcampaignids-int "Direct link to heading")
+
+#### `participatedCampaigns` ([CampaignConnection](/developer/graphql-api/references/objects/campaign-connection))[](#participatedcampaigns-campaignconnection "Direct link to heading")
+
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string "Direct link to heading")
+
+#### `private` ([PrivateInfo](/developer/graphql-api/references/objects/private-info))[](#private-privateinfo "Direct link to heading")
+
+* ##### `sig` ([String](/developer/graphql-api/references/scalars/string))[](#sig-string "Direct link to heading")
+
+#### `addressEligibleCredentials` ([CredConnection](/developer/graphql-api/references/objects/cred-connection))[](#addresseligiblecredentials-credconnection "Direct link to heading")
+
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int-1 "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string-1 "Direct link to heading")
+
+#### `balance` ([String](/developer/graphql-api/references/scalars/string))[](#balance-string "Direct link to heading")
+
+* ##### `chain` ([Chain](/developer/graphql-api/references/enums/chain))[](#chain-chain "Direct link to heading")
+* ##### `block` ([Int](/developer/graphql-api/references/scalars/int))[](#block-int "Direct link to heading")
+
+#### `spaces` ([SpaceConnection](/developer/graphql-api/references/objects/space-connection))[](#spaces-spaceconnection "Direct link to heading")
+
+* ##### `input` ([ListSpaceInput](/developer/graphql-api/references/inputs/list-space-input))[](#input-listspaceinput "Direct link to heading")
+
+#### `spacesFollowing` ([SpaceConnection](/developer/graphql-api/references/objects/space-connection))[](#spacesfollowing-spaceconnection "Direct link to heading")
+
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int-2 "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string-2 "Direct link to heading")
+
+#### `credentials` ([CredConnection](/developer/graphql-api/references/objects/cred-connection))[](#credentials-credconnection "Direct link to heading")
+
+* ##### `input` ([ListCredInput](/developer/graphql-api/references/inputs/list-cred-input))[](#input-listcredinput "Direct link to heading")
+
+#### `bookmarks` ([Bookmark](/developer/graphql-api/references/interfaces/bookmark))[](#bookmarks-bookmark "Direct link to heading")
+
+#### `isVerified` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#isverified-boolean "Direct link to heading")
+
+#### `isWhitelisted` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#iswhitelisted-boolean "Direct link to heading")
+
+#### `isInvited` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#isinvited-boolean "Direct link to heading")
+
+#### `isAdmin` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#isadmin-boolean "Direct link to heading")
+
+#### `isVerifiedTwitterOauth2` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#isverifiedtwitteroauth2-boolean "Direct link to heading")
+
+#### `subscriptions` ([SubscriptionType](/developer/graphql-api/references/enums/subscription-type))[](#subscriptions-subscriptiontype "Direct link to heading")
+
+#### `displayNamePref` ([DisplayNamePrefType](/developer/graphql-api/references/enums/display-name-pref-type))[](#displaynamepref-displaynamepreftype "Direct link to heading")
+
+#### `isVerifiedDiscordOauth2` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#isverifieddiscordoauth2-boolean "Direct link to heading")
+
+#### `enableEmailSubs` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#enableemailsubs-boolean "Direct link to heading")
+
+#### `recap` ([String](/developer/graphql-api/references/scalars/string))[](#recap-string "Direct link to heading")
+
+#### `secondaryAccounts` ([String](/developer/graphql-api/references/scalars/string))[](#secondaryaccounts-string "Direct link to heading")
+
+* ##### `type` ([AddressType](/developer/graphql-api/references/enums/address-type))[](#type-addresstype "Direct link to heading")
+
+#### `isChannelMember` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#ischannelmember-boolean "Direct link to heading")
+
+* ##### `channelId` ([String](/developer/graphql-api/references/scalars/string))[](#channelid-string "Direct link to heading")
+
+#### `loyaltyPointsRanks` ([LoyaltyPointsRankConnection](/developer/graphql-api/references/objects/loyalty-points-rank-connection))[](#loyaltypointsranks-loyaltypointsrankconnection "Direct link to heading")
+
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int-3 "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string-3 "Direct link to heading")
+
+#### `recentlyClaimedLoyaltyPointsRecords` ([ClaimedLoyaltyPointsConnection](/developer/graphql-api/references/objects/claimed-loyalty-points-connection))[](#recentlyclaimedloyaltypointsrecords-claimedloyaltypointsconnection "Direct link to heading")
+
+* ##### `spaceId` ([Int](/developer/graphql-api/references/scalars/int))[](#spaceid-int "Direct link to heading")
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int-4 "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string-4 "Direct link to heading")
+
+#### `recentlyClaimedLoyaltyPointsSpaces` ([SpaceConnection](/developer/graphql-api/references/objects/space-connection))[](#recentlyclaimedloyaltypointsspaces-spaceconnection "Direct link to heading")
+
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int-5 "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string-5 "Direct link to heading")
+* ##### `searchString` ([String](/developer/graphql-api/references/scalars/string))[](#searchstring-string "Direct link to heading")
+
+#### `nfts` ([NFTConnection](/developer/graphql-api/references/objects/nftconnection))[](#nfts-nftconnection "Direct link to heading")
+
+* ##### `option` ([ListNFTInput](/developer/graphql-api/references/inputs/list-nftinput))[](#option-listnftinput "Direct link to heading")
+
+#### `recentParticipation` ([ParticipationConnection](/developer/graphql-api/references/objects/participation-connection))[](#recentparticipation-participationconnection "Direct link to heading")
+
+* ##### `input` ([ListParticipationInput](/developer/graphql-api/references/inputs/list-participation-input))[](#input-listparticipationinput "Direct link to heading")
+
+#### `participatedCampaignCount` ([Int](/developer/graphql-api/references/scalars/int))[](#participatedcampaigncount-int "Direct link to heading")
+
+* ##### `input` ([ParticipatedCampaignCountInput](/developer/graphql-api/references/inputs/participated-campaign-count-input))[](#input-participatedcampaigncountinput "Direct link to heading")

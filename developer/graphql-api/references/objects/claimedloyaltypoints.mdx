@@ -1,0 +1,38 @@
+---
+title: "ClaimedLoyaltyPoints"
+---
+
+No description
+
+```
+type ClaimedLoyaltyPoints implements Node {
+  id: ID!
+  address: Address
+  space: Space
+  points: Int!
+  campaign: Campaign
+  claimedAt: Int!
+  type: ClaimLoyaltyPointsType!
+}
+
+```
+
+### Fields[](#fields "Direct link to heading")
+
+#### `id` ([ID](/developer/graphql-api/references/scalars/id))[](#id-id "Direct link to heading")
+
+#### `address` ([Address](/developer/graphql-api/references/objects/address))[](#address-address "Direct link to heading")
+
+#### `space` ([Space](/developer/graphql-api/references/objects/space))[](#space-space "Direct link to heading")
+
+#### `points` ([Int](/developer/graphql-api/references/scalars/int))[](#points-int "Direct link to heading")
+
+#### `campaign` ([Campaign](/developer/graphql-api/references/objects/campaign))[](#campaign-campaign "Direct link to heading")
+
+#### `claimedAt` ([Int](/developer/graphql-api/references/scalars/int))[](#claimedat-int "Direct link to heading")
+
+#### `type` ([ClaimLoyaltyPointsType](/developer/graphql-api/references/enums/claim-loyalty-points-type))[](#type-claimloyaltypointstype "Direct link to heading")
+
+### Interfaces[](#interfaces "Direct link to heading")
+
+#### [Node](/developer/graphql-api/references/interfaces/node)[](#node "Direct link to heading")

@@ -1,0 +1,38 @@
+---
+title: "SubGraph"
+---
+
+No description
+
+```
+type SubGraph {
+  id: ID!
+  campaign: Campaign!
+  endpoint: String!
+  query: String!
+  variable: String!
+  expression: String!
+  addressInfo(
+  address: String!
+): SubgraphAddress!
+}
+
+```
+
+### Fields[](#fields "Direct link to heading")
+
+#### `id` ([ID](/developer/graphql-api/references/scalars/id))[](#id-id "Direct link to heading")
+
+#### `campaign` ([Campaign](/developer/graphql-api/references/objects/campaign))[](#campaign-campaign "Direct link to heading")
+
+#### `endpoint` ([String](/developer/graphql-api/references/scalars/string))[](#endpoint-string "Direct link to heading")
+
+#### `query` ([String](/developer/graphql-api/references/scalars/string))[](#query-string "Direct link to heading")
+
+#### `variable` ([String](/developer/graphql-api/references/scalars/string))[](#variable-string "Direct link to heading")
+
+#### `expression` ([String](/developer/graphql-api/references/scalars/string))[](#expression-string "Direct link to heading")
+
+#### `addressInfo` ([SubgraphAddress](/developer/graphql-api/references/objects/subgraph-address))[](#addressinfo-subgraphaddress "Direct link to heading")
+
+* ##### `address` ([String](/developer/graphql-api/references/scalars/string))[](#address-string "Direct link to heading")

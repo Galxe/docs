@@ -1,0 +1,88 @@
+---
+title: "MutateCampaignInput"
+---
+
+No description
+
+```
+input MutateCampaignInput {
+  id: ID
+  daoId: Int!
+  nftCoreId: Int!
+  name: String!
+  description: String!
+  thumbnail: String!
+  startTime: Int
+  endTime: Int
+  status: CampaignStatus!
+  parentId: Int
+  formula: String
+  cap: Int!
+  tokenReward: TokenRewardInput
+  gasType: GasType!
+  isPrivate: Boolean!
+  type: GamificationType!
+  nftTemplates: [NFTTemplateInput!]
+  children: [Int!]
+  chain: Chain
+  requireIntegrate: Boolean
+  distributionType: DistributionType
+  rewardName: String
+  rewardType: RewardType
+  rewardInfo: RewardInfoInput
+  credentialGroups: [CredentialGroupInput!]
+}
+
+```
+
+### Fields[](#fields "Direct link to heading")
+
+#### `id` ([ID](/developer/graphql-api/references/scalars/id))[](#id-id "Direct link to heading")
+
+#### `daoId` ([Int](/developer/graphql-api/references/scalars/int))[](#daoid-int "Direct link to heading")
+
+#### `nftCoreId` ([Int](/developer/graphql-api/references/scalars/int))[](#nftcoreid-int "Direct link to heading")
+
+#### `name` ([String](/developer/graphql-api/references/scalars/string))[](#name-string "Direct link to heading")
+
+#### `description` ([String](/developer/graphql-api/references/scalars/string))[](#description-string "Direct link to heading")
+
+#### `thumbnail` ([String](/developer/graphql-api/references/scalars/string))[](#thumbnail-string "Direct link to heading")
+
+#### `startTime` ([Int](/developer/graphql-api/references/scalars/int))[](#starttime-int "Direct link to heading")
+
+#### `endTime` ([Int](/developer/graphql-api/references/scalars/int))[](#endtime-int "Direct link to heading")
+
+#### `status` ([CampaignStatus](/developer/graphql-api/references/enums/campaign-status))[](#status-campaignstatus "Direct link to heading")
+
+#### `parentId` ([Int](/developer/graphql-api/references/scalars/int))[](#parentid-int "Direct link to heading")
+
+#### `formula` ([String](/developer/graphql-api/references/scalars/string))[](#formula-string "Direct link to heading")
+
+#### `cap` ([Int](/developer/graphql-api/references/scalars/int))[](#cap-int "Direct link to heading")
+
+#### `tokenReward` ([TokenRewardInput](/developer/graphql-api/references/inputs/token-reward-input))[](#tokenreward-tokenrewardinput "Direct link to heading")
+
+#### `gasType` ([GasType](/developer/graphql-api/references/enums/gas-type))[](#gastype-gastype "Direct link to heading")
+
+#### `isPrivate` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#isprivate-boolean "Direct link to heading")
+
+#### `type` ([GamificationType](/developer/graphql-api/references/enums/gamification-type))[](#type-gamificationtype "Direct link to heading")
+
+#### `nftTemplates` ([NFTTemplateInput](/developer/graphql-api/references/inputs/nfttemplate-input))[](#nfttemplates-nfttemplateinput "Direct link to heading")
+
+#### `children` ([Int](/developer/graphql-api/references/scalars/int))[](#children-int "Direct link to heading")
+
+#### `chain` ([Chain](/developer/graphql-api/references/enums/chain))[](#chain-chain "Direct link to heading")
+
+#### `requireIntegrate` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#requireintegrate-boolean "Direct link to heading")
+
+#### `distributionType` ([DistributionType](/developer/graphql-api/references/enums/distribution-type))[](#distributiontype-distributiontype "Direct link to heading")
+
+#### `rewardName` ([String](/developer/graphql-api/references/scalars/string))[](#rewardname-string "Direct link to heading")
+
+#### `rewardType` ([RewardType](/developer/graphql-api/references/enums/reward-type))[](#rewardtype-rewardtype "Direct link to heading")
+
+#### `rewardInfo` ([RewardInfoInput](/developer/graphql-api/references/inputs/reward-info-input))[](#rewardinfo-rewardinfoinput "Direct link to heading")
+
+#### `credentialGroups` ([CredentialGroupInput](/developer/graphql-api/references/inputs/credential-group-input))[](#credentialgroups-credentialgroupinput "Direct link to heading")

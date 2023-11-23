@@ -1,0 +1,46 @@
+---
+title: "ListNFTInput"
+---
+
+No description
+
+```
+input ListNFTInput {
+  nftCoreAddress: String
+  orderBy: ListNFTOrderBy!
+  order: ListOrder!
+  first: Int
+  after: String
+  chain: Chain
+  daoID: Int
+  campaignID: ID
+  categories: [String!]
+  types: [GamificationType!]
+  chains: [Chain!]
+}
+
+```
+
+### Fields[](#fields "Direct link to heading")
+
+#### `nftCoreAddress` ([String](/developer/graphql-api/references/scalars/string))[](#nftcoreaddress-string "Direct link to heading")
+
+#### `orderBy` ([ListNFTOrderBy](/developer/graphql-api/references/enums/list-nftorder-by))[](#orderby-listnftorderby "Direct link to heading")
+
+#### `order` ([ListOrder](/developer/graphql-api/references/enums/list-order))[](#order-listorder "Direct link to heading")
+
+#### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int "Direct link to heading")
+
+#### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string "Direct link to heading")
+
+#### `chain` ([Chain](/developer/graphql-api/references/enums/chain))[](#chain-chain "Direct link to heading")
+
+#### `daoID` ([Int](/developer/graphql-api/references/scalars/int))[](#daoid-int "Direct link to heading")
+
+#### `campaignID` ([ID](/developer/graphql-api/references/scalars/id))[](#campaignid-id "Direct link to heading")
+
+#### `categories` ([String](/developer/graphql-api/references/scalars/string))[](#categories-string "Direct link to heading")
+
+#### `types` ([GamificationType](/developer/graphql-api/references/enums/gamification-type))[](#types-gamificationtype "Direct link to heading")
+
+#### `chains` ([Chain](/developer/graphql-api/references/enums/chain))[](#chains-chain "Direct link to heading")

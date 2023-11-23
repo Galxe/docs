@@ -1,0 +1,44 @@
+---
+title: "Sprint"
+---
+
+No description
+
+```
+type Sprint implements Node {
+  id: ID!
+  space: Space!
+  name: String!
+  startTime: Int!
+  endTime: Int!
+  isVisible: Boolean!
+  leaderboard(
+  first: Int
+  after: String
+): LoyaltyPointsRankConnection!
+}
+
+```
+
+### Fields[](#fields "Direct link to heading")
+
+#### `id` ([ID](/developer/graphql-api/references/scalars/id))[](#id-id "Direct link to heading")
+
+#### `space` ([Space](/developer/graphql-api/references/objects/space))[](#space-space "Direct link to heading")
+
+#### `name` ([String](/developer/graphql-api/references/scalars/string))[](#name-string "Direct link to heading")
+
+#### `startTime` ([Int](/developer/graphql-api/references/scalars/int))[](#starttime-int "Direct link to heading")
+
+#### `endTime` ([Int](/developer/graphql-api/references/scalars/int))[](#endtime-int "Direct link to heading")
+
+#### `isVisible` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#isvisible-boolean "Direct link to heading")
+
+#### `leaderboard` ([LoyaltyPointsRankConnection](/developer/graphql-api/references/objects/loyalty-points-rank-connection))[](#leaderboard-loyaltypointsrankconnection "Direct link to heading")
+
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string "Direct link to heading")
+
+### Interfaces[](#interfaces "Direct link to heading")
+
+#### [Node](/developer/graphql-api/references/interfaces/node)[](#node "Direct link to heading")

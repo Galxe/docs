@@ -1,0 +1,220 @@
+---
+title: "Galxe ID OAuth 2.0"
+sidebarTitle: "OAuth 2.0"
+---
+
+## Demo[](#demo "Direct link to heading")
+
+Please see the [Demo](https://demo.tian.fyi/) and its [source code](https://github.com/oyyblin/galxe-id-sdk-oauth-demo).
+
+## Getting Started[](#getting-started "Direct link to heading")
+
+To get started, please apply for a client ID by contacting our live chat support from your dashboard management page.
+
+## OAuth[](#oauth "Direct link to heading")
+
+Galxe's OAuth implementation supports the standard [authorization code grant type](https://tools.ietf.org/html/rfc6749#section-4.1) for apps that don't have access to a web browser.
+
+### Authorization flow[](#authorization-flow "Direct link to heading")
+
+The request flow to authorize users for your app is:
+
+1. Users are redirected to request their Galxe identity.
+2. Users are redirected back to your site by Galxe.
+3. Your app accesses the API with the user's access token.
+
+### 1\. Request a user's Galxe identity[](#1-request-a-users-galxe-identity "Direct link to heading")
+
+#### URL[](#url "Direct link to heading")
+
+```
+GET https://galxe.com/oauth
+
+```
+
+```
+REDIRECT
+https://galxe.com/oauth?client_id=${CLIENT-ID}&scope=${SCOPE}&redirect_uri=${REDIRCT-URI}&state=${STATE}
+
+```
+
+**scope whitelist**:
+
+* Email
+* Twitter
+* Discord
+* Github
+* Telegram
+* EVMAddress
+* SolanaAddress
+* SeiAddress
+* AptosAddress
+* InjectiveAddress
+* FlowAddress
+* GalxeID
+
+#### Parameters[](#parameters "Direct link to heading")
+
+| Name                    | Type   | Description                                                                                                                                                                                                                                                   |
+| ----------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| client\_id              | string | **Required**. The client ID you received from Galxe when you registered.                                                                                                                                                                                      |
+| scope                   | string | **Required**. A space-delimited list of scopes. If not provided, scope defaults to an empty list for users that have not authorized any scopes for the application.                                                                                           |
+| redirect\_uri           | string | **Required**. The URL in your application where users will be sent after authorization, also known as callback url.                                                                                                                                           |
+| state                   | string | **Required**. An unguessable random string. It is used to protect against cross-site request forgery attacks.                                                                                                                                                 |
+| code\_challenge         | string | PKCE (Proof Key for Code Exchange) is an extension to the Authorization Code flow to prevent CSRF and authorization code injection attacks. PKCE is not a replacement for a client secret, and PKCE is recommended even if a client is using a client secret. |
+| code\_challenge\_method | string | Encoding method, plain or S256 (sha256), S256 is recommended.                                                                                                                                                                                                 |
+
+#### Response[](#response "Direct link to heading")
+
+By default, the response will add the following parameter to your `redirect_uri`:
+
+```
+code=${CODE}&state=${STATE}
+
+```
+
+### 2\. Get Access Token[](#2-get-access-token "Direct link to heading")
+
+If the user accepts your request, Galxe redirects back to your site with a temporary `code` in a code parameter as well as the state you provided in the previous step in a `state` parameter. The temporary code will expire after **10 minutes**. If the states don't match, then a third party created the request, and you should abort the process.
+
+Exchange this `code` for an access token.
+
+#### URL[](#url-1 "Direct link to heading")
+
+```bash
+Content-Type:application/x-www-form-urlencoded
+POST https://api.galxe.com/oauth/auth/2/token
+
+```
+
+```bash
+curl -d 'client_id=${CLIENT-ID}&client_secret=${CLIENT-SECRET}&code=${CODE}&grant_type=authorization_code' -H "Content-Type:application/x-www-form-urlencoded" -X POST https://api.galxe.com/oauth/auth/2/token
+
+```
+
+#### Parameters[](#parameters-1 "Direct link to heading")
+
+| Name           | Type   | Description                                                                 |
+| -------------- | ------ | --------------------------------------------------------------------------- |
+| client\_id     | string | **Required**. The client ID you received from Galxe for your OAuth App.     |
+| client\_secret | string | **Required**. The client secret you received from Galxe for your OAuth App. |
+| code           | string | **Required**. The code you received as a response to OAuth Authorize Step.  |
+| code\_verifier | string | Plain string of code\_challenge, only used when requiring code\_challenge.  |
+
+#### Response[](#response-1 "Direct link to heading")
+
+By default, the response takes the following form:
+
+```json
+{
+  "access_token": "OTJLYTIWNMQTYJY1ZC0ZOGQ2LTGYMDITNWQXZWJKNTA4YZAA",
+  "expires_in": 86400,
+  "refresh_token": "NGM5OWUXNDKTNTEZOC01NZBMLWEXMGUTMDUYZGJMNZI3YME0",
+  "scope": "Twitter",
+  "token_type": "Bearer"
+}
+
+```
+
+### 3\. Refresh Access Token[](#3-refresh-access-token "Direct link to heading")
+
+#### URL[](#url-2 "Direct link to heading")
+
+```bash
+Content-Type:application/x-www-form-urlencoded
+POST https://api.galxe.com/oauth/auth/2/token
+
+```
+
+```bash
+curl -d 'grant_type=refresh_token&refresh_token=${REFRESH-TOKEN}&client_id=${CLIENT-ID}&client_secret=${CLIENT-SECRET}' -H "Content-Type:application/x-www-form-urlencoded" -X POST https://api.galxe.com/oauth/auth/2/token
+
+```
+
+#### Parameters[](#parameters-2 "Direct link to heading")
+
+| Name           | Type   | Description                                                                                                            |
+| -------------- | ------ | ---------------------------------------------------------------------------------------------------------------------- |
+| refresh\_token | string | **Required**. The token generated when the Galxe App owner enables expiring tokens and issues a new user access token. |
+| grant\_type    | string | **Required**. Value must be refresh\_token (required by the OAuth specification).                                      |
+| client\_id     | string | **Required**. The client ID for Galxe App.                                                                             |
+| client\_secret | string | **Required**. The client secret for Galxe App.                                                                         |
+
+#### Response[](#response-2 "Direct link to heading")
+
+```json
+{
+  "access_token": "NTLMMJKYMMQTZJZJYI0ZZGFLLWE5NZMTMZAZMDY3YWMWNMI4",
+  "expires_in": 86400,
+  "refresh_token": "NGQXZGVJZDCTNTQ4YY01NTEZLTHMNTMTYJZHMWZIYJUZMJE3",
+  "scope": "Twitter Discord",
+  "token_type": "Bearer"
+}
+
+```
+
+### 4\. Get Access Token Detail[](#4-get-access-token-detail "Direct link to heading")
+
+#### URL[](#url-3 "Direct link to heading")
+
+```bash
+Authorization: Bearer ${ACCESS-TOKEN}
+GET https://api.galxe.com/oauth/api/2/token
+
+```
+
+```bash
+curl -H "Authorization: Bearer ${ACCESS-TOKEN}" https://api.galxe.com/oauth/api/2/token
+
+```
+
+#### Parameters[](#parameters-3 "Direct link to heading")
+
+| Name          | Type   | Description                        |
+| ------------- | ------ | ---------------------------------- |
+| access\_token | string | **Required**. Append it to header. |
+
+#### Response[](#response-3 "Direct link to heading")
+
+```json
+{
+  "client_id": "client_id",
+  "expires_at": "2022-08-31 16:00:22.666401 +0800 CST",
+  "scope": "twitter discord",
+}
+
+```
+
+### 5\. Use the access token to access the API[](#5-use-the-access-token-to-access-the-api "Direct link to heading")
+
+#### URL[](#url-4 "Direct link to heading")
+
+```
+Authorization: Bearer ${ACCESS-TOKEN}
+GET https://api.galxe.com/oauth/api/2/user
+
+```
+
+```bash
+curl -H "Authorization: Bearer ${ACCESS-TOKEN}" https://api.galxe.com/oauth/api/2/user?scope=Twitter%20Discord
+
+```
+
+#### Parameters[](#parameters-4 "Direct link to heading")
+
+| Name          | Type   | Description                                                                                                                          |
+| ------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| access\_token | string | **Required**. Append it to request header.                                                                                           |
+| scope         | string | A space-delimited list of scopes of user data that your APP required. If not set, will set to access token related scope by default. |
+
+#### Response[](#response-4 "Direct link to heading")
+
+```json
+{
+  "TwitterUsername": "twitter_username",
+  "TwitterUserID": "twitter_userid",
+  "DiscordUsername": "discord_username"
+  "DiscordUserID": "discord_userid"
+}
+
+```

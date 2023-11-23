@@ -1,0 +1,35 @@
+---
+title: "SpaceBalance"
+---
+
+No description
+
+```
+type SpaceBalance {
+  spaceId: Int!
+  balance: Int!
+  total_quota: Int!
+  quotas: [SpaceQuota]!
+  sufficientForGaslessClaimOnChain(
+  chains: [Chain!]!
+): [SpaceBalanceSufficiency]!
+  subsidies: [SpaceSubsidy]!
+}
+
+```
+
+### Fields[](#fields "Direct link to heading")
+
+#### `spaceId` ([Int](/developer/graphql-api/references/scalars/int))[](#spaceid-int "Direct link to heading")
+
+#### `balance` ([Int](/developer/graphql-api/references/scalars/int))[](#balance-int "Direct link to heading")
+
+#### `total_quota` ([Int](/developer/graphql-api/references/scalars/int))[](#total%5Fquota-int "Direct link to heading")
+
+#### `quotas` ([SpaceQuota](/developer/graphql-api/references/objects/space-quota))[](#quotas-spacequota "Direct link to heading")
+
+#### `sufficientForGaslessClaimOnChain` ([SpaceBalanceSufficiency](/developer/graphql-api/references/objects/space-balance-sufficiency))[](#sufficientforgaslessclaimonchain-spacebalancesufficiency "Direct link to heading")
+
+* ##### `chains` ([Chain](/developer/graphql-api/references/enums/chain))[](#chains-chain "Direct link to heading")
+
+#### `subsidies` ([SpaceSubsidy](/developer/graphql-api/references/objects/space-subsidy))[](#subsidies-spacesubsidy "Direct link to heading")

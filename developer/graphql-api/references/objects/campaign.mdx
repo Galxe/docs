@@ -1,0 +1,242 @@
+---
+title: "Campaign"
+---
+
+No description
+
+```
+type Campaign implements Node {
+  id: ID!
+  numberID: Int!
+  name: String!
+  type: GamificationType!
+  status: CampaignStatus!
+  description: String!
+  thumbnail: String!
+  numNFTMinted: Int
+  gasType: GasType!
+  startTime: Int
+  endTime: Int
+  claimEndTime: Int
+  parentCampaign: Campaign
+  childrenCampaigns: [Campaign!]
+  holders(
+  first: Int
+  after: String
+): AddressConnection!
+  holdersList(
+  first: Int
+  after: String
+): [String!]
+  holdersCount: Int!
+  nftHolderSnapshot: CampaignNFTHolderSnapshot!
+  cap: Int!
+  tokenReward: TokenReward!
+  tokenRewardContract: TokenRewardContract
+  blacklistCountryCodes: String!
+  createdAt: String!
+  space: Space!
+  nftCore: NFTCore
+  nftTemplates: [NFTTemplate!]
+  forgeConfig: ForgeConfig
+  enableWhitelist: Boolean!
+  requireEmail: Boolean!
+  requireUsername: Boolean!
+  creator: String!
+  chain: Chain!
+  dao: DAO!
+  info: String!
+  requirementInfo: String!
+  whitelistInfo(
+  address: String!
+): WhitelistAddress!
+  gamification: Gamification!
+  whitelistSubgraph: SubGraph
+  isPrivate: Boolean!
+  spaceStation: SpaceStation
+  isBookmarked(
+  address: String!
+): Boolean!
+  whitelistRegions: String
+  requireIntegrate: Boolean
+  participants: CampaignParticipant!
+  distributionType: DistributionType
+  rewardName: String
+  rewardType: RewardType
+  rewardInfo: RewardInfo!
+  userParticipants(
+  address: String!
+  first: Int
+  after: String = ""
+): ParticipationConnection!
+  participationStatus(
+  address: String!
+): ParticipationStatus
+  isNFTHolder(
+  address: String!
+): Boolean!
+  metrics: String!
+  loyaltyPoints: Int!
+  credentialGroups(
+  address: String
+): [CredentialGroup!]!
+  useCred: Boolean!
+  claimedTimes(
+  address: String!
+): Int!
+  formula: String!
+  creds: [Cred!]!
+  claimedLoyaltyPoints(
+  address: String!
+): Int!
+}
+
+```
+
+### Fields[](#fields "Direct link to heading")
+
+#### `id` ([ID](/developer/graphql-api/references/scalars/id))[](#id-id "Direct link to heading")
+
+#### `numberID` ([Int](/developer/graphql-api/references/scalars/int))[](#numberid-int "Direct link to heading")
+
+#### `name` ([String](/developer/graphql-api/references/scalars/string))[](#name-string "Direct link to heading")
+
+#### `type` ([GamificationType](/developer/graphql-api/references/enums/gamification-type))[](#type-gamificationtype "Direct link to heading")
+
+#### `status` ([CampaignStatus](/developer/graphql-api/references/enums/campaign-status))[](#status-campaignstatus "Direct link to heading")
+
+#### `description` ([String](/developer/graphql-api/references/scalars/string))[](#description-string "Direct link to heading")
+
+#### `thumbnail` ([String](/developer/graphql-api/references/scalars/string))[](#thumbnail-string "Direct link to heading")
+
+#### `numNFTMinted` ([Int](/developer/graphql-api/references/scalars/int))[](#numnftminted-int "Direct link to heading")
+
+#### `gasType` ([GasType](/developer/graphql-api/references/enums/gas-type))[](#gastype-gastype "Direct link to heading")
+
+#### `startTime` ([Int](/developer/graphql-api/references/scalars/int))[](#starttime-int "Direct link to heading")
+
+#### `endTime` ([Int](/developer/graphql-api/references/scalars/int))[](#endtime-int "Direct link to heading")
+
+#### `claimEndTime` ([Int](/developer/graphql-api/references/scalars/int))[](#claimendtime-int "Direct link to heading")
+
+#### `parentCampaign` ([Campaign](/developer/graphql-api/references/objects/campaign))[](#parentcampaign-campaign "Direct link to heading")
+
+#### `childrenCampaigns` ([Campaign](/developer/graphql-api/references/objects/campaign))[](#childrencampaigns-campaign "Direct link to heading")
+
+#### `holders` ([AddressConnection](/developer/graphql-api/references/objects/address-connection))[](#holders-addressconnection "Direct link to heading")
+
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string "Direct link to heading")
+
+#### `holdersList` ([String](/developer/graphql-api/references/scalars/string))[](#holderslist-string "Direct link to heading")
+
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int-1 "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string-1 "Direct link to heading")
+
+#### `holdersCount` ([Int](/developer/graphql-api/references/scalars/int))[](#holderscount-int "Direct link to heading")
+
+#### `nftHolderSnapshot` ([CampaignNFTHolderSnapshot](/developer/graphql-api/references/objects/campaign-nftholder-snapshot))[](#nftholdersnapshot-campaignnftholdersnapshot "Direct link to heading")
+
+#### `cap` ([Int](/developer/graphql-api/references/scalars/int))[](#cap-int "Direct link to heading")
+
+#### `tokenReward` ([TokenReward](/developer/graphql-api/references/objects/token-reward))[](#tokenreward-tokenreward "Direct link to heading")
+
+#### `tokenRewardContract` ([TokenRewardContract](/developer/graphql-api/references/objects/token-reward-contract))[](#tokenrewardcontract-tokenrewardcontract "Direct link to heading")
+
+#### `blacklistCountryCodes` ([String](/developer/graphql-api/references/scalars/string))[](#blacklistcountrycodes-string "Direct link to heading")
+
+#### `createdAt` ([String](/developer/graphql-api/references/scalars/string))[](#createdat-string "Direct link to heading")
+
+#### `space` ([Space](/developer/graphql-api/references/objects/space))[](#space-space "Direct link to heading")
+
+#### `nftCore` ([NFTCore](/developer/graphql-api/references/objects/nftcore))[](#nftcore-nftcore "Direct link to heading")
+
+#### `nftTemplates` ([NFTTemplate](/developer/graphql-api/references/objects/nfttemplate))[](#nfttemplates-nfttemplate "Direct link to heading")
+
+#### `forgeConfig` ([ForgeConfig](/developer/graphql-api/references/objects/forge-config))[](#forgeconfig-forgeconfig "Direct link to heading")
+
+#### `enableWhitelist` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#enablewhitelist-boolean "Direct link to heading")
+
+#### `requireEmail` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#requireemail-boolean "Direct link to heading")
+
+#### `requireUsername` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#requireusername-boolean "Direct link to heading")
+
+#### `creator` ([String](/developer/graphql-api/references/scalars/string))[](#creator-string "Direct link to heading")
+
+#### `chain` ([Chain](/developer/graphql-api/references/enums/chain))[](#chain-chain "Direct link to heading")
+
+#### `dao` ([DAO](/developer/graphql-api/references/objects/dao))[](#dao-dao "Direct link to heading")
+
+#### `info` ([String](/developer/graphql-api/references/scalars/string))[](#info-string "Direct link to heading")
+
+#### `requirementInfo` ([String](/developer/graphql-api/references/scalars/string))[](#requirementinfo-string "Direct link to heading")
+
+#### `whitelistInfo` ([WhitelistAddress](/developer/graphql-api/references/objects/whitelist-address))[](#whitelistinfo-whitelistaddress "Direct link to heading")
+
+* ##### `address` ([String](/developer/graphql-api/references/scalars/string))[](#address-string "Direct link to heading")
+
+#### `gamification` ([Gamification](/developer/graphql-api/references/objects/gamification))[](#gamification-gamification "Direct link to heading")
+
+#### `whitelistSubgraph` ([SubGraph](/developer/graphql-api/references/objects/sub-graph))[](#whitelistsubgraph-subgraph "Direct link to heading")
+
+#### `isPrivate` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#isprivate-boolean "Direct link to heading")
+
+#### `spaceStation` ([SpaceStation](/developer/graphql-api/references/objects/space-station))[](#spacestation-spacestation "Direct link to heading")
+
+#### `isBookmarked` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#isbookmarked-boolean "Direct link to heading")
+
+* ##### `address` ([String](/developer/graphql-api/references/scalars/string))[](#address-string-1 "Direct link to heading")
+
+#### `whitelistRegions` ([String](/developer/graphql-api/references/scalars/string))[](#whitelistregions-string "Direct link to heading")
+
+#### `requireIntegrate` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#requireintegrate-boolean "Direct link to heading")
+
+#### `participants` ([CampaignParticipant](/developer/graphql-api/references/objects/campaign-participant))[](#participants-campaignparticipant "Direct link to heading")
+
+#### `distributionType` ([DistributionType](/developer/graphql-api/references/enums/distribution-type))[](#distributiontype-distributiontype "Direct link to heading")
+
+#### `rewardName` ([String](/developer/graphql-api/references/scalars/string))[](#rewardname-string "Direct link to heading")
+
+#### `rewardType` ([RewardType](/developer/graphql-api/references/enums/reward-type))[](#rewardtype-rewardtype "Direct link to heading")
+
+#### `rewardInfo` ([RewardInfo](/developer/graphql-api/references/objects/reward-info))[](#rewardinfo-rewardinfo "Direct link to heading")
+
+#### `userParticipants` ([ParticipationConnection](/developer/graphql-api/references/objects/participation-connection))[](#userparticipants-participationconnection "Direct link to heading")
+
+* ##### `address` ([String](/developer/graphql-api/references/scalars/string))[](#address-string-2 "Direct link to heading")
+* ##### `first` ([Int](/developer/graphql-api/references/scalars/int))[](#first-int-2 "Direct link to heading")
+* ##### `after` ([String](/developer/graphql-api/references/scalars/string))[](#after-string-2 "Direct link to heading")
+
+#### `participationStatus` ([ParticipationStatus](/developer/graphql-api/references/enums/participation-status))[](#participationstatus-participationstatus "Direct link to heading")
+
+* ##### `address` ([String](/developer/graphql-api/references/scalars/string))[](#address-string-3 "Direct link to heading")
+
+#### `isNFTHolder` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#isnftholder-boolean "Direct link to heading")
+
+* ##### `address` ([String](/developer/graphql-api/references/scalars/string))[](#address-string-4 "Direct link to heading")
+
+#### `metrics` ([String](/developer/graphql-api/references/scalars/string))[](#metrics-string "Direct link to heading")
+
+#### `loyaltyPoints` ([Int](/developer/graphql-api/references/scalars/int))[](#loyaltypoints-int "Direct link to heading")
+
+#### `credentialGroups` ([CredentialGroup](/developer/graphql-api/references/objects/credential-group))[](#credentialgroups-credentialgroup "Direct link to heading")
+
+* ##### `address` ([String](/developer/graphql-api/references/scalars/string))[](#address-string-5 "Direct link to heading")
+
+#### `useCred` ([Boolean](/developer/graphql-api/references/scalars/boolean))[](#usecred-boolean "Direct link to heading")
+
+#### `claimedTimes` ([Int](/developer/graphql-api/references/scalars/int))[](#claimedtimes-int "Direct link to heading")
+
+* ##### `address` ([String](/developer/graphql-api/references/scalars/string))[](#address-string-6 "Direct link to heading")
+
+#### `formula` ([String](/developer/graphql-api/references/scalars/string))[](#formula-string "Direct link to heading")
+
+#### `creds` ([Cred](/developer/graphql-api/references/objects/cred))[](#creds-cred "Direct link to heading")
+
+#### `claimedLoyaltyPoints` ([Int](/developer/graphql-api/references/scalars/int))[](#claimedloyaltypoints-int "Direct link to heading")
+
+* ##### `address` ([String](/developer/graphql-api/references/scalars/string))[](#address-string-7 "Direct link to heading")
+
+### Interfaces[](#interfaces "Direct link to heading")
+
+#### [Node](/developer/graphql-api/references/interfaces/node)[](#node "Direct link to heading")

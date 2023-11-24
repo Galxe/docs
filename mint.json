@@ -21,16 +21,17 @@
     "url": "https://galxe.com/support"
   },
   "primaryTab": {
-    "name": "Protocol",
-     "url": "protocol"
+    "name": "Protocol"
   },
   "tabs": [
     {
+      "name": "Protocol",
+      "url": "protocol"
+    },
+    {
       "name": "Platform",
       "url": "overview"
-    }
-  ],
-  "tabs": [
+    },
     {
       "name": "Developer",
       "url": "developer"

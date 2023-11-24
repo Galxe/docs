@@ -31,12 +31,12 @@
   ],
   "anchors": [
     {
-      "name": "Legal",
+      "name": "Help Center",
       "icon": "block-question",
-      "url": "https://help.galxe.com"
+      "url": "https://help.galxe.com/en/"
     },
     {
-      "name": "Help Center",
+      "name": "Legal",
       "icon": "window",
       "url": "https://gal.xyz/tos"
     }

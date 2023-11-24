@@ -32,13 +32,13 @@
   "anchors": [
     {
       "name": "Legal",
-      "icon": "window",
-      "url": "https://galxe.com/"
+      "icon": "block-question",
+      "url": "https://help.galxe.com"
     },
     {
       "name": "Help Center",
-      "icon": "block-question",
-      "url": "https://help.galxe.com/en/"
+      "icon": "window",
+      "url": "https://gal.xyz/tos"
     }
   ],
   "navigation": [

@@ -10,6 +10,10 @@
       "light": "#5E94FF",
       "dark": "#3679FF"
     },
+    "topbarLinks": {
+        "name": "Go to Galxe",
+        "url": "https://galxe.com"
+    }
     "topbarCtaButton": {
       "name": "Contact Support",
       "url": "https://galxe.com/support"
@@ -25,7 +29,7 @@
   ],
     "anchors": [
       {
-        "name": "Legal",
+        "name": "App",
         "icon": "window",
         "url": "https://galxe.com/"
       },

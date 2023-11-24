@@ -21,11 +21,18 @@
     "url": "https://galxe.com/support"
   },
   "primaryTab": {
-    "name": "Overview"
+    "name": "Protocol"
+     "url": "protocol"
   },
   "tabs": [
     {
-      "name": "Developers",
+      "name": "Platform",
+      "url": "overview"
+    }
+  ],
+  "tabs": [
+    {
+      "name": "Developer",
       "url": "developer"
     }
   ],
@@ -42,6 +49,13 @@
     }
   ],
   "navigation": [
+    {
+      "group": "Protocol Overview",
+      "pages": [
+        "protocol-overview/introduction",
+        "protocol-overview/whitepaper"
+      ]
+    },
     {
       "group": "Into the Galxe",
       "pages": [
@@ -668,6 +682,7 @@
   ],
   "footerSocials": {
     "twitter": "https://twitter.com/Galxe?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor",
+    "github": "https://github.com/galxe",
     "linkedin": "https://www.linkedin.com/company/galxe/"
   }
 }

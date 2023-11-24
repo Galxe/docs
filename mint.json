@@ -52,8 +52,8 @@
     {
       "group": "Protocol Overview",
       "pages": [
-        "protocol-overview/introduction",
-        "protocol-overview/whitepaper"
+        "protocol/introduction",
+        "protocol/protocol-overview/whitepaper"
       ]
     },
     {

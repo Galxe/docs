@@ -25,10 +25,6 @@
   },
   "tabs": [
     {
-      "name": "Protocol",
-      "url": "protocol"
-    },
-    {
       "name": "Platform",
       "url": "overview"
     },

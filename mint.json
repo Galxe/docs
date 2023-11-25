@@ -72,6 +72,13 @@
       ]
     },
     {
+      "group": "Legal",
+      "pages": [
+        "platform/legal/terms-of-service",
+        "platform/legal/privacy-policy"
+      ]
+    },
+    {
       "group": "Community Programs",
       "pages": [
         "platform/community-programs/Galaxy-Brain",

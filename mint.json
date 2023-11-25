@@ -50,7 +50,14 @@
       "group": "Protocol Overview",
       "pages": [
         "protocol/introduction",
-        "protocol/protocol-overview/whitepaper"
+        "protocol/overview/whitepaper"
+      ]
+    },
+    {
+      "group": "Applications",
+      "pages": [
+        "protocol/applications/galxe-id",
+        "protocol/applications/galxe-passport"
       ]
     },
     {
@@ -64,11 +71,9 @@
       "group": "Platform Overview",
       "pages": [
         "platform/introduction",
-        "platform/into-the-galxe/credential-data-network",
-        "platform/into-the-galxe/build-with-credentials",
-        "platform/into-the-galxe/galxe-id",
-        "platform/into-the-galxe/galxe-oat",
-        "platform/into-the-galxe/galxe-passport"
+        "platform/overview/credential-data-network",
+        "platform/overview/build-with-credentials",
+        "platform/overview/galxe-oat"
       ]
     },
     {

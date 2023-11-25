@@ -54,7 +54,13 @@
       ]
     },
     {
-      "group": "Into the Galxe",
+      "group": "GAL",
+      "pages": [
+        "protocol/gal/early-adopter-rewards-2022"
+      ]
+    },
+    {
+      "group": "Platform Overview",
       "pages": [
         "platform/introduction",
         "platform/into-the-galxe/credential-data-network",
@@ -62,13 +68,6 @@
         "platform/into-the-galxe/galxe-id",
         "platform/into-the-galxe/galxe-oat",
         "platform/into-the-galxe/galxe-passport"
-      ]
-    },
-    {
-      "group": "The GAL Token",
-      "pages": [
-        "platform/the-GAL-token/GAL-Token",
-        "platform/the-GAL-token/GAL-Early-Adopter-Rewards"
       ]
     },
     {

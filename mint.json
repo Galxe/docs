@@ -26,7 +26,7 @@
   "tabs": [
     {
       "name": "Platform",
-      "url": "overview"
+      "url": "platform"
     },
     {
       "name": "Developer",
@@ -56,57 +56,57 @@
     {
       "group": "Into the Galxe",
       "pages": [
-        "overview/introduction",
-        "overview/into-the-galxe/credential-data-network",
-        "overview/into-the-galxe/build-with-credentials",
-        "overview/into-the-galxe/galxe-id",
-        "overview/into-the-galxe/galxe-oat",
-        "overview/into-the-galxe/galxe-passport"
+        "platform/introduction",
+        "platform/into-the-galxe/credential-data-network",
+        "platform/into-the-galxe/build-with-credentials",
+        "platform/into-the-galxe/galxe-id",
+        "platform/into-the-galxe/galxe-oat",
+        "platform/into-the-galxe/galxe-passport"
       ]
     },
     {
       "group": "The GAL Token",
       "pages": [
-        "overview/the-GAL-token/GAL-Token",
-        "overview/the-GAL-token/GAL-Early-Adopter-Rewards"
+        "platform/the-GAL-token/GAL-Token",
+        "platform/the-GAL-token/GAL-Early-Adopter-Rewards"
       ]
     },
     {
       "group": "Community Programs",
       "pages": [
-        "overview/community-programs/Galaxy-Brain",
-        "overview/community-programs/Galaxy-Pathfinder",
-        "overview/community-programs/Galaxy-Ecosystem-Space"
+        "platform/community-programs/Galaxy-Brain",
+        "platform/community-programs/Galaxy-Pathfinder",
+        "platform/community-programs/Galaxy-Ecosystem-Space"
       ]
     },
     {
       "group": "Case Studies",
       "pages": [
-        "overview/case-studies/ProtocolGrowthOdos",
-        "overview/case-studies/JoepegsCaseStudy",
-        "overview/case-studies/pSTAKEGalxeCaseStudy",
-        "overview/case-studies/ecosystem-campaign-optimism",
-        "overview/case-studies/DEXGrowthWithHashflow",
-        "overview/case-studies/CustomizedGovernanceWithBNBChain",
-        "overview/case-studies/thedefiantemailclaiming",
-        "overview/case-studies/EcosystemGrowthWithSolana",
-        "overview/case-studies/EndOfYearRave",
-        "overview/case-studies/NFTMarketplaceGrowth",
-        "overview/case-studies/CommunityEngagementWithImToken",
-        "overview/case-studies/GrowthHackingWithMintverse",
-        "overview/case-studies/LoyaltyProgramWithZk.Link",
-        "overview/case-studies/ShadowySuperCoder",
-        "overview/case-studies/LearnToEarnWithCoinGecko",
-        "overview/case-studies/PoolTogetherSeason1",
-        "overview/case-studies/CoinList",
-        "overview/case-studies/web3onbnb",
-        "overview/case-studies/P12",
-        "overview/case-studies/TheLinsanityCampaign"
+        "platform/case-studies/ProtocolGrowthOdos",
+        "platform/case-studies/JoepegsCaseStudy",
+        "platform/case-studies/pSTAKEGalxeCaseStudy",
+        "platform/case-studies/ecosystem-campaign-optimism",
+        "platform/case-studies/DEXGrowthWithHashflow",
+        "platform/case-studies/CustomizedGovernanceWithBNBChain",
+        "platform/case-studies/thedefiantemailclaiming",
+        "platform/case-studies/EcosystemGrowthWithSolana",
+        "platform/case-studies/EndOfYearRave",
+        "platform/case-studies/NFTMarketplaceGrowth",
+        "platform/case-studies/CommunityEngagementWithImToken",
+        "platform/case-studies/GrowthHackingWithMintverse",
+        "platform/case-studies/LoyaltyProgramWithZk.Link",
+        "platform/case-studies/ShadowySuperCoder",
+        "platform/case-studies/LearnToEarnWithCoinGecko",
+        "platform/case-studies/PoolTogetherSeason1",
+        "platform/case-studies/CoinList",
+        "platform/case-studies/web3onbnb",
+        "platform/case-studies/P12",
+        "platform/case-studies/TheLinsanityCampaign"
       ]
     },
     {
       "group": "Change Logs",
-      "pages": ["overview/change-logs/changelogs"]
+      "pages": ["platform/change-logs/changelogs"]
     },
     {
       "group": "Getting Started",

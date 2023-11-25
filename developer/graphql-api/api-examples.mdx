@@ -1,19 +1,22 @@
 ---
-title: "ExamplesSpace Access:Open Access:"
+title: "Examples"
 description: "For more information on our GraphQL endpoint, please refer to [this doc](/developer/graphql-api/overview)."
 ---
 
-## Campaign[](#campaign "Direct link to heading")
 
-### Query campaign participants[](#query-campaign-participants "Direct link to heading")
+# Space Access:
+
+## Campaign
+
+### Query campaign participants
 
 Arguments:
 
 | Name                                                                     | Type                                                        | Description       |
 | ------------------------------------------------------------------------ | ----------------------------------------------------------- | ----------------- |
-| [id](/developer/graphql-api/references/queries/campaign)                 | [ID!](/developer/graphql-api/references/scalars/id)         | Campaign hash id. |
-| [pfirst](/developer/graphql-api/references/objects/campaign-participant) | [Int!](/developer/graphql-api/references/scalars/int)       | Query limit.      |
-| [pafter](/developer/graphql-api/references/objects/campaign-participant) | [String!](/developer/graphql-api/references/scalars/string) | Query offset.     |
+| [`id`](../5-graphql-api/references/queries/campaign.mdx)                 | [`ID!`](../5-graphql-api/references/scalars/id.mdx)         | Campaign hash id. |
+| [`pfirst`](../5-graphql-api/references/objects/campaign-participant.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.      |
+| [`pafter`](../5-graphql-api/references/objects/campaign-participant.mdx) | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.     |
 
 Request:
 
@@ -40,7 +43,6 @@ query campaignParticipants($id: ID!, $pfirst: Int!, $pafter: String!) {
     }
   }
 }
-
 ```
 
 Variables:
@@ -51,7 +53,6 @@ Variables:
   "pfirst": 1,
   "pafter": "-1"
 }
-
 ```
 
 Response:
@@ -83,19 +84,18 @@ Response:
     }
   }
 }
-
 ```
 
-### Query NFT holder by campaign[](#query-nft-holder-by-campaign "Direct link to heading")
+### Query NFT holder by campaign
 
 Arguments:
 
 | Name                                                                           | Type                                                        | Description       |
 | ------------------------------------------------------------------------------ | ----------------------------------------------------------- | ----------------- |
-| [id](/developer/graphql-api/references/queries/address-info)                   | [ID!](/developer/graphql-api/references/scalars/id)         | Campaign hash id. |
-| [block](/developer/graphql-api/references/objects/campaign-nftholder-snapshot) | [Int!](/developer/graphql-api/references/scalars/int)       | Chain block.      |
-| [first](/developer/graphql-api/references/objects/campaign-nftholder-snapshot) | [Int!](/developer/graphql-api/references/scalars/int)       | Query limit.      |
-| [after](/developer/graphql-api/references/objects/campaign-nftholder-snapshot) | [String!](/developer/graphql-api/references/scalars/string) | Query offset.     |
+| [`id`](../5-graphql-api/references/queries/address-info.mdx)                   | [`ID!`](../5-graphql-api/references/scalars/id.mdx)         | Campaign hash id. |
+| [`block`](../5-graphql-api/references/objects/campaign-nftholder-snapshot.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Chain block.      |
+| [`first`](../5-graphql-api/references/objects/campaign-nftholder-snapshot.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.      |
+| [`after`](../5-graphql-api/references/objects/campaign-nftholder-snapshot.mdx) | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.     |
 
 Request:
 
@@ -126,7 +126,6 @@ query NFTHolders($id: ID!, $block: Int!, $first: Int!, $after: String!) {
     }
   }
 }
-
 ```
 
 Variables:
@@ -138,7 +137,6 @@ Variables:
   "first": 1,
   "after": "-1"
 }
-
 ```
 
 Response:
@@ -176,16 +174,15 @@ Response:
     }
   }
 }
-
 ```
 
-### Create campaigns[](#create-campaigns "Direct link to heading")
+### Create campaigns
 
 Arguments:
 
 | Name                                                          | Type                                                                                   | Description       |
 | ------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------- |
-| [input](/developer/graphql-api/references/mutations/campaign) | [MutateCampaignInput!](/developer/graphql-api/references/inputs/mutate-campaign-input) | Campaign hash id. |
+| [`input`](../5-graphql-api/references/mutations/campaign.mdx) | [`MutateCampaignInput!`](../5-graphql-api/references/inputs/mutate-campaign-input.mdx) | Campaign hash id. |
 
 Request:
 
@@ -198,7 +195,6 @@ mutation addCampaign($input: MutateCampaignInput!) {
     claimEndTime
   }
 }
-
 ```
 
 Variables:
@@ -260,7 +256,6 @@ Variables:
     "rewardInfo": {}
   }
 }
-
 ```
 
 Response:
@@ -276,10 +271,9 @@ Response:
     }
   }
 }
-
 ```
 
-### Claim OAT campaigns on third-party website[](#claim-oat-campaigns-on-third-party-website "Direct link to heading")
+### Claim OAT campaigns on third-party website
 
 Use GraphQL API get campaign info
 
@@ -296,7 +290,6 @@ mutation claim {
     disallowReason     # Disallow reason
   }
 } 
-
 ```
 
 Response:
@@ -310,24 +303,23 @@ Response:
     }
   }
 }
-
 ```
 
-## Space[](#space "Direct link to heading")
+## Space
 
-### Query campaign list[](#query-campaign-list "Direct link to heading")
+### Query campaign list
 
 Arguments:
 
 | Name                                                                 | Type                                                                               | Description             |
 | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------- |
-| [id](/developer/graphql-api/references/queries/space)                | [Int!](/developer/graphql-api/references/scalars/int)                              | Space id.               |
-| [alias](/developer/graphql-api/references/objects/space)             | [String!](/developer/graphql-api/references/scalars/string)                        | Space alias.            |
-| [campaignInput](/developer/graphql-api/references/queries/campaigns) | [ListCampaignInput!](/developer/graphql-api/references/inputs/list-campaign-input) | Campaigns query params. |
+| [`id`](../5-graphql-api/references/queries/space.mdx)                | [`Int!`](../5-graphql-api/references/scalars/int.mdx)                              | Space id.               |
+| [`alias`](../5-graphql-api/references/objects/space.mdx)             | [`String!`](../5-graphql-api/references/scalars/string.mdx)                        | Space alias.            |
+| [`campaignInput`](../5-graphql-api/references/queries/campaigns.mdx) | [`ListCampaignInput!`](../5-graphql-api/references/inputs/list-campaign-input.mdx) | Campaigns query params. |
 
 Request:
 
-args:campaigns:[CampaignConnection](/developer/graphql-api/references/objects/campaign-connection)
+args:campaigns:[`CampaignConnection`](../5-graphql-api/references/objects/campaign-connection.mdx)
 
 ```graphql
 query CampaignList($id: Int, $alias: String,  $campaignInput: ListCampaignInput!) {
@@ -347,7 +339,6 @@ query CampaignList($id: Int, $alias: String,  $campaignInput: ListCampaignInput!
         }
     }
 }
-
 ```
 
 Variables:
@@ -388,7 +379,6 @@ Variables:
     "searchString": null
   }
 }
-
 ```
 
 Response:
@@ -419,18 +409,17 @@ Response:
     }
   }
 }
-
 ```
 
-### Query NFT holder by contract[](#query-nft-holder-by-contract "Direct link to heading")
+### Query NFT holder by contract
 
 Arguments:
 
 | Name                                                          | Type                                                        | Description       |
 | ------------------------------------------------------------- | ----------------------------------------------------------- | ----------------- |
-| [address](/developer/graphql-api/references/queries/nft-core) | [String!](/developer/graphql-api/references/scalars/string) | Contract address. |
-| [first](/developer/graphql-api/references/objects/nftcore)    | [Int!](/developer/graphql-api/references/scalars/int)       | Query limit.      |
-| [after](/developer/graphql-api/references/objects/nftcore)    | [String!](/developer/graphql-api/references/scalars/string) | Query offset.     |
+| [`address`](../5-graphql-api/references/queries/nft-core.mdx) | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Contract address. |
+| [`first`](../5-graphql-api/references/objects/nftcore.mdx)    | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.      |
+| [`after`](../5-graphql-api/references/objects/nftcore.mdx)    | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.     |
 
 Request:
 
@@ -451,7 +440,6 @@ query nftHolders($address: String!, $first: Int!, $after: String!) {
     }
   }
 }
-
 ```
 
 Variables:
@@ -462,12 +450,11 @@ Variables:
   "first": 2,
   "after": "-1"
 }
-
 ```
 
 Response:
 
-```graphql
+```json
 {
   "data": {
     "nftCore": {
@@ -491,22 +478,21 @@ Response:
     }
   }
 }
-
 ```
 
-### Query leaderboard data[](#query-leaderboard-data "Direct link to heading")
+### Query leaderboard data
 
-#### Overall[](#overall "Direct link to heading")
+#### Overall
 
 Arguments:
 
 | Name                                                        | Type                                                        | Description                                       |
 | ----------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------- |
-| [id](/developer/graphql-api/references/queries/space)       | [Int!](/developer/graphql-api/references/scalars/int)       | Space id.                                         |
-| [first](/developer/graphql-api/references/objects/space)    | [Int!](/developer/graphql-api/references/scalars/int)       | Query limit.                                      |
-| [after](/developer/graphql-api/references/objects/space)    | [String!](/developer/graphql-api/references/scalars/string) | Query offset.                                     |
-| [order](/developer/graphql-api/references/objects/space)    | \[LoyaltyPointsRankOrder\]                                  | Sort by Points/GalxeID.                           |
-| [seasonId](/developer/graphql-api/references/objects/space) | [Int!](/developer/graphql-api/references/scalars/int)       | Query for season ranking. Overall ranking is null |
+| [`id`](../5-graphql-api/references/queries/space.mdx)       | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Space id.                                         |
+| [`first`](../5-graphql-api/references/objects/space.mdx)    | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.                                      |
+| [`after`](../5-graphql-api/references/objects/space.mdx)    | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.                                     |
+| [`order`](../5-graphql-api/references/objects/space.mdx)    | [`LoyaltyPointsRankOrder`]                                  | Sort by Points/GalxeID.                           |
+| [`seasonId`](../5-graphql-api/references/objects/space.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query for season ranking. Overall ranking is null |
 
 Request:
 
@@ -545,7 +531,6 @@ query SpaceLeaderboard($id: Int!, $first: Int, $after: String, $order: LoyaltyPo
         }
     }
 }
-
 ```
 
 Variables:
@@ -558,7 +543,6 @@ Variables:
   "order": "Points",
   "seasonId": null
 }
-
 ```
 
 Response:
@@ -621,20 +605,19 @@ Response:
     }
   }
 }
-
 ```
 
-#### Season[](#season "Direct link to heading")
+#### Season
 
 Arguments:
 
 | Name                                                        | Type                                                        | Description               |
 | ----------------------------------------------------------- | ----------------------------------------------------------- | ------------------------- |
-| [id](/developer/graphql-api/references/queries/space)       | [Int!](/developer/graphql-api/references/scalars/int)       | Space id.                 |
-| [first](/developer/graphql-api/references/objects/space)    | [Int!](/developer/graphql-api/references/scalars/int)       | Query limit.              |
-| [after](/developer/graphql-api/references/objects/space)    | [String!](/developer/graphql-api/references/scalars/string) | Query offset.             |
-| [order](/developer/graphql-api/references/objects/space)    | \[LoyaltyPointsRankOrder\]                                  | Sort by Points/GalxeID.   |
-| [seasonId](/developer/graphql-api/references/objects/space) | [Int!](/developer/graphql-api/references/scalars/int)       | Query for season ranking. |
+| [`id`](../5-graphql-api/references/queries/space.mdx)       | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Space id.                 |
+| [`first`](../5-graphql-api/references/objects/space.mdx)    | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.              |
+| [`after`](../5-graphql-api/references/objects/space.mdx)    | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.             |
+| [`order`](../5-graphql-api/references/objects/space.mdx)    | [`LoyaltyPointsRankOrder`]                                  | Sort by Points/GalxeID.   |
+| [`seasonId`](../5-graphql-api/references/objects/space.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query for season ranking. |
 
 Request:
 
@@ -673,7 +656,6 @@ query SpaceLeaderboard($id: Int!, $first: Int, $after: String, $order: LoyaltyPo
         }
     }
 }
-
 ```
 
 Variables:
@@ -686,7 +668,6 @@ Variables:
   "order": "Points",
   "seasonId": 1
 }
-
 ```
 
 Response:
@@ -749,12 +730,12 @@ Response:
     }
   }
 }
-
 ```
 
-### Distribute loyalty points[](#distribute-loyalty-points "Direct link to heading")
+### Distribute loyalty points
 
-Prerequisite: generate an access token
+Prerequisite:
+generate an access token
 
 ```graphql
 mutation UpdateAccessToken($input: UpdateAccessTokenInput!) {
@@ -762,7 +743,6 @@ mutation UpdateAccessToken($input: UpdateAccessTokenInput!) {
     accessToken
   }
 }
-
 ```
 
 ```json
@@ -771,7 +751,6 @@ mutation UpdateAccessToken($input: UpdateAccessTokenInput!) {
     "address": "0x39b36ff83b60eb54d71758cffa3ab17d2d0b216c"
   }
 }
-
 ```
 
 ```json
@@ -782,18 +761,16 @@ mutation UpdateAccessToken($input: UpdateAccessTokenInput!) {
         }
     }
 }
-
 ```
 
 Task Creation
 
 Header:
 
-```
+```json
 {
   "accessToken": "your-access-token"
 }
-
 ```
 
 Request:
@@ -819,12 +796,11 @@ mutation createTask {
     startTime
   }
 }
-
 ```
 
 Response
 
-```json
+```graphql
 {
   "data": {
     "createTailoredTask": {
@@ -839,18 +815,16 @@ Response
     }
   }
 }
-
 ```
 
 Task Modification
 
 Header:
 
-```
+```json
 {
   "accessToken": "your-access-token"
 }
-
 ```
 
 Request:
@@ -867,38 +841,34 @@ mutation updateTask {
     startTime: 0
   })
 }
-
 ```
 
 Response:
 
-```json
+```graphql
 {
   "data": {
     "updateTailoredTask": true
   }
 }
-
 ```
 
 Task Deletion
 
 Header:
 
-```
+```json
 {
   "accessToken": "your-access-token"
 }
-
 ```
 
 Request:
 
-```
+```graphql
 mutation deleteTask {
   deleteTailoredTask(id: 26)
 }
-
 ```
 
 Distributing Points via API
@@ -911,31 +881,28 @@ mutation {
       id: 25,
       addresses:["0x447D24B00937BCc3fE5768c828fb2fae52c3e8C5", "0xaC1F963Ed7454d0D3295786E4Bcc47B961918C63"])
 }
-
 ```
 
 Response:
 
-```json
+```graphql
 {
   "data": {
     "claimTailoredTaskLoyaltyPoints": true
   }
 }
-
 ```
 
-## Credential[](#credential "Direct link to heading")
+## Credential
 
-### Query credential items[](#query-credential-items "Direct link to heading")
+### Query credential items
 
 Header:
 
-```
+```json
 {
   "accessToken": "your-access-token"
 }
-
 ```
 
 ```graphql
@@ -953,19 +920,19 @@ query CredItems($id: ID!, $first: Int, $after: String, $searchString: String) {
     }
   }
 }
-
 ```
 
 example variables:
 
 ```
 {id: "2544", first: 500, after: ""}
-
 ```
 
-## User[](#user "Direct link to heading")
+# Open Access:
 
-### Query profile and credential[](#query-profile-and-credential "Direct link to heading")
+## User
+
+### Query profile and credential
 
 ```graphql
 query ProfileCredentials($address: String!, $first: Int, $after: String) {
@@ -983,12 +950,11 @@ query ProfileCredentials($address: String!, $first: Int, $after: String) {
     }
   }
 }
-
 ```
 
-## Credential[](#credential-1 "Direct link to heading")
+## Credential
 
-### Get credential value[](#get-credential-value "Direct link to heading")
+### Get credential value
 
 Depends on `credSource`, metadata field should use corresponding field.
 
@@ -1040,20 +1006,19 @@ query credential($id: ID!, $eligibleAddress: String!) {
     }
   }
 }
-
 ```
 
-## Campaign[](#campaign-1 "Direct link to heading")
+## Campaign
 
-### Query campaign participants[](#query-campaign-participants-1 "Direct link to heading")
+### Query campaign participants
 
 Arguments:
 
 | Name                                                                     | Type                                                        | Description       |
 | ------------------------------------------------------------------------ | ----------------------------------------------------------- | ----------------- |
-| [id](/developer/graphql-api/references/queries/campaign)                 | [ID!](/developer/graphql-api/references/scalars/id)         | Campaign hash id. |
-| [pfirst](/developer/graphql-api/references/objects/campaign-participant) | [Int!](/developer/graphql-api/references/scalars/int)       | Query limit.      |
-| [pafter](/developer/graphql-api/references/objects/campaign-participant) | [String!](/developer/graphql-api/references/scalars/string) | Query offset.     |
+| [`id`](../5-graphql-api/references/queries/campaign.mdx)                 | [`ID!`](../5-graphql-api/references/scalars/id.mdx)         | Campaign hash id. |
+| [`pfirst`](../5-graphql-api/references/objects/campaign-participant.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.      |
+| [`pafter`](../5-graphql-api/references/objects/campaign-participant.mdx) | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.     |
 
 Request:
 
@@ -1080,18 +1045,16 @@ query campaignParticipants($id: ID!, $pfirst: Int!, $pafter: String!) {
     }
   }
 }
-
 ```
 
 Variables:
 
-```
+```json
 {
   "id": "GCn45UjHXE",
   "pfirst": 1,
   "pafter": "-1"
 }
-
 ```
 
 Response:
@@ -1123,26 +1086,25 @@ Response:
     }
   }
 }
-
 ```
 
-## Space[](#space-1 "Direct link to heading")
+## Space
 
-### Query campaign list[](#query-campaign-list-1 "Direct link to heading")
+### Query campaign list
 
 Arguments:
 
 | Name                                                                 | Type                                                                               | Description             |
 | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------- |
-| [id](/developer/graphql-api/references/queries/space)                | [Int!](/developer/graphql-api/references/scalars/int)                              | Space id.               |
-| [alias](/developer/graphql-api/references/objects/space)             | [String!](/developer/graphql-api/references/scalars/string)                        | Space alias.            |
-| [campaignInput](/developer/graphql-api/references/queries/campaigns) | [ListCampaignInput!](/developer/graphql-api/references/inputs/list-campaign-input) | Campaigns query params. |
+| [`id`](../5-graphql-api/references/queries/space.mdx)                | [`Int!`](../5-graphql-api/references/scalars/int.mdx)                              | Space id.               |
+| [`alias`](../5-graphql-api/references/objects/space.mdx)             | [`String!`](../5-graphql-api/references/scalars/string.mdx)                        | Space alias.            |
+| [`campaignInput`](../5-graphql-api/references/queries/campaigns.mdx) | [`ListCampaignInput!`](../5-graphql-api/references/inputs/list-campaign-input.mdx) | Campaigns query params. |
 
 Request:
 
 args:
 
-campaigns:[CampaignConnection](/developer/graphql-api/references/objects/campaign-connection)
+campaigns:[`CampaignConnection`](../5-graphql-api/references/objects/campaign-connection.mdx)
 
 ```graphql
 query CampaignList($id: Int, $alias: String,  $campaignInput: ListCampaignInput!) {
@@ -1162,7 +1124,6 @@ query CampaignList($id: Int, $alias: String,  $campaignInput: ListCampaignInput!
         }
     }
 }
-
 ```
 
 Variables:
@@ -1203,7 +1164,6 @@ Variables:
     "searchString": null
   }
 }
-
 ```
 
 Response:
@@ -1234,22 +1194,21 @@ Response:
     }
   }
 }
-
 ```
 
-### Query leaderboard data[](#query-leaderboard-data-1 "Direct link to heading")
+### Query leaderboard data
 
-#### Overall[](#overall-1 "Direct link to heading")
+#### Overall
 
 Arguments:
 
 | Name                                                        | Type                                                        | Description                                       |
 | ----------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------- |
-| [id](/developer/graphql-api/references/queries/space)       | [Int!](/developer/graphql-api/references/scalars/int)       | Space id.                                         |
-| [first](/developer/graphql-api/references/objects/space)    | [Int!](/developer/graphql-api/references/scalars/int)       | Query limit.                                      |
-| [after](/developer/graphql-api/references/objects/space)    | [String!](/developer/graphql-api/references/scalars/string) | Query offset.                                     |
-| [order](/developer/graphql-api/references/objects/space)    | \[LoyaltyPointsRankOrder\]                                  | Sort by Points/GalxeID.                           |
-| [seasonId](/developer/graphql-api/references/objects/space) | [Int!](/developer/graphql-api/references/scalars/int)       | Query for season ranking. Overall ranking is null |
+| [`id`](../5-graphql-api/references/queries/space.mdx)       | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Space id.                                         |
+| [`first`](../5-graphql-api/references/objects/space.mdx)    | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.                                      |
+| [`after`](../5-graphql-api/references/objects/space.mdx)    | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.                                     |
+| [`order`](../5-graphql-api/references/objects/space.mdx)    | [`LoyaltyPointsRankOrder`]                                  | Sort by Points/GalxeID.                           |
+| [`seasonId`](../5-graphql-api/references/objects/space.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query for season ranking. Overall ranking is null |
 
 Request:
 
@@ -1288,7 +1247,6 @@ query SpaceLeaderboard($id: Int!, $first: Int, $after: String, $order: LoyaltyPo
         }
     }
 }
-
 ```
 
 Variables:
@@ -1301,7 +1259,6 @@ Variables:
   "order": "Points",
   "seasonId": null
 }
-
 ```
 
 Response:
@@ -1364,5 +1321,4 @@ Response:
     }
   }
 }
-
 ```

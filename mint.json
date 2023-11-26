@@ -57,7 +57,8 @@
       "group": "Applications",
       "pages": [
         "protocol/applications/galxe-id",
-        "protocol/applications/galxe-passport"
+        "protocol/applications/galxe-passport",
+        "protocol/applications/web3-score"
       ]
     },
     {

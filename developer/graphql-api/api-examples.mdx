@@ -3,7 +3,6 @@ title: "Examples"
 description: "For more information on our GraphQL endpoint, please refer to [this doc](/developer/graphql-api/overview)."
 ---
 
-
 # Space Access:
 
 ## Campaign
@@ -12,11 +11,11 @@ description: "For more information on our GraphQL endpoint, please refer to [thi
 
 Arguments:
 
-| Name                                                                     | Type                                                        | Description       |
-| ------------------------------------------------------------------------ | ----------------------------------------------------------- | ----------------- |
-| [`id`](../5-graphql-api/references/queries/campaign.mdx)                 | [`ID!`](../5-graphql-api/references/scalars/id.mdx)         | Campaign hash id. |
-| [`pfirst`](../5-graphql-api/references/objects/campaign-participant.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.      |
-| [`pafter`](../5-graphql-api/references/objects/campaign-participant.mdx) | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.     |
+| Name     | Description       |
+| -------- | ----------------- |
+| `id`     | Campaign hash id. |
+| `pfirst` | Query limit.      |
+| `pafter` | Query offset.     |
 
 Request:
 
@@ -90,19 +89,19 @@ Response:
 
 Arguments:
 
-| Name                                                                           | Type                                                        | Description       |
-| ------------------------------------------------------------------------------ | ----------------------------------------------------------- | ----------------- |
-| [`id`](../5-graphql-api/references/queries/address-info.mdx)                   | [`ID!`](../5-graphql-api/references/scalars/id.mdx)         | Campaign hash id. |
-| [`block`](../5-graphql-api/references/objects/campaign-nftholder-snapshot.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Chain block.      |
-| [`first`](../5-graphql-api/references/objects/campaign-nftholder-snapshot.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.      |
-| [`after`](../5-graphql-api/references/objects/campaign-nftholder-snapshot.mdx) | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.     |
+| Name    | Description       |
+| ------- | ----------------- |
+| `id`    | Campaign hash id. |
+| `block` | Chain block.      |
+| `first` | Query limit.      |
+| `after` | Query offset.     |
 
 Request:
 
 ```graphql
 query NFTHolders($id: ID!, $block: Int!, $first: Int!, $after: String!) {
   campaign(id: $id) {
-    nftHolderSnapshot{
+    nftHolderSnapshot {
       holders(block: $block, first: $first, after: $after) {
         list {
           id
@@ -180,9 +179,9 @@ Response:
 
 Arguments:
 
-| Name                                                          | Type                                                                                   | Description       |
-| ------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------- |
-| [`input`](../5-graphql-api/references/mutations/campaign.mdx) | [`MutateCampaignInput!`](../5-graphql-api/references/inputs/mutate-campaign-input.mdx) | Campaign hash id. |
+| Name    | Description       |
+| ------- | ----------------- |
+| `input` | Campaign hash id. |
 
 Request:
 
@@ -281,15 +280,17 @@ Request:
 
 ```graphql
 mutation claim {
-  prepareParticipate(input: {
-    signature:  ""            # keep empty
-    campaignID: "{{campaignHashID}}" # campaign hash id
-    address:    "{{userAddr}}"  # user address
-  }) {
-    allow              # Is allow user claim nft
-    disallowReason     # Disallow reason
+  prepareParticipate(
+    input: {
+      signature: "" # keep empty
+      campaignID: "{{campaignHashID}}" # campaign hash id
+      address: "{{userAddr}}" # user address
+    }
+  ) {
+    allow # Is allow user claim nft
+    disallowReason # Disallow reason
   }
-} 
+}
 ```
 
 Response:
@@ -311,33 +312,35 @@ Response:
 
 Arguments:
 
-| Name                                                                 | Type                                                                               | Description             |
-| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------- |
-| [`id`](../5-graphql-api/references/queries/space.mdx)                | [`Int!`](../5-graphql-api/references/scalars/int.mdx)                              | Space id.               |
-| [`alias`](../5-graphql-api/references/objects/space.mdx)             | [`String!`](../5-graphql-api/references/scalars/string.mdx)                        | Space alias.            |
-| [`campaignInput`](../5-graphql-api/references/queries/campaigns.mdx) | [`ListCampaignInput!`](../5-graphql-api/references/inputs/list-campaign-input.mdx) | Campaigns query params. |
+| Name            | Description             |
+| --------------- | ----------------------- |
+| `id`            | Space id.               |
+| `alias`         | Space alias.            |
+| `campaignInput` | Campaigns query params. |
 
 Request:
 
-args:campaigns:[`CampaignConnection`](../5-graphql-api/references/objects/campaign-connection.mdx)
-
 ```graphql
-query CampaignList($id: Int, $alias: String,  $campaignInput: ListCampaignInput!) {
-    space(id: $id, alias: $alias) {
+query CampaignList(
+  $id: Int
+  $alias: String
+  $campaignInput: ListCampaignInput!
+) {
+  space(id: $id, alias: $alias) {
+    id
+    name
+    alias
+    campaigns(input: $campaignInput) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      list {
         id
         name
-        alias
-        campaigns(input: $campaignInput) {
-            pageInfo {
-                endCursor
-                hasNextPage
-            }
-            list {
-                id
-                name
-            }
-        }
+      }
     }
+  }
 }
 ```
 
@@ -415,11 +418,11 @@ Response:
 
 Arguments:
 
-| Name                                                          | Type                                                        | Description       |
-| ------------------------------------------------------------- | ----------------------------------------------------------- | ----------------- |
-| [`address`](../5-graphql-api/references/queries/nft-core.mdx) | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Contract address. |
-| [`first`](../5-graphql-api/references/objects/nftcore.mdx)    | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.      |
-| [`after`](../5-graphql-api/references/objects/nftcore.mdx)    | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.     |
+| Name      | Description       |
+| --------- | ----------------- |
+| `address` | Contract address. |
+| `first`   | Query limit.      |
+| `after`   | Query offset.     |
 
 Request:
 
@@ -486,50 +489,61 @@ Response:
 
 Arguments:
 
-| Name                                                        | Type                                                        | Description                                       |
-| ----------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------- |
-| [`id`](../5-graphql-api/references/queries/space.mdx)       | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Space id.                                         |
-| [`first`](../5-graphql-api/references/objects/space.mdx)    | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.                                      |
-| [`after`](../5-graphql-api/references/objects/space.mdx)    | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.                                     |
-| [`order`](../5-graphql-api/references/objects/space.mdx)    | [`LoyaltyPointsRankOrder`]                                  | Sort by Points/GalxeID.                           |
-| [`seasonId`](../5-graphql-api/references/objects/space.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query for season ranking. Overall ranking is null |
+| Name       | Description                                       |
+| ---------- | ------------------------------------------------- |
+| `id`       | Space id.                                         |
+| `first`    | Query limit.                                      |
+| `after`    | Query offset.                                     |
+| `order`    | Sort by Points/GalxeID.                           |
+| `seasonId` | Query for season ranking. Overall ranking is null |
 
 Request:
 
 ```graphql
-query SpaceLeaderboard($id: Int!, $first: Int, $after: String, $order: LoyaltyPointsRankOrder, $seasonId: Int) {
-    space(id: $id) {
+query SpaceLeaderboard(
+  $id: Int!
+  $first: Int
+  $after: String
+  $order: LoyaltyPointsRankOrder
+  $seasonId: Int
+) {
+  space(id: $id) {
+    id
+    name
+    loyaltyPointsRanks(
+      first: $first
+      after: $after
+      order: $order
+      sprintId: $seasonId
+    ) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      totalCount
+      list {
         id
-        name
-        loyaltyPointsRanks(first: $first, after: $after, order: $order, sprintId: $seasonId) {
-            pageInfo {
-                startCursor
-                endCursor
-                hasNextPage
-                hasPreviousPage
-            }
-            totalCount
-            list {
-                id
-                rank
-                points
-                space {
-                    name
-                }
-                address {
-                    username
-                    id
-                    avatar
-                    address
-                    solanaAddress
-                    aptosAddress
-                    seiAddress
-                    twitterUserName
-                    discordUserName
-                }
-            }
+        rank
+        points
+        space {
+          name
         }
+        address {
+          username
+          id
+          avatar
+          address
+          solanaAddress
+          aptosAddress
+          seiAddress
+          twitterUserName
+          discordUserName
+        }
+      }
     }
+  }
 }
 ```
 
@@ -567,7 +581,7 @@ Response:
             "rank": 1,
             "points": 300,
             "space": {
-              "name": "BNB Chain",
+              "name": "BNB Chain"
             },
             "address": {
               "username": "HansaMR",
@@ -586,7 +600,7 @@ Response:
             "rank": 1,
             "points": 300,
             "space": {
-              "name": "BNB Chain",
+              "name": "BNB Chain"
             },
             "address": {
               "username": "barossafeed",
@@ -611,50 +625,61 @@ Response:
 
 Arguments:
 
-| Name                                                        | Type                                                        | Description               |
-| ----------------------------------------------------------- | ----------------------------------------------------------- | ------------------------- |
-| [`id`](../5-graphql-api/references/queries/space.mdx)       | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Space id.                 |
-| [`first`](../5-graphql-api/references/objects/space.mdx)    | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.              |
-| [`after`](../5-graphql-api/references/objects/space.mdx)    | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.             |
-| [`order`](../5-graphql-api/references/objects/space.mdx)    | [`LoyaltyPointsRankOrder`]                                  | Sort by Points/GalxeID.   |
-| [`seasonId`](../5-graphql-api/references/objects/space.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query for season ranking. |
+| Name       | Description               |
+| ---------- | ------------------------- |
+| `id`       | Space id.                 |
+| `first`    | Query limit.              |
+| `after`    | Query offset.             |
+| `order`    | Sort by Points/GalxeID.   |
+| `seasonId` | Query for season ranking. |
 
 Request:
 
 ```graphql
-query SpaceLeaderboard($id: Int!, $first: Int, $after: String, $order: LoyaltyPointsRankOrder, $seasonId: Int) {
-    space(id: $id) {
+query SpaceLeaderboard(
+  $id: Int!
+  $first: Int
+  $after: String
+  $order: LoyaltyPointsRankOrder
+  $seasonId: Int
+) {
+  space(id: $id) {
+    id
+    name
+    loyaltyPointsRanks(
+      first: $first
+      after: $after
+      order: $order
+      sprintId: $seasonId
+    ) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      totalCount
+      list {
         id
-        name
-        loyaltyPointsRanks(first: $first, after: $after, order: $order, sprintId: $seasonId) {
-            pageInfo {
-                startCursor
-                endCursor
-                hasNextPage
-                hasPreviousPage
-            }
-            totalCount
-            list {
-                id
-                rank
-                points
-                space {
-                    name
-                }
-                address {
-                    username
-                    id
-                    avatar
-                    address
-                    solanaAddress
-                    aptosAddress
-                    seiAddress
-                    twitterUserName
-                    discordUserName
-                }
-            }
+        rank
+        points
+        space {
+          name
         }
+        address {
+          username
+          id
+          avatar
+          address
+          solanaAddress
+          aptosAddress
+          seiAddress
+          twitterUserName
+          discordUserName
+        }
+      }
     }
+  }
 }
 ```
 
@@ -692,7 +717,7 @@ Response:
             "rank": 1,
             "points": 300,
             "space": {
-              "name": "BNB Chain",
+              "name": "BNB Chain"
             },
             "address": {
               "username": "HansaMR",
@@ -711,7 +736,7 @@ Response:
             "rank": 1,
             "points": 300,
             "space": {
-              "name": "BNB Chain",
+              "name": "BNB Chain"
             },
             "address": {
               "username": "barossafeed",
@@ -755,11 +780,11 @@ mutation UpdateAccessToken($input: UpdateAccessTokenInput!) {
 
 ```json
 {
-    "data": {
-        "updateAccessToken": {
-            "accessToken": "your-access-token"
-        }
+  "data": {
+    "updateAccessToken": {
+      "accessToken": "your-access-token"
     }
+  }
 }
 ```
 
@@ -777,15 +802,17 @@ Request:
 
 ```graphql
 mutation createTask {
-  createTailoredTask(input: {
-    title: "Connect to Galxe"
-    description: "A user who connected to Galxe.com"
-    link: "your_link"
-    spaceId: 2
-    tag: Once
-    points: 10
-    startTime: 0
-  }) {
+  createTailoredTask(
+    input: {
+      title: "Connect to Galxe"
+      description: "A user who connected to Galxe.com"
+      link: "your_link"
+      spaceId: 2
+      tag: Once
+      points: 10
+      startTime: 0
+    }
+  ) {
     id
     title
     description
@@ -831,15 +858,17 @@ Request:
 
 ```graphql
 mutation updateTask {
-  updateTailoredTask(input: {
-    id: 26
-    title: "update task title"
-    description: "desc"
-    link: "your_link",
-    points: 10
-    tag: Once,
-    startTime: 0
-  })
+  updateTailoredTask(
+    input: {
+      id: 26
+      title: "update task title"
+      description: "desc"
+      link: "your_link"
+      points: 10
+      tag: Once
+      startTime: 0
+    }
+  )
 }
 ```
 
@@ -878,8 +907,12 @@ Request:
 ```graphql
 mutation {
   claimTailoredTaskLoyaltyPoints(
-      id: 25,
-      addresses:["0x447D24B00937BCc3fE5768c828fb2fae52c3e8C5", "0xaC1F963Ed7454d0D3295786E4Bcc47B961918C63"])
+    id: 25
+    addresses: [
+      "0x447D24B00937BCc3fE5768c828fb2fae52c3e8C5"
+      "0xaC1F963Ed7454d0D3295786E4Bcc47B961918C63"
+    ]
+  )
 }
 ```
 
@@ -1014,11 +1047,11 @@ query credential($id: ID!, $eligibleAddress: String!) {
 
 Arguments:
 
-| Name                                                                     | Type                                                        | Description       |
-| ------------------------------------------------------------------------ | ----------------------------------------------------------- | ----------------- |
-| [`id`](../5-graphql-api/references/queries/campaign.mdx)                 | [`ID!`](../5-graphql-api/references/scalars/id.mdx)         | Campaign hash id. |
-| [`pfirst`](../5-graphql-api/references/objects/campaign-participant.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.      |
-| [`pafter`](../5-graphql-api/references/objects/campaign-participant.mdx) | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.     |
+| Name     | Description       |
+| -------- | ----------------- |
+| `id`     | Campaign hash id. |
+| `pfirst` | Query limit.      |
+| `pafter` | Query offset.     |
 
 Request:
 
@@ -1094,35 +1127,35 @@ Response:
 
 Arguments:
 
-| Name                                                                 | Type                                                                               | Description             |
-| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------- |
-| [`id`](../5-graphql-api/references/queries/space.mdx)                | [`Int!`](../5-graphql-api/references/scalars/int.mdx)                              | Space id.               |
-| [`alias`](../5-graphql-api/references/objects/space.mdx)             | [`String!`](../5-graphql-api/references/scalars/string.mdx)                        | Space alias.            |
-| [`campaignInput`](../5-graphql-api/references/queries/campaigns.mdx) | [`ListCampaignInput!`](../5-graphql-api/references/inputs/list-campaign-input.mdx) | Campaigns query params. |
+| Name            | Description             |
+| --------------- | ----------------------- |
+| `id`            | Space id.               |
+| `alias`         | Space alias.            |
+| `campaignInput` | Campaigns query params. |
 
 Request:
 
-args:
-
-campaigns:[`CampaignConnection`](../5-graphql-api/references/objects/campaign-connection.mdx)
-
 ```graphql
-query CampaignList($id: Int, $alias: String,  $campaignInput: ListCampaignInput!) {
-    space(id: $id, alias: $alias) {
+query CampaignList(
+  $id: Int
+  $alias: String
+  $campaignInput: ListCampaignInput!
+) {
+  space(id: $id, alias: $alias) {
+    id
+    name
+    alias
+    campaigns(input: $campaignInput) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      list {
         id
         name
-        alias
-        campaigns(input: $campaignInput) {
-            pageInfo {
-                endCursor
-                hasNextPage
-            }
-            list {
-                id
-                name
-            }
-        }
+      }
     }
+  }
 }
 ```
 
@@ -1202,50 +1235,61 @@ Response:
 
 Arguments:
 
-| Name                                                        | Type                                                        | Description                                       |
-| ----------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------- |
-| [`id`](../5-graphql-api/references/queries/space.mdx)       | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Space id.                                         |
-| [`first`](../5-graphql-api/references/objects/space.mdx)    | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query limit.                                      |
-| [`after`](../5-graphql-api/references/objects/space.mdx)    | [`String!`](../5-graphql-api/references/scalars/string.mdx) | Query offset.                                     |
-| [`order`](../5-graphql-api/references/objects/space.mdx)    | [`LoyaltyPointsRankOrder`]                                  | Sort by Points/GalxeID.                           |
-| [`seasonId`](../5-graphql-api/references/objects/space.mdx) | [`Int!`](../5-graphql-api/references/scalars/int.mdx)       | Query for season ranking. Overall ranking is null |
+| Name       | Description                                       |
+| ---------- | ------------------------------------------------- |
+| `id`       | Space id.                                         |
+| `first`    | Query limit.                                      |
+| `after`    | Query offset.                                     |
+| `order`    | Sort by Points/GalxeID.                           |
+| `seasonId` | Query for season ranking. Overall ranking is null |
 
 Request:
 
 ```graphql
-query SpaceLeaderboard($id: Int!, $first: Int, $after: String, $order: LoyaltyPointsRankOrder, $seasonId: Int) {
-    space(id: $id) {
+query SpaceLeaderboard(
+  $id: Int!
+  $first: Int
+  $after: String
+  $order: LoyaltyPointsRankOrder
+  $seasonId: Int
+) {
+  space(id: $id) {
+    id
+    name
+    loyaltyPointsRanks(
+      first: $first
+      after: $after
+      order: $order
+      sprintId: $seasonId
+    ) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      totalCount
+      list {
         id
-        name
-        loyaltyPointsRanks(first: $first, after: $after, order: $order, sprintId: $seasonId) {
-            pageInfo {
-                startCursor
-                endCursor
-                hasNextPage
-                hasPreviousPage
-            }
-            totalCount
-            list {
-                id
-                rank
-                points
-                space {
-                    name
-                }
-                address {
-                    username
-                    id
-                    avatar
-                    address
-                    solanaAddress
-                    aptosAddress
-                    seiAddress
-                    twitterUserName
-                    discordUserName
-                }
-            }
+        rank
+        points
+        space {
+          name
         }
+        address {
+          username
+          id
+          avatar
+          address
+          solanaAddress
+          aptosAddress
+          seiAddress
+          twitterUserName
+          discordUserName
+        }
+      }
     }
+  }
 }
 ```
 
@@ -1283,7 +1327,7 @@ Response:
             "rank": 1,
             "points": 300,
             "space": {
-              "name": "BNB Chain",
+              "name": "BNB Chain"
             },
             "address": {
               "username": "HansaMR",
@@ -1302,7 +1346,7 @@ Response:
             "rank": 1,
             "points": 300,
             "space": {
-              "name": "BNB Chain",
+              "name": "BNB Chain"
             },
             "address": {
               "username": "barossafeed",

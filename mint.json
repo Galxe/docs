@@ -1,7 +1,7 @@
 {
   "name": "Galxe Docs",
   "logo": {
-    "light": <img style={{height: "1.15rem"}} src="/logo/light.png" />,
+    "light": "<img style={{height: "1.15rem"}} src="/logo/light.png" />",
     "dark": "/logo/dark.png"
   },
   "favicon": "/favicon.svg",

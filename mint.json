@@ -48,10 +48,7 @@
   "navigation": [
     {
       "group": "Protocol Overview",
-      "pages": [
-        "protocol/introduction",
-        "protocol/overview/whitepaper"
-      ]
+      "pages": ["protocol/introduction", "protocol/overview/whitepaper"]
     },
     {
       "group": "Applications",
@@ -691,5 +688,43 @@
     "twitter": "https://twitter.com/Galxe",
     "github": "https://github.com/galxe",
     "linkedin": "https://www.linkedin.com/company/galxe/"
-  }
+  },
+  "redirects": [
+    {
+      "destination": "/developer",
+      "source": "/developer/getting-started/showcase"
+    },
+    {
+      "destination": "/developer",
+      "source": "/developer/getting-started/support-and-feedback"
+    },
+    {
+      "destination": "/developer/galxe-id-integration/galxe-id-oauth",
+      "source": "/developer/integration/galxe-id-sdk"
+    },
+    {
+      "destination": "/developer/smart-contract/audit",
+      "source": "/developer/security/audit"
+    },
+    {
+      "destination": "/developer/credential-api/api-cred-items-update",
+      "source": "/developer/guide/api-cred-items-update"
+    },
+    {
+      "destination": "/developer/credential-api/subgraph-cred",
+      "source": "/developer/guide/subgraph-cred"
+    },
+    {
+      "destination": "/developer/credential-api/rest-cred",
+      "source": "/developer/guide/rest-cred"
+    },
+    {
+      "destination": "/developer/graphql-api/claim-integrate",
+      "source": "/developer/guide/claim-integrate"
+    },
+    {
+      "destination": "/developer/graphql-api/claim-galxe-nft",
+      "source": "/developer/guide/claim-galxe-nft"
+    }
+  ]
 }

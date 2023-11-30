@@ -64,6 +64,7 @@
     {
       "group": "GAL",
       "pages": [
+        "protocol/gal/dao",
         "protocol/gal/tokenomics",
         "protocol/gal/early-adopter-rewards-2022"
       ]

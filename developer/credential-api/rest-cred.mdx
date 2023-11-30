@@ -23,9 +23,13 @@ We support GET and POST method:
 
 To check if it is compliant, you can use cURL:
 ```
-// for GET
-curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: GET' -H 'Origin: https://galxe.com' '$YOUR_URL_HERE$'
-// for POST
+// For GET
+// NOTE: no address will be replaced in this request. For example if the endpoint is
+// https://xxx.com/check?address=$address, the request will be sent to exacly this URL when we check
+// CORS, instead of with some addresses like https//:xxx.com/check?address=0x123...
+curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: GET' -H 'Origin: https://galxe.com' '$END_POINT_URL_WITHOUT_ADDRESS_REPLACED$'
+
+// For POST
 curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: POST' -H 'Origin: https://galxe.com' '$YOUR_URL_HERE$'
 
 // Example of a correct query and response

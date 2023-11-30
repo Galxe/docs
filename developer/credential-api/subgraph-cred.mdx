@@ -22,6 +22,8 @@ It's the HTTPs endpoint where Subgraph queries go to, see the example below.
 
 **For security reasons, you must add _[https://galxe.com](https://galxe.com)_ to the API server's [`Access-Control-Allow-Origin`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) header to avoid [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) issues. Please note that you will also need to set the `access-control-allow-methods`, as if we are sending a preflight request. We will perform a [CORS check](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#preflighted%5Frequests%5Fin%5Fcors) during the creation process, and if it's not included, the creation will fail.**
 
+Please note that when we check the endpoint, we *always* send a preflight request, **ignoring the so-called [simple_requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests) convention**, for security reasons. You might see that your configuration works ok when clicking test button in our app, but later failed to save. We always encourage you to use the following cURL command to check if the endpoint is compliant.
+
 To check if it is compliant, you can use cURL:
 ```
 // for GraphQL

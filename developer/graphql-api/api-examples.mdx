@@ -1237,11 +1237,11 @@ Arguments:
 
 | Name       | Description                                       |
 | ---------- | ------------------------------------------------- |
-| `id`       | Space id.                                         |
-| `first`    | Query limit.                                      |
-| `after`    | Query offset.                                     |
-| `order`    | Sort by Points/GalxeID.                           |
-| `seasonId` | Query for season ranking. Overall ranking is null |
+| `id`                   | Space id.                                         |
+| `order`                | Sort by Points/GalxeID.                           |
+| `seasonId`             | Query for season ranking. Overall ranking is null |
+| `cursorAfter` String   | You don't need to pass in this value on the first page. On the second page, you can start passing in the `endCursor` value returned by the first page.                               |
+| `sprintId` Int         | The id value of the Session can access the data of the specified Session.                               |
 
 Request:
 
@@ -1273,19 +1273,11 @@ query SpaceLeaderboard(
         id
         rank
         points
-        space {
-          name
-        }
         address {
           username
           id
           avatar
           address
-          solanaAddress
-          aptosAddress
-          seiAddress
-          twitterUserName
-          discordUserName
         }
       }
     }
@@ -1297,7 +1289,7 @@ Variables:
 
 ```json
 {
-  "id": 40,
+  "id": xx,
   "first": 2,
   "after": "-1",
   "order": "Points",
@@ -1311,57 +1303,83 @@ Response:
 {
   "data": {
     "space": {
-      "id": "40",
-      "name": "BNB Chain",
+      "id": "xx",
+      "name": "xx",
       "loyaltyPointsRanks": {
         "pageInfo": {
-          "startCursor": "0",
-          "endCursor": "2",
+          "startCursor": "xxxx",
+          "endCursor": "xxxx",
           "hasNextPage": true,
           "hasPreviousPage": false
         },
-        "totalCount": 183473,
-        "list": [
+        "totalCount": 100,
+        "edges": [
           {
-            "id": "lbrank-0L1xIfY6d1VYrlKAFOmZvT-40",
-            "rank": 1,
-            "points": 300,
-            "space": {
-              "name": "BNB Chain"
-            },
-            "address": {
-              "username": "HansaMR",
-              "id": "0L1xIfY6d1VYrlKAFOmZvT",
-              "avatar": "https://source.boringavatars.com/marble/120/0x61e305B027482358eCda2e7A56a150E0593e5cdA",
-              "address": "0x61e305b027482358ecda2e7a56a150e0593e5cda",
-              "solanaAddress": "",
-              "aptosAddress": "",
-              "seiAddress": "",
-              "twitterUserName": "",
-              "discordUserName": ""
+            "node": {
+              "id": "xxx",
+              "rank": 1,
+              "points": 65,
+              "address": {
+                "username": "xx",
+                "id": "xxx",
+                "avatar": "xxx",
+                "address": "xxxx"
+              }
             }
           },
-          {
-            "id": "lbrank-1L3UPNocTIIJid0tRIszgV-40",
-            "rank": 1,
-            "points": 300,
-            "space": {
-              "name": "BNB Chain"
-            },
-            "address": {
-              "username": "barossafeed",
-              "id": "1L3UPNocTIIJid0tRIszgV",
-              "avatar": "https://d257b89266utxb.cloudfront.net/galaxy/images/avatar/0xc3b8e4fedb31c756fae84e0c65475dcbb6ffd308-1670560267167156585.png",
-              "address": "0xc3b8e4fedb31c756fae84e0c65475dcbb6ffd308",
-              "solanaAddress": "",
-              "aptosAddress": "",
-              "seiAddress": "",
-              "twitterUserName": "",
-              "discordUserName": ""
-            }
-          }
+          ...
         ]
       }
+    }
+  }
+}
+```
+### Query leaderboard data for one address
+
+Arguments:
+
+| Name       | Description                                       |
+| ---------- | ------------------------------------------------- |
+| `id`       | Space id.                                         |
+| `seasonId` | Query for season ranking. Overall ranking is null |
+
+Request:
+
+```graphql
+query SpaceLoyaltyPoints($id: Int, $address: String!, $seasonId: Int) {
+  space(id: $id) {
+    id
+    addressLoyaltyPoints(address: $address, sprintId: $seasonId) {
+      id
+      points
+      rank
+    }
+  }
+}
+```
+
+Variables:
+
+```json
+{
+  "id": xx,
+  "address": "xxxxx",
+  "seasonId": null
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "space": {
+      "id": "xx",
+      "addressLoyaltyPoints": {
+        "id": "sa-lb-xxx-xx",
+        "points": 15,
+        "rank": 10064,
+      },
     }
   }
 }

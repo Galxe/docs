@@ -1,0 +1,91 @@
+---
+title: "Overview"
+description: ""
+---
+
+Github: https://github.com/Galxe/protocol-contracts
+
+Smart contracts in the protocol serve two primary functions:
+
+**Metadata Storage:**
+
+- Issuer details
+- Type definitions
+- Context
+- Verification keys
+- Status of revocable credentials
+- Trust schemas
+
+**On-chain Verification:**
+
+- Verifier
+- zkOAT (zero-knowledge On-chain Achievement Token)
+
+The Galxe protocol is crafted to be chain-agnostic, with plans to deploy these smart contracts across various EVM-compatible chains, including Ethereum, BSC, Polygon, and several Layer 2 solutions.
+
+# Credential Type Registry
+
+Credential types must store related materials on-chain for reference during verification. These informations are immutable once published. Credential designers can utilize this contract to introduce new types into the Galxe protocol.
+
+**User input:**
+
+- Creator
+- Name
+- Definition in string format. For example, `age:uint<256>;wealth:uint<8>;name:prop<64,p>;followed:bool;`
+- Description
+
+**Derived:**
+
+- Type ID: a 160-bit unsigned integer derived from the lower 160 bits of keccak256 hash of the creator's address and type name.
+
+# Issuer registry
+
+This contract empowers issuers to register and authenticate their identities on-chain and manage the status of public keys and state of revocable credentials.
+
+**Issuer Metadata**:
+
+- **Issuer ID**: Crafted to be chain-agnostic and deterministic, the issuer's EVM address is directly adopted as their Issuer ID. For chains not based on EVM, addresses can still be utilized, albeit truncated to 160 bits.
+- **Name:** Issuer can specify their name.
+- **Identity Verification** (built in separate contracts):
+  - **DNSSEC**: Issuers can use DNSSEC records to validate their ownership of web2 domains.
+  - **GAL Staking**: Issuers can manifest their commitment by staking GAL tokens.
+  - **ENS/SpaceID & Other Bindings**: This facilitates the association of issuers with a web3 identity.
+
+**Issuer State**:
+
+- **Public Key Manager**: This contract caters to various verification stacks and is structured as a mapping from **`(issuer_id, verification_stack, key_id)`** to the key's status. The key ID is derived from the hash of the public key, with the hashing algorithm contingent on the selected verification stack. Key statuses are bifurcated into:
+  - **Active**: Denotes keys currently in use.
+  - **Revoked**: Signifies that all credentials signed with these keys are invalidated.
+- **Signature State Manager**: For credentials that can be revoked, this contract provision allows issuers to regulate the revocation status for each combination of credential type and context. This is achieved by uploading the hash root of the sparse merkle tree containing signature IDs of the revoked credentials. Issuers need to publish the whole tree to a permanent storage for holders to access.
+  - URI to the sparse merkle tree.
+  - Root hash.
+
+# Credential context registry
+
+A context is a string that, when paired with a credential type, forms a credential schema. This contract facilitates issuers in registering contexts, ensuring the meanings of credentials are publically accessible.
+
+- Issuers can introduce a new context by submitting a string to the contract. The Context ID is derived from the keccak256 hash of this string, truncated to the lower 248 bits.
+- Contexts are designed to be universal, instead of binded to a credential type. While it might seem unconventional to associate a boolean-typed credential with the context "Trading volume," we entrust this decision to the issuer.
+
+# Verifier(s)
+
+The Galxe protocol leverages zk-SNARK proofs, enabling affordable on-chain proof verification. For chains compatible with EVM, these proofs can be authenticated using the elliptic curve alt_bn128, as detailed in **[EIP-197](https://eips.ethereum.org/EIPS/eip-197)**. The modular architecture of the verification stack ensures that the specific zero-knowledge proof technology can be updated without necessitating modifications to the core protocol. A verification stack must implement `verifier` interface and only trust **credential type registry contract** for adding parameters of new types. Each verification stack has its own verifier.
+
+- Verifiers must implement the following interfaces,
+  - On-chain zk-SNARK Proof Verification: `function verifyProof(uint typeID, uint[] publicSignals, uint[] proof) public view returns (bool)`
+  - Verification key retrieval: `function getVerificationKey(uint typeID) public view returns (uint[])`
+  - Type update: `function setVerificationKey(uint typeID, uint[] verificationKey) external`
+- and the following security checks
+  - nullifier is not an alias, which mean that it is less than field modulus of BN254 curve.
+  - public input signals are within the valid range based on their types. These checks can make sure that
+    1. the signal value is not an alias,
+    2. the signal value is a positive value fall under its definition range, based on its width.
+
+# zkOAT NFT
+
+The zkOAT NFT collection is an ERC-721 contract, acting as a cache for the revealed data associated with the pseudonymous identity, which is the address owning the NFT. This data is aggregated during each proof verification. The proof must be generated by using an external nullifier which is `keccak256(type_id, context_id, issuer_id)`. The contract can be conceptualized as a decorator class, which proxies verification requests to the whitelisted `verifyProof` function of the chosen stack. Upon a successful return of `true`, an NFT is either minted or updated. The unique identifier for these NFTs is structured as a tuple: `(verifier, type, context, issuer, nullifier)`.
+
+For credentials that can be revoked, prior to utilizing this NFT, two verifications are essential:
+
+- The `block.timestamp` should be earlier than the revealed lower bound of the expiration date.
+- The result of `getRevokeRoot(issuer, type, context)` should match the verified hash. This hash corresponds to the root of the revocation Sparse Merkle Tree (SMT) used in the proof.

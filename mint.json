@@ -21,8 +21,7 @@
     "url": "https://app.galxe.com/support"
   },
   "primaryTab": {
-    "name": "Galxe Identity Protocol",
-    "url": "identity"
+    "name": "Galxe Identity Protocol"
   },
   "tabs": [
     {

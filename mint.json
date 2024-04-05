@@ -50,7 +50,7 @@
     {
       "name": "Legal",
       "icon": "window",
-      "pages": "about/legal/terms-of-service"
+      "url": "/about/legal/terms-of-service"
     }
   ],
   "navigation": [

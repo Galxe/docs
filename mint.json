@@ -680,39 +680,39 @@
   "redirects": [
     {
       "destination": "/developer",
-      "source": "/quest/getting-started/showcase"
+      "source": "/quest/introduction"
     },
     {
-      "destination": "/developer",
-      "source": "/quest/getting-started/support-and-feedback"
+      "destination": "/quest/guide/subgraph-cred",
+      "source": "/developer/guide/subgraph-cred"
     },
     {
-      "destination": "/quest/galxe-id-integration/galxe-id-oauth",
-      "source": "/quest/integration/galxe-id-sdk"
+      "destination": "/quest/integration/galxe-id-sdk",
+      "source": "/developer/galxe-id-integration/galxe-id-oauth"
     },
     {
       "destination": "/quest/smart-contract/audit",
-      "source": "/quest/security/audit"
+      "source": "/developer/security/audit"
     },
     {
       "destination": "/quest/credential-api/api-cred-items-update",
-      "source": "/quest/guide/api-cred-items-update"
+      "source": "/developer/guide/api-cred-items-update"
     },
     {
       "destination": "/quest/credential-api/subgraph-cred",
-      "source": "/quest/guide/subgraph-cred"
+      "source": "/developer/guide/subgraph-cred"
     },
     {
       "destination": "/quest/credential-api/rest-cred",
-      "source": "/quest/guide/rest-cred"
+      "source": "/developer/guide/rest-cred"
     },
     {
       "destination": "/quest/graphql-api/claim-integrate",
-      "source": "/quest/guide/claim-integrate"
+      "source": "/developer/guide/claim-integrate"
     },
     {
       "destination": "/quest/graphql-api/claim-galxe-nft",
-      "source": "/quest/guide/claim-galxe-nft"
+      "source": "/developer/guide/claim-galxe-nft"
     }
   ]
 }

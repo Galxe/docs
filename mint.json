@@ -679,8 +679,8 @@
   },
   "redirects": [
     {
-      "destination": "/developer",
-      "source": "/quest/introduction"
+      "destination": "/quest/introduction",
+      "source": "/developer"
     },
     {
       "destination": "/quest/guide/subgraph-cred",

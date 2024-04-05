@@ -675,7 +675,8 @@
   "footerSocials": {
     "twitter": "https://twitter.com/Galxe",
     "github": "https://github.com/galxe",
-    "linkedin": "https://www.linkedin.com/company/galxe/"
+    "linkedin": "https://www.linkedin.com/company/galxe/",
+    "telegram": "https://t.me/galxe"
   },
   "redirects": [
     {
@@ -683,11 +684,7 @@
       "source": "/developer"
     },
     {
-      "destination": "/quest/guide/subgraph-cred",
-      "source": "/developer/guide/subgraph-cred"
-    },
-    {
-      "destination": "/quest/integration/galxe-id-sdk",
+      "destination": "/galxe-id/galxe-id-integration/galxe-id-oauth",
       "source": "/developer/galxe-id-integration/galxe-id-oauth"
     },
     {

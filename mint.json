@@ -12,13 +12,13 @@
   },
   "topbarLinks": [
     {
-      "name": "Go to Galxe",
-      "url": "https://galxe.com"
+      "name": "Contact Support",
+      "url": "https://app.galxe.com/support"
     }
   ],
   "topbarCtaButton": {
-    "name": "Contact Support",
-    "url": "https://app.galxe.com/support"
+    "name": "Go to Galxe",
+    "url": "https://galxe.com"
   },
   "primaryTab": {
     "name": "Galxe Identity Protocol"
@@ -50,7 +50,7 @@
     {
       "name": "Legal",
       "icon": "window",
-      "url": "https://gal.xyz/legal"
+      "url": "about/legal/terms-of-service"
     }
   ],
   "navigation": [

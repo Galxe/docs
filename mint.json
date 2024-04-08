@@ -18,7 +18,7 @@
   ],
   "topbarCtaButton": {
     "name": "Go to Galxe",
-    "url": "https://galxe.com"
+    "url": "https://app.galxe.com"
   },
   "primaryTab": {
     "name": "Galxe Identity Protocol"
@@ -710,6 +710,10 @@
     {
       "destination": "/quest/graphql-api/claim-galxe-nft",
       "source": "/developer/guide/claim-galxe-nft"
+    },
+    {
+      "destination": "/quest/graphql-api/overview",
+      "source": "/developer/graphql-api/overview"
     }
   ]
 }

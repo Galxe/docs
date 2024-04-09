@@ -72,6 +72,24 @@
       "pages": ["quest/introduction"]
     },
     {
+      "group": "Credential API",
+      "pages": [
+        "quest/credential-api/api-cred-items-update",
+        "quest/credential-api/rest-cred",
+        "quest/credential-api/subgraph-cred"
+      ]
+    },
+    {
+      "group": "GraphQL API",
+      "pages": [
+        "quest/graphql-api/overview",
+        "quest/graphql-api/rate-limit",
+        "quest/graphql-api/api-examples",
+        "quest/graphql-api/claim-integrate",
+        "quest/graphql-api/claim-galxe-nft"
+      ]
+    },
+    {
       "group": "Smart Contract",
       "pages": [
         "quest/smart-contract/introduction",
@@ -86,26 +104,6 @@
         "quest/smart-contract/subgraph"
       ]
     },
-
-    {
-      "group": "Credential API",
-      "pages": [
-        "quest/credential-api/api-cred-items-update",
-        "quest/credential-api/rest-cred",
-        "quest/credential-api/subgraph-cred"
-      ]
-    },
-    {
-      "group": "Public GraphQL API",
-      "pages": [
-        "quest/graphql-api/overview",
-        "quest/graphql-api/rate-limit",
-        "quest/graphql-api/api-examples",
-        "quest/graphql-api/claim-integrate",
-        "quest/graphql-api/claim-galxe-nft"
-      ]
-    },
-
     {
       "group": "Getting Started",
       "pages": ["galxe-id/introduction"]

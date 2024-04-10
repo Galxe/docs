@@ -1,0 +1,25 @@
+The protocol incorporates four main roles, each contributing uniquely to the protocol's functioning. This section will give a brief introduction to their capabilities and responsibilities.
+
+### Holder
+
+The Holder role is the centerpiece of the whole ecosystem: the individual possessing verifiable credentials. Holders do not need to register anything on-chain and the ownership of a credential is controlled by identity commitments constructed from secrets that are only known by their holders. In the Galxe identity protocol, holders maintain total control over their digital identity by storing credentials in Galxe identity vault, an open-source application that runs on holders’ local devices, e.g. browser, and native applications. Holders use the vault to manage different identity commitments for different issuers, and generate zero-knowledge proofs for verification based on owned credentials. By using ZKP, holders have the ability to reveal only requisite data under a deterministic and pseudonymous identity.
+
+### Issuer
+
+Issuers create verifiable credentials to holders by using digital signatures to endorse claims about the holder. In our design, issuers do not need to know any extra information of a holder, except for the identity commitment, which can be considered as a random number. Any identity can issue non-revocable credentials to others without on-chain registration. However, for revocable credentials, issuers must be registered on-chain to manage credential validity by publishing the root hash of sparse merkle tree of revoked credentials. Moreover, public keys used for signing need to be registered on-chain to be linked to their issuers.
+
+Issuers can use auxiliary contracts, such as Domain Name System Security Extensions (DNSSEC) verification, email verification and GAL staking contracts to enhance their perceived trustworthiness and credibility. Verifiers can leverage these records for setting up a dynamic trust schema. For example, instead of trusting credentials signed by a specific key, verifiers can program a policy that trusts issuers with DNSSEC verification of a specific domain, with some specific corp email ownership, or issuers with enough GAL staking.
+
+Issuers must maintain a 1-to-1 mapping from users of the domain to identity commitments. The identity secret part can be changed with a zero-knowledge proof that ensures the internal nullifier remains the same.
+
+### Verifier
+
+The verifier is the role that has the least dependence with other roles of the ecosystem. They are usually applications of gated services, allowing access only if the identities meet some specific requirements, like bouncers at bars. To host a verification, verifiers need to pick issuers that they can trust via a programmable trust schema, and verification requirements of credentials to be checked. Verifiers can use the protocol SDK to generate verification requirements that holders can use for generating proofs. To verify a proof, verifiers need to fetch verification key based on the type of the credential from blockchain, and check revocation status if there is any proof of revocable credentials. For each verification, verifiers should use a unique external nullifier and keep tracking of used nullifiers to prevent double-spending.
+
+### Credential type designer
+
+Credential designers propose new types of credentials to the community, specified in a domain-specific language (DSL) of the protocol. These individuals, typically community contributors, actively participate in shaping the ecosystem of evolving needs and requirements, by introducing innovative and diverse credential types. With Galxe identity protocol SDK, designers turn the type specification written in DSL into automatically generated zero-knowledge proof circuits, smart contracts proposed. Depending on the verification stack, type designer may need to hold a decentralized trust set up ceremony and publish the proof key to permanent storages.
+
+Designers must also provide a detailed specification of in-depth description of the credential type, outlining its purpose, intended use cases, and the specific attributes and fields it contains. These specifications clarify the semantic meaning of each field, define any restrictions or requirements associated with the credential, and provide guidelines for issuing and verification. The specifications ensure a shared understanding among ecosystem participants regarding the purpose and usage of the proposed credential type.
+
+Although it is a permission-less process to introduce new types to the ecosystem, the protocol employs a governance framework to facilitate decision-making regarding inclusion of new credential types into official core types with long term support. The community, comprising users, developers, and other stakeholders, actively participates in the evaluation and acceptance process. Through transparent discussions and GAL voting mechanisms, the community collectively determines which proposed credential types are incorporated into the official type.

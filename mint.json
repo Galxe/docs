@@ -55,27 +55,45 @@
   ],
   "navigation": [
     {
-      "group": "Protocol Overview",
-      "pages": ["identity/introduction", "identity/overview/whitepaper"]
+      "group": "Getting Started",
+      "pages": ["identity/introduction", "identity/whitepaper"]
     },
     {
-      "group": "Contracts",
+      "group": "Introduction",
       "pages": [
-        "identity/contracts/overview",
-        "identity/contracts/context-registry",
-        "identity/contracts/issuer-registry",
-        "identity/contracts/type-registry",
-        "identity/contracts/stateful-verifier",
-        "identity/contracts/trust-schema-manager"
+        "identity/introduction/introduction",
+        "identity/introduction/overview",
+        "identity/introduction/concepts",
+        "identity/introduction/roles",
+        "identity/introduction/case-studies"
       ]
     },
     {
-      "group": "SDK",
-      "pages": ["identity/sdk/overview"]
+      "group": "Specification",
+      "pages": [
+        "identity/specification/overview",
+        "identity/specification/type-dsl",
+        "identity/specification/primitive-types",
+        "identity/specification/credential-format",
+        "identity/specification/technical-components",
+        "identity/specification/workflow"
+      ]
     },
     {
-      "group": "CLI",
-      "pages": ["identity/cli/install", "identity/cli/usage"]
+      "group": "Use Cases",
+      "pages": [
+        "identity/use-cases/examples"
+      ]
+    },
+    {
+      "group": "Future Works",
+      "pages": [
+        "identity/future-works/future-works"
+      ]
+    },
+    {
+      "group": "Resources",
+      "pages": ["identity/resources/cli", "identity/resources/contracts"]
     },
 
     {

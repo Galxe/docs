@@ -1,9 +1,0 @@
----
-title: "Credential context registry"
-description: ""
----
-
-A context is a string that, when paired with a credential type, forms a credential schema. This contract facilitates issuers in registering contexts, ensuring the meanings of credentials are publicly accessible.
-
-- Issuers can introduce a new context by submitting a string to the contract. The Context ID is derived from the keccak256 hash of this string, truncated to the lower 160 bits.
-- Contexts are designed to be universal, instead of binding to a credential type. While it might seem unconventional to associate a boolean-typed credential with the context "Trading volume," we entrust this decision to the issuer.

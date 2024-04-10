@@ -1,0 +1,19 @@
+In this section, we list some future works that we can think of.
+
+## Expanding to Mina ecosystem
+
+Because of the swift progression in zero-knowledge proof technology, there exists an opportunity to expand the Galxe identity protocol into more ecosystems. Within this realm, Mina emerges as a paramount option. It is equipped with a proof system that can also run in user’s local devices, especially in web browsers, thereby enabling the privacy-preserving proof generation and on-chain proof verifications on the Mina protocol. Additionally, this proof system is distinguished by numerous benefits, such as the ability for make recursive proofs and verifications, and the potential to support more universally recognized signature algorithms, for instance, ECDSA.
+
+Same as BabyZK, the verification can happen both off-chain (using SDK), and on-chain, by sending proofs to contracts on Mina protocol. Because that Mina protocol has native support for zero-knowledge verification, an gas-saving attestation design is considered to be redundant in this context. In another word, smart contracts on Mina protocol should be able to consume proofs directly with affordable gas.
+
+For issuers, when issuing the same credential for the same identity using different stacks, they must request a proof of same identity commitment from the owner, because the output of poseidon hash under different curves are different.
+
+## Verification stack: o1js
+
+- **Curve**: **[Pasta Curves](https://o1-labs.github.io/proof-systems/specs/pasta.html?highlight=curves#pasta-curves)**. All the following algorithms are using this curve.
+- **Hash**: Poseidon.
+- **Digest:** The digest is derived from the Poseidon hash of `poseidon(header, signature metadata)` and `poseidon(body)`. Initially, the header and signature metadata are cohesively hashed, according to the canonical sequence of header fields followed by signature metadata fields. Subsequently, the fields within the body are hashed in the type definition order. Finally we take the Poseidon hash of the two hash values.
+- **Signature**: EcDSA. Because EcDSA signature is not yet live on Mina mainnet (only available for zkApps), we may change the signature schema.
+- **Identity commitment schema:** a 2-input poseidon hash of curve of two fields: `identity secret` and `internal nullifier` , in this specified order.
+- **Circuit language**: o1js, a typescript-native SDK
+- **Proof system**: Kimchi

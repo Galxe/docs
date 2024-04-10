@@ -1,0 +1,56 @@
+---
+title: 'Type DSL'
+---
+
+Before we dive into the credential’s structure, it is crucial to introduce the concept of a credential type. To facilitate the use of ZK credentials without requiring deep dive into the underlying technology, we introduced a straightforward Domain-Specific Language (DSL). Credential type designers use this DSL to define credential types, outlining the expected claims, their respective types, and whether the credential can be revoked. A credential type is consist of a sequence of declarations of **_claims_** (also referred as **_fields_** in this paper). Like definition of struct in other programming languages, a declaration of claim has two components: an identifier and a type.
+
+Additionally, whether a credential can be revoked by its issuer is also specified by its type. By default, credential is non-revocable and its validity can only be managed using the intrinsic expiration field. The DSL allows for the specification of revocability through the `@revocable(n)` pragma, where `n` denotes a positive integer indicating the depth of the sparse merkle tree used for managing revoked signatures. An SMT of depth `n` can accommodate `2^n` signatures. Developers should determine an optimal value by estimating the maximum number of credentials an issuer might distribute for a given context or type. The range for the depth spans from a minimum of 2 to a maximum of 248.
+
+A semi-formal definition in BFN is as following:
+
+```bnf
+<credential-type> ::= <pragma> ";" <declaration-list> | <declaration-list>
+<declaration-list> ::= <declaration> | <declaration> ";" <declaration-list>
+<declaration> ::= <type> ":" <identifier>
+<type> ::= <base-type> | <array-type>
+<array-type> ::= <base-type> "[" <number> "]"
+<base-type> ::= "bool" | "uint" "<" <number> ">"
+                "prop" "<" <number> "," <prop-hash-algorithem> "," <number> ">"
+<prop-hash-algorithem> ::= "p" | "k" | "c"
+<pragma> ::= "@" <identifier> "(" <pragma-args> ")"
+<pragma-args> ::= number | string
+<identifier> ::= /[a-zA-Z_][a-zA-Z0-9_]/
+```
+
+```
+@revocable(16);
+user_id:prop<128,p,2>;
+age:uint<8>;
+email_verified:bool;
+owned_nft_ids:prop<32,p,1>[10];
+```
+
+In the current version, we support 3 types of claims:
+
+1. **Bool**: Representing a boolean value, during proof generation, credential owners can choose to reveal or hide its value. This is due to its inherent limitation of equality check operation, which, when executed, inevitably discloses the value. For each bool-typed field, there will be one corresponding public signal in the proof, where `0` means the value is hidden, and `1` means the value is false, and `2` means the value is true.
+2. **Property (string)**: Referred as "property type" in this document, this type is primarily designed for representing innumerable properties, such as "name". However, issuers can apply this value to enumerations as well. Issuers can use this type to store a string value. Internally, the string value will be converted to a hash value. There are three type parameters:
+   1. The `width` represents the width of the hash value. It must be byte-aligned and up to 248-bit;
+   2. The `hash_algorithm` designates which hash is used to transform the string into a hash value. If the hash value exceeds the specified `width`, only the `width` least significant bits will be used. The accepted values are `p | k | c`, where `p` stands for poseidon hash, `k` for keccak256, and `c` for a user-defined hash algorithm.
+   3. The optional parameter `num_equals_to_checks` , default to 1, specifies the number of values to be compared for one proof. There will be `num_equals_to_checks` output signals, where their least significant bit represents the equality, and the `[width+1…1]` bits convey the value that underwent comparison.
+3. **Scalars**: Representing unsigned integers with bit-lengths spanning from 8 to 256, scalars are equipped to support range checks.
+4. **Fixed-length array**: This type encapsulates arrays of the previously mentioned types. Operations specific to the underlying type can be executed on either an individual element or the entire array, facilitated by the **`one_of`** and **`all_of`** operators. Note that the **`any_of`** operator is redundant, as during the proofing phase, the holder is aware of which element is the desired value.
+
+The following table summarizes a brief overview of the supported claim types, their syntax, and the operations applicable during proof generation.
+
+| Claim type                                                                                                                                                         | Description                                                                                                                                                                                                                  | Supported operations   | Public inputs                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bool`                                                                                                                                                             | A boolean value                                                                                                                                                                                                              | reveal, hide           | 0 means the value is hidden, and 1 means the value is false, and 2 means the value is true.                                                                                         |
+| `prop<width, hash_algorithm, num_equals_to_checks>`                                                                                                                | A string representing some property of the holder, designed for innumerable properties. The big-length of property and the hash algorithm that maps the string to an unsigned integer which fits the width must be provided. | ==, ≠                  | N output signals, where N equals to num_equals_to_checks. Their least significant bit represents the equality, and the [width+1…1] bits convey the value that underwent comparison. |
+| `uint<width>`                                                                                                                                                      | Scalar values, with width to be 8, 16, 32 … 256.                                                                                                                                                                             | ≤, ≥                   | 2 public inputs: lower_bound and upper_bound                                                                                                                                        |
+| Note: for verification stack that does not support 256-bit numbers, e.g. babyzk, each number will be mapped to two signals, the lower 128 and the higher 128 bits. |
+| T[N]                                                                                                                                                               | An fixed-length array of other values.                                                                                                                                                                                       | 1. oneOf(A, I, OP rhs) |
+
+2. allOf(A, OP rhs)
+   | One public signal indicating if check was oneOf or allOf: 1 for oneOf, 2 for allOf, and one or two other signals are depending on the element type T. |
+
+While the protocol does not impose a restriction on the number of fields in the body part, the verification stack might set a limit due to its inherent constraints of circuit size. For example babyzk stack limits the number of claims by setting the limit of public inputs to 256, including intrinsic signals.

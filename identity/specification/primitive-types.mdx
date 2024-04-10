@@ -1,0 +1,20 @@
+---
+title: 'Primitive Types'
+---
+
+There are some build-in credential types. Issuers can start to issue credentials of these primitives types without going through the type creation process. Based on Galxe’s experience, these types should cover a large portion of common use cases.
+
+| Type ID | Name | Description                                                                                                                                                                                     | Definition | Example                                      |
+| ------- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------------- |
+| 1       | Unit | The simplest credential type that does not contains any field. Owning a credential of this type means that the owner, indicated by the ID in header, is endorsed by the issuer for the context. | empty      | 1. Have you ever been followed by Elon Musk. |
+
+2. Have you ever made any donation to Wikipedia.
+3. Have you ever been a LP for Uniswap V2 before 2021. |
+   | 2 | Boolean | A credential with a bool claim. Comparing with Unit type, theoretically the set has two values instead of one. A practical difference is that Boolean type gives the owner the ability to choose to hide or reveal the value in the proof. There are some use cases, but in most cases, the Unit type is preferred. | val:bool; | Do you have an early supporter role in Galxe’s discord?
+   Since Galxe only issues credentials of this context to its guild member, owner can choose to reveal this value, showing that he is an early supporter, or without revealing the value, proving that he is at least a member of the guild. |
+   | 3 | Scalar | A credential with an unsigned integer claim, 248-bit. Unless 256-bit range is necessary, this type is recommended for credentials storing an unsigned integer value. | `val:uint<248>`; | 1. Holder’s loyalty points of some brand.
+4. UNIX Timestamp of the holder’s first transaction on Ethereum.
+5. ERC20 token balance on height 1000, when representing the token’s total_supply \* decimals requires less than 248 bits. |
+   | 4 | Scalar256 | A credential with an 256-bit unsigned integer claim. Note that due to the scalar field size limit in some verification stack (including babyzk), the output signal of a 256-bit value will represented as two public inputs, making on-chain verification higher than the Scalar type. | `val:uint<256>;` | 1. ERC20 token balance, where the ERC20 token balance need the full 256-bit encoding. |
+   | 5 | Property | A credential with a 248-bit property claim, using user-defined hash algorithm, with 1 equality check. | `val:prop<248,c,1>;` | 1. Name of holder’s first pet.
+6. Holder’s first name on passport. |

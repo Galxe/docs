@@ -1,0 +1,80 @@
+---
+title: 'Case Studies'
+---
+
+# On-chain NFT drop for early users using Galxe identity protocol
+
+The Galxe identity protocol offers a solution for services that require identity-based access control, just like a bouncer at a club. To demonstrate its application, let's consider an on-chain NFT drop scenario.
+
+**Scenario:**
+
+A decentralized exchange (DEX) project on EVM chains, named _Alpha_, intends to reward its early supporters (angel users) with a unique on-chain NFT drop. The criteria for qualifying as an angel user are:
+
+1. Following their official Twitter account (X) within the first 30 days post-launch. Given that Alpha launched on 01/01/2021, the cut-off date is 01/31/2021.
+2. The user's nationality isn't on the disallowed list.
+3. For every $1000 trading volume, the user qualifies for one NFT drop.
+
+Instead of creating an application that mandates users to link their EVM address, Twitter, and undergo KYC (potentially compromising privacy), Alpha can utilize the the protocol for a privacy-centric approach:
+
+1. **Issue trading volume credentials**: Alpha becomes a credential issuer, providing scalar-typed credentials under the context "Project Alpha trading volume" to its users. Users must submit an identity commitment to Alpha, either on-chain via a registry contract based on **`msg.sender`** or off-chain through ECDSA signatures, to receive the credential. Alpha ensures one EVM address corresponds to a single identity commitment, as required by the protocol.
+2. **Select 3rd-party credentials issuers**: Alpha collaborates with two reputable credential issuers to verify user’s Twitter follows and user nationalities. We assume that Twitter follow credentials have two claims in its body: followed account ID and verification date, from issuer _deSocial_. As for nationality, we assume that the issuer, _DeKYC_, provides passport-type credentials which includes a claim about the holder’s nationality.
+3. **Deploy NFT drop smart contract**: Alpha deploys a smart contract that rewards NFTs based on trading volume to any address providing valid zero-knowledge proofs with unused nullifiers. The external nullifier is set to **`0x18d...`**, derived from the hash of "Alpha angel user NFT drop".
+
+The smart contract checks the proofs against:
+
+**General requirements:**
+
+- The revealed identity specified in proof, backed by the fact that only the credential holder knows secrets of identity commitments, must match the **`msg.sender`**.
+- The external nullifier is **`0x18d...`**.
+- Nullifiers are either unused or associated with other addresses.
+
+**Credential-specific requirements**:
+
+1. **Twitter Follow**: The zero-knowledge proof must confirm the followed account is Alpha and the verification date is before 01/31/2021.
+2. **Passport**: The proof should list countries that don't match the user's nationality, and the list is a super set to the Alpha’s disallow list.
+3. **Trading Volume**: The proof must show the lower bound of the trading volume, determining the number of NFTs a user can claim. To incentivize trading, unlike the above two credentials, this credential isn't voided but linked to an EVM address for future volume updates.
+
+| Credential     | Type                | Context | Public inputs | On-chain verification | Post-verification actions |
+| -------------- | ------------------- | ------- | ------------- | --------------------- | ------------------------- |
+| Twitter follow | Custom, two claims: |
+
+1. Followed account ID.
+2. Verification date. | Simple non-revocable twitter follow credentials with verification date, issued by DeSocial. | 1. Equality of followed account ID v.s. “Alpha”.
+3. Upper bound of verification date.
+4. External nullifier and nullifier A
+5. Revealing identity is X. | 1. Equality is true.
+6. Upper bound is before 01/31/2021.
+7. External nullifier is 0x18d...
+8. X is msg.sender
+9. A has not been marked as used. | Mark nullifier A as used for twitter credentials. |
+   | Passport | Custom, containing a claim of nationality. | DeKYC’s AI-power KYC solution. | 1. Equalities of nationality v.s. a list of countries.
+10. External nullifier and nullifier B
+11. Revealing identity is X. | 1. Equalities are all false, and the list of countries is a superset of the disallow list.
+12. External nullifier is 0x18d...
+13. X is msg.sender
+14. B has not been marked as used. | Mark nullifier B as used for passport credentials. |
+    | Trading volume | Scalar (a basic credential type shipped) | Project Alpha trading volume | 1. Lower bound of trading volume.
+15. External nullifier and nullifier C
+16. Revealing identity is X. | 1. External nullifier is 0x18d...
+17. X is msg.sender
+18. C has not been binded yet, or binded with msg.sender | Bind C with msg.sender, as used for trading volume credentials, and set the number of available NFTs to mint to be lower_bound_volume / 1000 |
+
+Once preparations for Project Alpha are complete, we can focus on the user experience. The user workflow is streamlined: collecting credentials and generating proofs for verification. All these steps can be effortlessly executed using the **Galxe Identity Vault**, a local application compatible with both browsers and mobile devices.
+
+1. **Credential Collection**: Users are required to gather three distinct credentials from separate issuers. If a user has not previously requested credentials from these issuers, they would need to set up three unique identity commitments. The Galxe Identity Vault automates this process, ensuring that all confidential information remains safeguarded by the user's password.
+   1. **Twitter follow**: Visit _DeSocial’s_ website or app, connect with Galxe Identity Vault*, and* potentially do an OAuth login with your twitter account to verify the follow status. Then _DeSocial_ will request a identity commitment from the connected Galxe identity vault, and delivery the credential directly to the vault.
+   2. **Passport**: By accessing _DeKYC's_ platform, users may pay a service fee for KYC verification and credential issuance, then DeKYC will follow a process analogous to the one mentioned above.
+   3. **Trading Volume:** Within Project Alpha's application, users can directly request a trading volume credential, again following a similar procedure.
+2. **Proof Generation**: With the three credentials secured, users can effortlessly produce zero-knowledge proofs using the Galxe identity vault. The intricate technical details of generating these proofs remain hidden from users. Instead, Project Alpha forwards statements to be proved directly to the vault. The vault then displays the information set to be disclosed, such as "your nationality differs from countries A, B, C..." or "Your trading volume exceeds XXX", seeking user confirmation. Upon approval, the proofs are generated and sent to the smart contract for NFT minting.
+
+It's worth noting that while this process is hosted on-chain, it can also be executed off-chain in a centralized manner.
+
+**Security Analysis:**
+
+1. **Identity Linkage Protection**: The protocol ensures that users' identities across various platforms remain concealed. These identities are interconnected using different identity commitments and the revealed identity. Importantly, even if multiple issuers were to collude, they will not be able to correlate a user's identity across different platforms, as long as users follow the best practice of using different identity commitments for each issuer.
+2. **Pseudonymous Claims**: Users have the flexibility to claim NFTs under a pseudonym. This ensures that their trading address on the DEX remains separate from their NFT ownership, bolstering privacy. As a practical implication, a user can sell their NFTs on a KYC-mandated marketplace without the fear of their KYC data being associated with their trading activities on the DEX.
+3. **Double-spending Prevention**: Nullifiers ensure credentials cannot be used more than once. This ensures that each angel user can only claim their rightful amount of NFTs.
+4. **Minimal Data Exposure**: The protocol is designed to disclose only the bare minimum data, thereby reducing the risk of privacy breaches, such as birthday attacks. For instance:
+   - For the Twitter follow date, users disclose the an upper bound of verification date, instead of a precise date. All angel users can standardize it to 01/31/2021.
+   - Regarding nationality, the protocol doesn't directly reveal the country. Instead, it provides a list of countries that don't match the user's nationality, which is theoretically the least revealing method.
+   - For trading volume, a lower bound is used in place of the precise volume, which can be easily used to identity an user. The lower bound can be adjusted to any legit N \* 1000, based on the number of NFTs a user could and intend to mint.

@@ -1,0 +1,241 @@
+Most workflows are depending the chosen verification stack. For demonstration, we will explain them of BabyZK.
+
+### Type designer: create and publish a new credential type
+
+Adding a new type to the protocol is a permission-less process. Type designer can use Galxe identity protocol SDK, or he can use Galxe identity vault for the no-code solution.
+
+To introduce an official type, which will have long-term support of verification stacks, Galxe identity protocol employs a governance framework to facilitate decision-making regarding the acceptance and inclusion of new official credential types proposed by credential designers. The community, comprising users, developers, and other stakeholders, actively participates in the evaluation and acceptance process. Through transparent discussions and GAL voting mechanisms, the community collectively determines which proposed credential types are incorporated into the protocol.
+
+The common workflow is:
+
+1. Idea and Proposal: An individual or a group comes up with a new credential type. They draft a proposal document explaining the concept, its benefits, and technical specifications, including name and type of the fields, supported verification stack, zero-knowledge proof circuits, and details of the trust setup ceremony if required.
+2. Community Feedback: The proposal is shared with the community for review and feedback. This can be done through forums, mailing lists, social media, or dedicated development channels like the official Galxe identity protocol github repository.
+3. (Primitive) Type Number Assignment: If the proposal gains support and consensus within the community, an type number is assigned to it. The community uses these numbers to refer to specific proposals. Only applies to primitive types.
+4. Audit and Security: Depending on the complexity and potential impact, an external security audit might be conducted to identify vulnerabilities or weaknesses in the proposal: (1) whether the wire format might be ambiguous, (2) if circuits were under-constrained or over-constrained, and (3) security level of the trust setup ceremony.
+5. Voting and Adoption: Once the implementation passes security audits and testing and passes GAL voting process, it can be deployed to the Galxe identity protocol as a new official type.
+
+|                                                                                                            | Role (who’s doing it)                       | What                                                                               | Input                                | Output         | Modules                |
+| ---------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------ | -------------- | ---------------------- |
+| 1. Create credential type                                                                                  | Credential designer                         | Design a new credential type expressed in our DSL.                                 | Credential type specification in DSL | ZK circuit     | SDK, circuit generator |
+| 2. Phase2 trusted setup for the type and circuit. Depending on the verification stack, this may be skipped | Credential designer + other parties (Galxe) | Phase2 setup for zk-related, specifically for babyzk stack’s proof system: Groth16 | ZK circuit                           | 1. proving key |
+
+2. verification key
+   | The type designer needs to host a trusted setup ceremony for the circuit. Galxe identity protocol will provide an optional MPC node for participating the ceremony. |
+   | 3. Publish credential type | Credential designer | Type specification will be published on-chain, and a deterministic Type ID will be generated. For babyzk, verification key parameters must be updated to the verifier contract. | 1. proving key
+3. verification key
+4. Circuit artifacts like witness calculation WASM.
+5. onchain verifier contract. | 1. Type ID.
+6. add the verification key to the verifier.
+7. proving key will be stored on decentralized storage. | contract:
+8. Credential type registry.
+9. Type-specific verifier contract.
+
+Storage:
+
+1. decentralized permanent storage. |
+
+```
+ .--------..------------------..-------------.       .----------------------------.
+ |Designer||   Protocol SDK   ||Trusted setup|       |(optional: Galxe-hosted MPC)|
+ '--------''------------------''-------------'       '----------------------------'
+     |              |                 |                            |
+     |  Type DSL    |                 |                            |
+     |------------->|                 |                            |
+     |              |                 |                            |
+     |circom circuit|                 |                            |
+     |<-------------|                 |                            |
+     |              |                 |                            |
+     |         circom circuit         |                            |
+     |------------------------------->|                            |
+     |              |                 |                            |
+     |              |                 |          *.zkey            |
+     |              |                 |--------------------------->|
+     |              |                 |                            |
+     |              |                 |proving and verification key|
+     |              |                 |<---------------------------|
+     |              |                 |                            |
+     |  proving and verification key  |                            |
+     |<-------------------------------|                            |
+```
+
+```
+ .--------.        .-------..-----.      .-------------.
+ |Designer|        |Storage||Chain|      |Type Registry|
+ '--------'        '-------''-----'      '-------------'
+     |                 |       |                |
+     |Circuit artifacts|       |                |
+     |---------------->|       |                |
+     |                 |       |                |
+     |  Resource URI   |       |                |
+     |<----------------|       |                |
+     |                 |       |                |
+     |Deploy verifier contract |                |
+     |------------------------>|                |
+     |                 |       |                |
+     |Type specification, resource URI, verifier|
+     |----------------------------------------->|
+
+```
+
+### Issuer: register and issue credentials
+
+|                          | Role (who’s doing it) | What                          | Input       | Output | Modules |
+| ------------------------ | --------------------- | ----------------------------- | ----------- | ------ | ------- |
+| 4. Register as an issuer | Issuer                | Register to become an issuer. | 1. metadata |
+
+2. public keys
+3. proof of identities. | issuer ID | Issuer registry + pubkey manager for different verification stack |
+   | 5. Register a new credential context | Issuer | Add a new context on-chain. | 1. CredType ID.
+4. Context string | context ID | contract: context registry
+   Context ID: hash of context string cut to 160 bits, from LSB. |
+   | 6. Issue a new credential | Issuer ←→ owner | Sign a new credential to user. | 1. credential header
+5. claim values.
+6. user’s identity commitment
+7. signature | a credential in JSON | SDK |
+
+To become an issuer, one can register on-chain. The issuer ID is computed deterministically based on the caller’s address. Issuers can add proofs of identity to show his accountability, e.g., DNSSEC verification, and GAL staking. It is recommended to use a smart contract wallet, e.g. ERC-4337 wallet, to register the issuer, for permission management.
+
+```
+ .------.            .---------------..-----------------.
+ |issuer|            |Issuer Registry||Identity contract|
+ '------'            '---------------''-----------------'
+    |                        |                 |
+    |        metadata        |                 |
+    |----------------------->|                 |
+    |                        |                 |
+    |            proof of identity             |
+    |----------------------------------------->|
+    |                        |                 |
+    |active/remove public key|                 |
+    |----------------------->|                 |
+
+```
+
+Before issuing a credential, issuer must decide the credential schema, which is the type and context of credential. The context is a string that describes the content of the credential. For example, for a credential that proves a user’s total USD value of financial assets, issuer can use the basic credential type ‘scalar’, and its context can be a string of “total USD value of financial assets”. The separation of context and type in a the credential schema allows users to reuse the pre-compiled zero-knowledge proof circuits. Note that credential schema is universal, meaning that you can use a schema that is created by some other issuers. This can also be useful during verification: a verifier can program the logic of which schema to accept, from a simple list of schema IDs to dynamic logic programmed on-chain.
+
+```
+ .------.              .----------------.
+ |Issuer|              |Context Registry|
+ '------'              '----------------'
+    |                          |
+    |Type ID and context string|
+    |------------------------->|
+    |                          |
+    |        context ID        |
+    |<-------------------------|
+```
+
+One important benefit of Galxe identity protocol is that, credential issuance can happen completely off-chain. The issuing process requires holder to provide an identity commitment to the issuer. An issuer must maintain a strict 1-to-1 mapping from the unique ID of the under the application to the identity commitment. In another word, a user must use the same commitment for an issuer. If the issuer failed to do so, the holder can create multiple proofs of different nullifiers, which allow him to ‘double-spend’ the credential.
+
+Note that this interactive process can be improved by using [PLUME](https://eprint.iacr.org/2022/1255.pdf), if the ID is a public key. However, due to the high cost (over 2M constraints) under BabyZK stack, it is currently not supported.
+
+```
+ .------.            .------.                       .---------------------.
+ |Holder|            |Issuer|                       |Identity Protocol SDK|
+ '------'            '------'                       '---------------------'
+    |                   |                                      |
+    |identity commitment|                                      |
+    |------------------>|                                      |
+    |                   |                                      |
+    |                   |credential header, claims, signing key|
+    |                   |------------------------------------->|
+    |                   |                                      |
+    |                   |        verifiable credential         |
+    |                   |<-------------------------------------|
+    |                   |                                      |
+    |    credential     |                                      |
+    |<------------------|                                      |
+```
+
+After issuing credentials, issuers can still manage their validity on-chain, if they are revocable. the protocol provides different ways to do it
+
+1. Signing key management. Signing keys can be marked as active or deprecated. Verifiers should never trust any credential that is signed by a deprecated key.
+2. Expiration date embedded in the signature.
+3. Revocable credentials: sparse merkle tree (SMT) of signature IDs.
+
+|                           | Role (who’s doing it) | What                                                                | Input          | Outcome | Modules |
+| ------------------------- | --------------------- | ------------------------------------------------------------------- | -------------- | ------- | ------- |
+| 6.1 Credential revocation | issuer                | Issuers can management the ‘signatures’ they signed on credentials. | 1. expiration. |
+
+2. signature ID via SMT.
+3. explicitly seal the credential. | Credential will be revoked, holder cannot generate proofs that satisfy the goal. | Issuer Registry |
+
+### Owner: proof generation and identity management
+
+|                        | Role (who’s doing it) | What                                                                | Input          | Outcome | Modules |
+| ---------------------- | --------------------- | ------------------------------------------------------------------- | -------------- | ------- | ------- |
+| 7. zk-proof generation | owner                 | Credential holder can generate a proof against a set of conditions. | 1. credential. |
+
+2. conditions.
+3. proving key.
+4. external nullifier | 1. proof
+5. public data | Galxe identity vault or any apps that have integrated identity protocol SDk. |
+
+Owners can generate proofs that they hold a credential satisfying some constraints. This is done by using the circuit generated from compiled for the credential type. Using the credential and the conditions that will be checked as input, user can generate a succinct proof showing that the holder has a credential satisfying conditions.
+
+```
+.-------.            .-----.                                              .------------.
+|Storage|            |Owner|                                              |Protocol SDK|
+'-------'            '-----'                                              '------------'
+    |                   |                                                       |
+    |Proof gen artifacts|                                                       |
+    |------------------>|                                                       |
+    |                   |                                                       |
+    |                   |identity secrets, pseudonym, credential, and statements|
+    |                   |------------------------------------------------------>|
+    |                   |                                                       |
+    |                   |                proof and public input                 |
+    |                   |<------------------------------------------------------|
+.-------.            .-----.                                              .------------.
+|Storage|            |Owner|                                              |Protocol SDK|
+'-------'            '-----'                                              '------------'
+
+```
+
+### Verifier: verify proofs
+
+Verifiers can validate a proof both on-chain and off-chain. Their respective workflows are shown as below:
+
+|                                     | Role (who’s doing it) | What                                                                           | Input         | Outcome | Modules |
+| ----------------------------------- | --------------------- | ------------------------------------------------------------------------------ | ------------- | ------- | ------- |
+| 9. zk-based credential verification | verifier              | Owners can submit a proof to verifier that some statements about them is true. | 1. proof.json |
+
+2. public.json
+   | accept/reject | Stateful verifier, type registry, issuer registry |
+
+On-chain verification is extremely simple. Verifiers just need to submit the proof and the public input to the stateful verifier. For most of the cases, we recommend applications to use on-chain verification even for off-chain verification, by making an external call to the stateful verifier contract via RPC.
+
+```json
+ .--------.         .-----------------.
+ |Verifier|         |Stateful verifier|
+ '--------'         '-----------------'
+     |                       |
+     |proof and public inputs|
+     |---------------------->|
+     |                       |
+     |  verification result  |
+     |<----------------------|
+```
+
+Off-chain verification also rely on some on-chain states, for example, verification key and public key status. However, note that these values can be cached in some use cases, for example, when applications are sure that some public keys are always valid. In those cases, after initial setup, verifiers do not need to query anything on-chain.
+
+```
+ .--------.             .--------------..-----------------..---------------..------------.
+ |Verifier|             |Typed registry||Verifier contract||Issuer registry||Protocol SDK|
+ '--------'             '--------------''-----------------''---------------''------------'
+     |                         |                 |                 |              |
+     |verifier contract address|                 |                 |              |
+     |<------------------------|                 |                 |              |
+     |                         |                 |                 |              |
+     |             verification key              |                 |              |
+     |<------------------------------------------|                 |              |
+     |                         |                 |                 |              |
+     |           public key status, revocation SMT root            |              |
+     |<------------------------------------------------------------|              |
+     |                         |                 |                 |              |
+     |            vkey, key status, SMT root, proof and public inputs             |
+     |--------------------------------------------------------------------------->|
+     |                         |                 |                 |              |
+     |                         |  verification result              |              |
+     |<---------------------------------------------------------------------------|
+```

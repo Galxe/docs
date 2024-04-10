@@ -1,0 +1,148 @@
+---
+title: 'Technical Components'
+---
+
+This section describes all the components implemented by the protocol.
+
+### Verification stack: BabyZK
+
+The initial zero-knowledge verification stack we have integrated is named "BabyZK". This stack employs the subsequent algorithms and parameters:
+
+- **Curve**: BN254. All the following algorithms are using this curve.
+- **Hash**: Poseidon.
+- **Digest:** The digest is derived from the Poseidon hash of `poseidon(header, signature metadata)` and `poseidon(body)`. Initially, the header and signature metadata are cohesively hashed, according to the canonical sequence of header fields followed by signature metadata fields. Subsequently, the fields within the body are hashed in the type definition order. Finally we take the Poseidon hash of the two hash values.
+- **Signature**: EdDSA Poseidon
+- **Identity commitment schema:** a 2-input poseidon hash of BN254 curve of two fields: `identity secret` and `internal nullifier` , in this specified order.
+- **Circuit language**: Circom
+- **Proof system**: Groth16, powered by SnarkJS
+- **Limits**: The total number of public inputs of claims in the body must be less than 256, including intrinsic public inputs. For body types encompassing more than 16 signals—such as 9 `uint256` fields or 20 `bool`—the fields are segmented into groups of 16 and individually hashed. The final step is hashing results from these group hashes. This approach is necessitated by Poseidon's constraint of 16 signals. Given the further restriction that there can't exceed 256 fields, this hashing methodology can be implemented through a two-layer hashing structure.
+
+### Smart contracts
+
+Smart contracts in the protocol serve two primary functions:
+
+- **On-chain data storage:**
+  - Context registry
+  - Issuer registry
+    - Metadata
+    - Public key management
+    - Revocable credential state management
+  - Type registry
+    - Primitive type management
+    - Metadata
+      - Definition
+      - Resource URI
+    - Static proof verifier
+    - Public input parser
+  - Trust schema
+- **On-chain Verification**:
+  - Stateful credential zk verifier contract
+  - Aggregated on-chain attestation
+
+The Galxe identity protocol is crafted to be chain-agnostic, with plans to deploy these smart contracts across various EVM-compatible chains, including Ethereum, BSC, Polygon, and several Layer 2 solutions.
+
+**Context registry**
+
+A context is a string that, when paired with a credential type, forms a credential schema. This contract facilitates issuers in registering contexts, ensuring the meanings of credentials are publicly accessible.
+
+- Issuers can introduce a new context by submitting a string to the contract. The Context ID is derived from the keccak256 hash of this string, truncated to the lower 160 bits.
+- Contexts are designed to be universal, instead of binding to a credential type. While it might seem unconventional to associate a boolean-typed credential with the context "Trading volume," we entrust this decision to the issuer.
+
+**Issuer registry**
+
+This contract empowers issuers to register and authenticate their identities on-chain and manage the status of public keys and state of revocable credentials.
+
+- **Issuer Metadata**:
+  - **Issuer ID**: Crafted to be chain-agnostic and deterministic, the issuer's EVM address is directly adopted as their Issuer ID. For chains not based on EVM, addresses can still be utilized, albeit truncated to 160 bits.
+  - **Name:** Issuer can specify their name.
+  - **Identity Verification** (built in separate contracts):
+    - **DNSSEC**: Issuers can use DNSSEC records to validate their ownership of web2 domains.
+    - **GAL Staking**: Issuers can manifest their commitment by staking GAL tokens.
+    - **ENS/SpaceID & Other Bindings**: This facilitates the association of issuers with a web3 identity.
+- **Issuer State**:
+  - **Public Key Manager**: This contract caters to various verification stacks and is structured as a mapping from **`(issuer_id, key_id)`** to the key's status. The key ID is derived from the hash of the public key, with the hashing algorithm contingent on the selected verification stack. Key statuses are bifurcated into:
+    - **Active**: Denotes keys currently in use.
+    - **Revoked**: Signifies that all credentials signed with these keys are invalidated.
+  - **Signature State Manager**: For credentials that can be revoked, this contract provision allows issuers to regulate the revocation status for each combination of credential type and context. This is achieved by uploading the hash root of the sparse merkle tree containing signature IDs of the revoked credentials. Issuers need to publish the whole tree to a permanent storage for holders to access.
+    - URI to the sparse merkle tree.
+    - Root hash.
+
+**Credential Type Registry**
+
+The credential type registry contract serves as a comprehensive registry for managing credential types. Credential type designers can utilize this contract to introduce new types into the ecosystem, by storing all necessary artifacts on-chain. Issuers, holders, and verifiers will use this contract for creating new credentials, proof generation and verification.
+
+- Type Registration
+  - Allows for the registration of new credential types by users.
+  - Type metadata storage
+    - Stores type metadata such as revocability, admin address, name, definition in DSL, description, and a resource URI for proof generation artifacts.
+- Type Management
+  - Functionality to update the verifier and public signal getter for a type and a verification stack, adapting to evolving verification needs.
+  - Functionality to transfer type ownership.
+  - Check if a type is fully initialized for a given verification stack, ensuring readiness before deployment.
+- Utility Functions
+  - Check if a type is fully initialized for a given verification stack, ensuring readiness before deployment.
+  - Calculate the typeID based on the creator's address and the name of the type
+
+**Stateful verifier**
+
+Besides using the verifier contract, that is associated with the credential type, to verify the validity of zero-knowledge proof, a full verification requires additional on-chain state validations, including:
+
+1. Do type and context matches verifier’s expectation?
+2. Can the revealed credential expiration lower bound prove that the credential is not expired? (greater or equal to the current blocktime)
+3. Is the public key still active for the expected issuer?
+4. If the credential is revocable, is the proof generated with the current SMT root?
+
+For Babyzk, we built a contract that does all the checks in a simple function call `verifyProofFull`, so that verifiers can validate a proof with just one function call. It supports both:
+
+- Static Verification: Checks the validity of proofs without considering the state of the issuer's public key or revocation lists.
+- Full Verification: Extends static verification by also checking the issuer's public key activity and whether the revocation tree check is up-to-date.
+
+**Trust Schema Manager**
+
+This smart contract empowers verifiers to establish trust schemas tailored to specific verification scenarios. A straightforward example might involve enumerating a list of approved credential issuers. More intricate configurations could involve placing trust in issuers with active GAL staking, those operating under delegated trust, or issuers with a valid DNSSEC verification tied to some web2 domains. This contract transforms the trust establishment process into a communal activity, allowing trust schemas to be shared, voted upon, and dynamically adjusted.
+
+Verifiers have the capability to introduce a new trust schema by supplying the address of a callback function. This function must be designated as a view function. The trust schema ID is then derived using a combination of the verifier's address and a nonce.
+
+### SDK
+
+The protocol provides an open source implementation of SDKs that allows developers to build application on Galxe identity protocol. The SDK provides:
+
+1. Credential maker function: generate a credential based on its type.
+2. BabyZK verification stack
+   1. circuit generator: generate circom code based on type definition.
+   2. signer: Sign a credential with private key.
+   3. proof generator: Generate a proof based on the type and conditions.
+   4. proof verifier: Based on the credential type, query verification key from blockchain and return the verification result. Users should always use the SDK’s proof verifiers or on-chain verifiers, when possible to enable type-based security checks.
+
+### Hosted service
+
+**Galxe BabyZK trust setup MPC node**
+
+This is a hosted service that can participate in phase 2 trust setups for BabyZK’s Groth16 circuits. The service is not a necessity for protocol, but it can improve the user experience of credential type designer and its users. They do not need to worry about the trust setup when a new type is newly invented. The Galxe’s MPC node will make sure to add secrets into the result, seal and publish the proving and verification keys to decentralized storage and corresponding verifier.
+
+### Application: Galxe identity vault
+
+At the core of Galxe identity protocol’s philosophy lies a deep commitment to the idea of self-sovereign identity. In pursuit of ultimate sovereignty, we developed the **Galxe identity vault**, a local storage solution for identity data, with embedded zero-knowledge provers, that gives users
+
+1. **self-evident privacy safeguard**: given that data is stored locally, users can ensure that their personal information is kept private. Data does not need to pass through or be stored on any external servers where it could potentially be accessed by unauthorized parties.
+2. **total access control**: Local storage gives users full control over their own data. They can decide what to do with it, when to share it, how to share it, and who to share it with. This is in contrast to storing data with centralized authorities or intermediaries, where users must trust those authorities will handle their data appropriately, and hope their services are live when needed. With local storage, users can ensure that their data is stored in their own jurisdiction, avoiding potential legal and regulatory complications.
+3. **no-code ZKP**: It allows credential type designer, issuer, verifier, and holder to run all the workflow without any coding.
+
+The Galxe identity vault will be developed as an open-source reference implementation, and any party can build their own vaults as long as it follows the specification. The reference implementation of Galxe identity vault will be available as browser extensions and native Apps. Once installed, the user can start to collect verifiable credentials to build his self-sovereign identity.
+
+By using zero-knowledge proof technologies, users will be able to practice data minimization, down to the least required. In practice, all computation on the credentials will happen on user’s local device via embedded zk-circuits, and only the public input and output will be shared with verifiers.
+
+The wallet app must support:
+
+- all the workflows defined below and
+- generating a key pair on Baby Jubjub curve, which will be used for signing.
+- sync and fetch credentials from issuers.
+- checking on-chain state of revocable credentials.
+- issuing credentials to any other identity
+
+### Storage add-on(s)
+
+The protocol can work with decentralized permanent storage to improve its user experiences, by storing these information:
+
+1. Proving keys, which is required for holders to generate zero-knowledge proofs. The size of these keys range from one megabytes to even hundreds of megabytes, depending on the number of constraints of the circuit.
+2. Sparse merkle tree of revoked credentials. Without the SMT data, holders cannot prove the validity of revocable credentials.

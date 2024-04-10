@@ -1,5 +1,5 @@
 ---
-title: 'Case Studies'
+title: "Case Studies"
 ---
 
 # On-chain NFT drop for early users using Galxe identity protocol
@@ -34,30 +34,11 @@ The smart contract checks the proofs against:
 2. **Passport**: The proof should list countries that don't match the user's nationality, and the list is a super set to the Alpha’s disallow list.
 3. **Trading Volume**: The proof must show the lower bound of the trading volume, determining the number of NFTs a user can claim. To incentivize trading, unlike the above two credentials, this credential isn't voided but linked to an EVM address for future volume updates.
 
-| Credential     | Type                | Context | Public inputs | On-chain verification | Post-verification actions |
-| -------------- | ------------------- | ------- | ------------- | --------------------- | ------------------------- |
-| Twitter follow | Custom, two claims: |
-
-1. Followed account ID.
-2. Verification date. | Simple non-revocable twitter follow credentials with verification date, issued by DeSocial. | 1. Equality of followed account ID v.s. “Alpha”.
-3. Upper bound of verification date.
-4. External nullifier and nullifier A
-5. Revealing identity is X. | 1. Equality is true.
-6. Upper bound is before 01/31/2021.
-7. External nullifier is 0x18d...
-8. X is msg.sender
-9. A has not been marked as used. | Mark nullifier A as used for twitter credentials. |
-   | Passport | Custom, containing a claim of nationality. | DeKYC’s AI-power KYC solution. | 1. Equalities of nationality v.s. a list of countries.
-10. External nullifier and nullifier B
-11. Revealing identity is X. | 1. Equalities are all false, and the list of countries is a superset of the disallow list.
-12. External nullifier is 0x18d...
-13. X is msg.sender
-14. B has not been marked as used. | Mark nullifier B as used for passport credentials. |
-    | Trading volume | Scalar (a basic credential type shipped) | Project Alpha trading volume | 1. Lower bound of trading volume.
-15. External nullifier and nullifier C
-16. Revealing identity is X. | 1. External nullifier is 0x18d...
-17. X is msg.sender
-18. C has not been binded yet, or binded with msg.sender | Bind C with msg.sender, as used for trading volume credentials, and set the number of available NFTs to mint to be lower_bound_volume / 1000 |
+| Credential     | Type                                                                          | Context                                                                                     | Public inputs                                                                                                                                                              | On-chain verification                                                                                                                                                                            | Post-verification actions                                                                                                                    |
+| -------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Twitter follow | Custom, two claims: <br/> 1. Followed account ID. <br/> 2. Verification date. | Simple non-revocable twitter follow credentials with verification date, issued by DeSocial. | 1. Equality of followed account ID v.s. “Alpha”. <br/> 2. Upper bound of verification date. <br/> 3. External nullifier and nullifier A. <br/> 4. Revealing identity is X. | 1. Equality is true. <br/>2. Upper bound is before 01/31/2021.<br/>3. External nullifier is 0x18d... <br/> 4. X is msg.sender. <br/> 5. A has not been marked as used.                           | Mark nullifier A as used for twitter credentials.                                                                                            |
+| Passport       | Custom, containing a claim of nationality.                                    | DeKYC’s AI-power KYC solution.                                                              | 1. Equalities of nationality v.s. a list of countries. <br/> 2. External nullifier and nullifier B. <br/> 3. Revealing identity is X.                                      | 1. Equalities are all false, and the list of countries is a superset of the disallow list. <br/>2. External nullifier is 0x18d...<br/>3. X is msg.sender <br/> 4. B has not been marked as used. | Mark nullifier B as used for passport credentials.                                                                                           |
+| Trading volume | Scalar (a basic credential type shipped)                                      | Project Alpha trading volume                                                                | 1. Lower bound of trading volume. <br/>2. External nullifier and nullifier C. <br/>3. Revealing identity is X.                                                             | 1. External nullifier is 0x18d...<br/>2. X is msg.sender. <br/>3. C has not been binded yet, or binded with msg.sender                                                                           | Bind C with msg.sender, as used for trading volume credentials, and set the number of available NFTs to mint to be lower_bound_volume / 1000 |
 
 Once preparations for Project Alpha are complete, we can focus on the user experience. The user workflow is streamlined: collecting credentials and generating proofs for verification. All these steps can be effortlessly executed using the **Galxe Identity Vault**, a local application compatible with both browsers and mobile devices.
 

@@ -1,0 +1,17 @@
+---
+title: "Overview"
+description: "Read more about Identity Protocol SDK"
+---
+
+The protocol provides an open source implementation of SDKs that allows developers to build application on Galxe protocol. The SDK provides:
+
+1. Credential maker function: generate a credential based on its type.
+2. BabyZK verification stack
+   1. circuit generator: generate circom code based on type definition.
+   2. signer: Sign a credential with private key.
+   3. proof generator: Generate a proof based on the type and conditions.
+   4. proof verifier: Based on the credential type, query verification key from blockchain and return the verification result. Users should always use the SDK’s proof verifiers or on-chain verifiers, when possible to enable type-based security checks.
+
+NPM: [To be released]
+
+Github: [To be released]

@@ -1,0 +1,24 @@
+---
+title: "Issuer registry"
+description: ""
+---
+
+This contract empowers issuers to register and authenticate their identities on-chain and manage the status of public keys and state of revocable credentials.
+
+**Issuer Metadata**:
+
+- **Issuer ID**: Crafted to be chain-agnostic and deterministic, the issuer's EVM address is directly adopted as their Issuer ID. For chains not based on EVM, addresses can still be utilized, albeit truncated to 160 bits.
+- **Name:** Issuer can specify their name.
+- **Identity Verification** (built in separate contracts):
+  - **DNSSEC**: Issuers can use DNSSEC records to validate their ownership of web2 domains.
+  - **GAL Staking**: Issuers can manifest their commitment by staking GAL tokens.
+  - **ENS/SpaceID & Other Bindings**: This facilitates the association of issuers with a web3 identity.
+
+**Issuer State**:
+
+- **Public Key Manager**: This contract caters to various verification stacks and is structured as a mapping from **`(issuer_id, verification_stack, key_id)`** to the key's status. The key ID is derived from the hash of the public key, with the hashing algorithm contingent on the selected verification stack. Key statuses are bifurcated into:
+  - **Active**: Denotes keys currently in use.
+  - **Revoked**: Signifies that all credentials signed with these keys are invalidated.
+- **Signature State Manager**: For credentials that can be revoked, this contract provision allows issuers to regulate the revocation status for each combination of credential type and context. This is achieved by uploading the hash root of the sparse merkle tree containing signature IDs of the revoked credentials. Issuers need to publish the whole tree to a permanent storage for holders to access.
+  - URI to the sparse merkle tree.
+  - Root hash.

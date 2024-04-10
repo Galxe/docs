@@ -1,0 +1,8 @@
+---
+title: "Trust Schema Manager"
+description: ""
+---
+
+This smart contract empowers verifiers to establish trust schemas tailored to specific verification scenarios. A straightforward example might involve enumerating a list of approved credential issuers. More intricate configurations could involve placing trust in issuers with active GAL staking, those operating under delegated trust, or issuers with a valid DNSSEC verification tied to some web2 domains. This contract transforms the trust establishment process into a communal activity, allowing trust schemas to be shared, voted upon, and dynamically adjusted.
+
+Verifiers have the capability to introduce a new trust schema by supplying the address of a callback function. This function must be designated as a view function. The trust schema ID is then derived using a combination of the verifier's address and a nonce.

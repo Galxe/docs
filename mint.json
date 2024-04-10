@@ -59,6 +59,26 @@
       "pages": ["identity/introduction", "identity/overview/whitepaper"]
     },
     {
+      "group": "Contracts",
+      "pages": [
+        "identity/contracts/overview",
+        "identity/contracts/context-registry",
+        "identity/contracts/issuer-registry",
+        "identity/contracts/type-registry",
+        "identity/contracts/stateful-verifier",
+        "identity/contracts/trust-schema-manager"
+      ]
+    },
+    {
+      "group": "SDK",
+      "pages": ["identity/sdk/overview"]
+    },
+    {
+      "group": "CLI",
+      "pages": ["identity/cli/install", "identity/cli/usage"]
+    },
+
+    {
       "group": "GAL",
       "pages": [
         "about/gal/dao",

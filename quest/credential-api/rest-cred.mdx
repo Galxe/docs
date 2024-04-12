@@ -95,7 +95,7 @@ NOTE: Cookie header isn’t allowed.
 
 ### Expression[](#expression "Direct link to heading")
 
-The expression is a JavaScript (ES6) function of type signature: `(object) => int`. The object that will be passed as the parameter to the function is the entire response. The function should return either number 1 or 0, representing if the address is eligible for this subgraph credential. Behind the scenes, first, we send the request with the user's address to the endpoint, and then we will apply the function against the entire response body. If the returned value is 1, then user can own this credential, otherwise not. The function must be anonymous, which means that the first line of the expression should be like `function(resp) {}`, instead of `let expression = (resp) => {}`.
+The expression is a JavaScript (ES6) function of type signature: `(object) => int`. The object that will be passed as the parameter to the function is the entire response. The function should return either number `1` or `0`, representing if the address is eligible for this subgraph credential. Do not return `true` or `false`, neither string-typed `"0"` or `"1"`. Behind the scenes, first, we send the request with the user's address to the endpoint, and then we will apply the function against the entire response body. If the returned value is 1, then user can own this credential, otherwise not. The function must be anonymous, which means that the first line of the expression should be like `function(resp) {}`, instead of `let expression = (resp) => {}`.
 
 ### Example: Polygon OAT Holder Credential[](#example-polygon-oat-holder-credential "Direct link to heading")
 
@@ -262,7 +262,7 @@ function(resp) {
 
 ## FAQ: Cannot test response on Galxe because of CORS?[](#faq-cannot-test-response-on-galxe-because-of-cors "Direct link to heading")
 
-[Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a security check of browser. If your API does not add `app.galxe.com` to the `Access-Control-Allow-Origin` header of the response, you cannot run the 'test' on Galxe website. Although it will not affect verification, because our backend will no check CORS header, it is recommended to add `galxe.com` to the CORS list.Otherwise, you will have to disable CORS in your browser to run the test, e.g., using plugins like [this](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino).
+[Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a security check of browser. If your API does not add `app.galxe.com` to the `Access-Control-Allow-Origin` header of the response, you cannot run the 'test' on Galxe website. Although it will not affect verification, because our backend will no check CORS header, it is recommended to add `app.galxe.com` or ``galxe.com`` to the CORS list. Otherwise, you will have to disable CORS in your browser to run the test, e.g., using plugins like [this](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino).
 
 ## FAQ: Users getting 403 error?[](#faq-users-getting-403-error "Direct link to heading")
 

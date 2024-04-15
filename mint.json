@@ -95,7 +95,10 @@
       "group": "Resources",
       "pages": ["identity/resources/cli", "identity/resources/contracts"]
     },
-
+    {
+      "group": "Tutorials",
+      "pages": ["identity/tutorials/simple-workflow"]
+    },
     {
       "group": "GAL",
       "pages": [

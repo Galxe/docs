@@ -175,8 +175,8 @@
     {
       "group": "Community Programs",
       "pages": [
-        "about/galxe-contributor",
-        "about/galxe-astronaut"
+        "about/community-programs/galxe-contributor",
+        "about/community-programs/galxe-astronaut"
       ]
     }
   ],

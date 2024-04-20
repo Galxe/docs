@@ -100,15 +100,6 @@
       "pages": ["identity/tutorials/simple-workflow"]
     },
     {
-      "group": "GAL",
-      "pages": [
-        "about/gal/dao",
-        "about/gal/tokenomics",
-        "about/gal/early-adopter-rewards-2022"
-      ]
-    },
-
-    {
       "group": "Getting Started",
       "pages": ["quest/introduction"]
     },
@@ -160,7 +151,14 @@
         "galxe-id/galxe-id-integration/galxe-passport-oauth"
       ]
     },
-
+    {
+      "group": "GAL",
+      "pages": [
+        "about/gal/dao",
+        "about/gal/tokenomics",
+        "about/gal/early-adopter-rewards-2022"
+      ]
+    },
     {
       "group": "Platform Overview",
       "pages": [
@@ -177,9 +175,8 @@
     {
       "group": "Community Programs",
       "pages": [
-        "about/community-programs/Galaxy-Brain",
-        "about/community-programs/Galaxy-Pathfinder",
-        "about/community-programs/Galaxy-Ecosystem-Space"
+        "about/galxe-contributor",
+        "about/galxe-astronaut"
       ]
     }
   ],

@@ -12,6 +12,8 @@ Issuers can start to issue credentials of these primitives types without going t
   use cases.{" "}
 </Info>
 
+## Basic primitive types
+
 | Type ID | Name      | Description                                                                                                                                                                                                                                                                                                         | Definition           | Example                                                                                                                                                                                                                                                                                                 |
 | ------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1       | Unit      | The simplest credential type that does not contains any field. Owning a credential of this type means that the owner, indicated by the ID in header, is endorsed by the issuer for the context.                                                                                                                     | empty                | 1. Have you ever been followed by Elon Musk. <br/> 2. Have you ever made any donation to Wikipedia. <br/> 3. Have you ever been a LP for Uniswap V2 before 2021.                                                                                                                                        |
@@ -20,17 +22,71 @@ Issuers can start to issue credentials of these primitives types without going t
 | 4       | Scalar256 | A credential with an 256-bit unsigned integer claim. Note that due to the scalar field size limit in some verification stack (including babyzk), the output signal of a 256-bit value will represented as two public inputs, making on-chain verification higher than the Scalar type.                              | `val:uint<256>;`     | 1. ERC20 token balance, where the ERC20 token balance need the full 256-bit encoding.                                                                                                                                                                                                                   |
 | 5       | Property  | A credential with a 248-bit property claim, using user-defined hash algorithm, with 1 equality check.                                                                                                                                                                                                               | `val:prop<248,c,1>;` | 1. Name of holder’s first pet. <br/> 2. Holder’s first name on passport.                                                                                                                                                                                                                                |
 
+## Custom primitive types
+
+| Type ID | Name              | Description       | Definition                                                                                                                                                                                              | Example                                                                                                          |
+| ------- | ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| 10000   | Galxe Passport v2 | Galxe Passport v2 | `birthdate:uint<64>; gender:prop<8,c,1>; id_country:prop<16,c,1>; id_class:prop<8,c,1>; issue_date:uint<64>; first_verification_date:uint<64>; last_selfie_date:uint<64>; total_sefie_verified:uint<8>` | Your Personal Identifiable Information (PII) after creating your passport [here](https://app.galxe.com/passport) |
+
+Galxe Passport v2 type definition contains the following fields:
+
+- `birthdate:uint<64>`: User's birthdate in unix timestamp.
+- `gender:prop<8,c,1>`: User's gender, according to their government issued ID.
+  - Custom hash function mapping:
+    - Male = 1
+    - Female = 2
+    - X = 3 (undermined from government ID)
+- `id_country:prop<16,c,1>`: Country of ID issurance.
+  - Custom hash function mapping:
+    - ISO-3166-1 Alpha 2 format (2-letter country code) = ISO-3166-1 numeric code
+- `id_class:prop<8,c,1>`:
+  - Custom hash function mapping:
+    - CertificateOfCitizenship = 1
+    - ConsularID = 2
+    - DriversLicense = 3
+    - ColombiaForeignerID = 4
+    - CanadaHealthInsuranceCard = 5
+    - IdentificationCard = 6
+    - RussiaInternalPassport = 7
+    - AustraliaKeypassID = 8
+    - SingaporeLongTermVisitPass = 9
+    - MunicipalID = 10
+    - JapanMyNumberCard = 11
+    - PhilippinesNationalBureauOfInvestigationCertificate = 12
+    - SingaporeNationalResidencyID = 13
+    - PhilippinesOverseasForeignWorkerCard = 14
+    - ResidencePermit = 15
+    - IndiaPermanentAccountNumberCard = 16
+    - PhilippinesPostalIdentificationCard = 17
+    - Passport = 18
+    - PassportCard = 19
+    - PermanentResidenceCard = 20
+    - PhilippinesSocialSecuritySystemCard = 21
+    - USRefugeeTravelDocument = 22
+    - CanadaTribalID = 23
+    - PhilippinesUnitedMultiPurposeID = 24
+    - VoterID = 25
+    - ImmigrationVisa = 26
+    - WorkPermit = 27
+  - More information can be found here: https://docs.withpersona.com/reference/government-id-verifications#government-id-types
+- `issue_date:uint<64>`: Government ID issurance date in unix timestamp.
+- `first_verification_date:uint<64>`: Unix timestamp of user's first Galxe Passport verification date.
+- `last_selfie_date:uint<64>`: Unix timestamp of user's latest Galxe Passport Selfie verification date.
+- `total_sefie_verified:uint<8>`: Count of user's successful Selfie Verifications.
+
 # Artifacts
 
 Artifacts required to generate and verify proofs can be found at the following IPFS location:
 
+## Basic primitive types
+
 | Type Name | IPFS CID                                              |
 | --------- | ----------------------------------------------------- |
-| unit      | ipfs://QmX8dx6onZornDd5wsM2raWDz1prRrjLcrNwgZHWonYHvw |
-| boolean   | ipfs://QmZQBtQ8nxcUM6fLgG4NrFkgmZwpjgcqPz8PQwgvRbpNQK |
-| scalar    | ipfs://QmPABvgq3Rnu8jqMjXx2HhHAY9h9EL2Q2ZizAUZwVFuNfn |
-| scalar256 | ipfs://QmRUR9uyzJ9fL9SodKEB2yA43aez3axHJH9m3Myu8nsv4o |
-| property  | ipfs://QmUv7qrsaaFFUDTouNCRQ8SF6B7UewQGNpANBFuqh6vdw3 |
+| Unit      | ipfs://QmX8dx6onZornDd5wsM2raWDz1prRrjLcrNwgZHWonYHvw |
+| Boolean   | ipfs://QmZQBtQ8nxcUM6fLgG4NrFkgmZwpjgcqPz8PQwgvRbpNQK |
+| Scalar    | ipfs://QmPABvgq3Rnu8jqMjXx2HhHAY9h9EL2Q2ZizAUZwVFuNfn |
+| Scalar256 | ipfs://QmRUR9uyzJ9fL9SodKEB2yA43aez3axHJH9m3Myu8nsv4o |
+| Property  | ipfs://QmUv7qrsaaFFUDTouNCRQ8SF6B7UewQGNpANBFuqh6vdw3 |
 
 Inside each file you will find corresponding resource CIDs for circom file, verifier solidity code, verification key, wasm, and zkey. e.g. here is the resource files for type "unit"
 
@@ -41,3 +97,9 @@ Inside each file you will find corresponding resource CIDs for circom file, veri
 | vkey_uri         | ipfs://QmW4SgG4pDDLyFLy7V12QxMSx5X7tAqyeA4kgEFR1oURba/circuit.vkey.json  |
 | witness_wasm_uri | ipfs://QmW4SgG4pDDLyFLy7V12QxMSx5X7tAqyeA4kgEFR1oURba/circom.wasm        |
 | zkey_uri         | ipfs://QmW4SgG4pDDLyFLy7V12QxMSx5X7tAqyeA4kgEFR1oURba/circuit_final.zkey |
+
+## Custom primitive types
+
+| Type Name         | IPFS CID                                              |
+| ----------------- | ----------------------------------------------------- |
+| Galxe Passport v2 | ipfs://QmZ4UghikEohVtpJaiAQorBeHNPFZ9vq5TfnE8jTAyLU9k |

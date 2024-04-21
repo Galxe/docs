@@ -82,7 +82,8 @@
     {
       "group": "Use Cases",
       "pages": [
-        "identity/use-cases/examples"
+        "identity/use-cases/examples",
+        "identity/use-cases/galxe-passport"
       ]
     },
     {
@@ -92,12 +93,12 @@
       ]
     },
     {
-      "group": "Resources",
-      "pages": ["identity/resources/cli", "identity/resources/contracts"]
-    },
-    {
       "group": "Tutorials",
       "pages": ["identity/tutorials/simple-workflow"]
+    },
+    {
+      "group": "Resources",
+      "pages": ["identity/resources/cli", "identity/resources/contracts"]
     },
     {
       "group": "Getting Started",

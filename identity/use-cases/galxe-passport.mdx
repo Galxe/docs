@@ -1,0 +1,83 @@
+---
+title: "Galxe Passport"
+description: "Issue and verify Galxe Passport v2 credential"
+---
+
+<Info>
+  You can claim your Galxe Passport here: https://app.galxe.com/passport
+</Info>
+<Warning> Galxe Passport v2 is not yet released </Warning>
+
+## Type
+
+"Galxe Passport v2" credential type is registered onchain as a custom primitive type with type ID 10000. See type definition and more details [here](/identity/specification/primitive-types)
+
+## Issurance Workflow
+
+Once user passes KYC verification with Persona, our KYC provider, upon user request, Galxe backend will:
+
+1. Retrieve all necessary personal identifiable information to issue a Galxe Passport credential
+2. Generate credential using pre-defined type
+3. Append the following information as attachments:
+   - first_name
+   - last_name
+   - id_number: user's government ID number
+   - passport_version: v2.0 for now
+   - persona_id: unique identifier that serves as the only mapping of user's wallet to KYC data stored in Persona
+   - nationality: if provided by user's government ID
+4. Galxe-managed issuer sign the credential and its attachments, then add both signatures to the credential
+5. Return the signed credential back to user, and user will encrypt it with their own passport.
+6. User store the encrypted file in their preferred storage. For now, user will use Galxe Vault for storage with no charge
+
+## Example signed credential
+
+```json
+{
+  "header": {
+    "version": "1",
+    "type": "385359061158288630711736738957938254712651867393",
+    "context": "934334657093539700167251502022510933841607943105",
+    "id": "1052489016591343323470769874470399378961347062869"
+  },
+  "body": {
+    "birthdate": "<omitted>",
+    "gender": {
+      "str": "M",
+      "value": "1"
+    },
+    "id_country": {
+      "str": "US",
+      "value": "840"
+    },
+    "id_class": {
+      "str": "dl",
+      "value": "3"
+    },
+    "issue_date": "<omitted>",
+    "first_verification_date": "<omitted>",
+    "last_selfie_date": "<omitted>",
+    "total_sefie_verified": "1"
+  },
+  "signatures": [
+    {
+      "metadata": {
+        "verification_stack": 1,
+        "signature_id": "174358...<omitted>",
+        "expired_at": "<omitted>",
+        "identity_commitment": "2025432...<omitted>",
+        "issuer_id": "278006...<omitted>",
+        "chain_id": "97",
+        "public_key": "Gtrdr...<omitted>"
+      },
+      "signature": "1+PIQA...<omitted>",
+      "attachmentsSignature": "yU8eI8...<omitted>"
+    }
+  ],
+  "attachments": {
+    "last_name": "Doe",
+    "id_number": "ID-123456",
+    "passport_version": "v2.0",
+    "first_name": "John"
+  }
+}
+```

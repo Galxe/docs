@@ -88,9 +88,7 @@
     },
     {
       "group": "Future Works",
-      "pages": [
-        "identity/future-works/future-works"
-      ]
+      "pages": ["identity/future-works/future-works"]
     },
     {
       "group": "Tutorials",
@@ -171,7 +169,11 @@
     },
     {
       "group": "Legal",
-      "pages": ["about/legal/terms-of-service", "about/legal/privacy-policy"]
+      "pages": [
+        "about/legal/terms-of-service",
+        "about/legal/privacy-policy",
+        "about/legal/staking-terms-and-conditions"
+      ]
     },
     {
       "group": "Community Programs",

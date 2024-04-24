@@ -10,7 +10,59 @@ description: "Issue and verify Galxe Passport v2 credential"
 
 ## Type
 
-"Galxe Passport v2" credential type is registered onchain as a custom primitive type with type ID 10000. See type definition and more details [here](/identity/specification/primitive-types)
+"Galxe Passport v2" credential type is registered onchain as a custom primitive type with type ID 10000.
+
+| Type ID | Name              | Description       | Definition                                                                                                                                                                                              | Example                                                                                                          |
+| ------- | ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| 10000   | Galxe Passport v2 | Galxe Passport v2 | `birthdate:uint<64>; gender:prop<8,c,1>; id_country:prop<16,c,1>; id_class:prop<8,c,1>; issue_date:uint<64>; first_verification_date:uint<64>; last_selfie_date:uint<64>; total_sefie_verified:uint<8>` | Your Personal Identifiable Information (PII) after creating your passport [here](https://app.galxe.com/passport) |
+
+Galxe Passport v2 type definition contains the following fields:
+
+- `birthdate:uint<64>`: User's birthdate in unix timestamp.
+- `gender:prop<8,c,1>`: User's gender, according to their government issued ID.
+  - Custom hash function mapping:
+    - Male = 1
+    - Female = 2
+    - X = 3 (undermined from government ID)
+- `id_country:prop<16,c,1>`: Country of ID issurance.
+  - Custom hash function mapping:
+    - ISO-3166-1 Alpha 2 format (2-letter country code) = ISO-3166-1 numeric code
+- `id_class:prop<8,c,1>`:
+  - Custom hash function mapping:
+    - CertificateOfCitizenship = 1
+    - ConsularID = 2
+    - DriversLicense = 3
+    - ColombiaForeignerID = 4
+    - CanadaHealthInsuranceCard = 5
+    - IdentificationCard = 6
+    - RussiaInternalPassport = 7
+    - AustraliaKeypassID = 8
+    - SingaporeLongTermVisitPass = 9
+    - MunicipalID = 10
+    - JapanMyNumberCard = 11
+    - PhilippinesNationalBureauOfInvestigationCertificate = 12
+    - SingaporeNationalResidencyID = 13
+    - PhilippinesOverseasForeignWorkerCard = 14
+    - ResidencePermit = 15
+    - IndiaPermanentAccountNumberCard = 16
+    - PhilippinesPostalIdentificationCard = 17
+    - Passport = 18
+    - PassportCard = 19
+    - PermanentResidenceCard = 20
+    - PhilippinesSocialSecuritySystemCard = 21
+    - USRefugeeTravelDocument = 22
+    - CanadaTribalID = 23
+    - PhilippinesUnitedMultiPurposeID = 24
+    - VoterID = 25
+    - ImmigrationVisa = 26
+    - WorkPermit = 27
+  - More information can be found here: https://docs.withpersona.com/reference/government-id-verifications#government-id-types
+- `issue_date:uint<64>`: Government ID issurance date in unix timestamp.
+- `first_verification_date:uint<64>`: Unix timestamp of user's first Galxe Passport verification date.
+- `last_selfie_date:uint<64>`: Unix timestamp of user's latest Galxe Passport Selfie verification date.
+- `total_sefie_verified:uint<8>`: Count of user's successful Selfie Verifications.
+
+Type Artifacts can be found here: https://ipfs.io/ipfs/QmZ4UghikEohVtpJaiAQorBeHNPFZ9vq5TfnE8jTAyLU9k
 
 ## Issurance Workflow
 

@@ -56,7 +56,7 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["identity/introduction"]
+      "pages": ["identity/introduction", "identity/sdk"]
     },
     {
       "group": "Tutorials",

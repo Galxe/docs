@@ -56,12 +56,19 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["identity/introduction", "identity/whitepaper"]
+      "pages": ["identity/introduction"]
+    },
+    {
+      "group": "Tutorials",
+      "pages": [
+        "identity/tutorials/simple-workflow",
+        "identity/tutorials/use-nebra-upa"
+      ]
     },
     {
       "group": "Introduction",
       "pages": [
-        "identity/introduction/introduction",
+        "identity/introduction/background",
         "identity/introduction/overview",
         "identity/introduction/concepts",
         "identity/introduction/roles",
@@ -91,12 +98,8 @@
       "pages": ["identity/future-works/future-works"]
     },
     {
-      "group": "Tutorials",
-      "pages": ["identity/tutorials/simple-workflow"]
-    },
-    {
       "group": "Resources",
-      "pages": ["identity/resources/cli", "identity/resources/contracts"]
+      "pages": ["identity/resources/contracts"]
     },
     {
       "group": "Getting Started",

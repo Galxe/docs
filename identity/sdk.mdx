@@ -1,58 +1,46 @@
 ---
-title: "SDK"
+TypeScript SDK
 ---
 
-Galxe Identity Protocol Typescript SDK is compatible with both node and browser.
+## About the SDK
 
-For more detailed information, check out our Github repo [here](https://github.com/Galxe/identity-protocol/tree/main/packages/sdk).
+The Galxe Identity Protocol TypeScript SDK empowers developers to:
 
-Note that in this monorepo you can also find all you need to get started - [SDK](https://github.com/Galxe/identity-protocol/tree/main/packages/sdk), [contracts](https://github.com/Galxe/identity-protocol/tree/main/packages/evm-contracts), [tutorials](https://github.com/Galxe/identity-protocol/tree/main/apps/tutorial), [issuer](https://github.com/Galxe/identity-protocol/tree/main/apps/issuer), etc.
++ Design new ZK credential types using our domain-specific language (Type DSL), without requiring any knowledge of zero-knowledge proofs.
++ Issue ZKP-powered credentials.
++ Generate zero-knowledge proofs.
++ Interact with on-chain contracts for tasks such as issuer registration, context registration, and proof verification.
++ Most of the gadgets you would need, if not everything.
 
-This SDK is also published on npm [here](https://www.npmjs.com/package/@galxe-identity-protocol/sdk).
+## Code Repository
 
-For examples on how to use the SDK, check out the tutorials in the next section.
+All source code can be found in our monorepo on GitHub: [Galxe Identity Protocol](https://github.com/Galxe/identity-protocol).
 
-## For developers
+## SDK Installation
 
-### Node Version
+Install the SDK using npm, Yarn, or pnpm with the following commands:
 
-Developers should use the current LTS version of node. Currently, node v20.11.1.
+- **npm**
+  ```bash
+  npm install @galxe-identity-protocol/sdk
+  ```
 
-```bash
-# For nvm users:
-nvm install --lts
-nvm use --lts
-```
+- **pnpm**
+  ```bash
+  pnpm add @galxe-identity-protocol/sdk
+  ```
 
-### Setup
+- **Yarn**
+  ```bash
+  yarn add @galxe-identity-protocol/sdk
+  ```
 
-Install dependencies:
+## EVM Contracts in Solidity
 
-```bash
-corepack enable
-corepack install
-```
+For developers aiming to integrate or directly interact with our EVM contracts, refer to the code and documentation available here: [EVM Contracts](https://github.com/Galxe/identity-protocol/tree/main/packages/evm-contracts).
 
-## Coding conventions
+## Issuer gRPC Service
 
-### uint256 encoding
+For those planning to serve as issuers, we provide a Node.js (written in TypeScript) gRPC service and a Dockerfile. This can be deployed as a microservice in your infrastructure to facilitate credential issuance to users. Learn more and access the service here: [Issuer Service](https://github.com/Galxe/identity-protocol/tree/main/apps/issuer).
 
-When encoding uint256 into two uint128(s), the order must be [msb, lsb].
-This should apply to both claim values, circom generation for claim values and
-statements.
-
-### Zero value is the null value
-
-Zero value is consider to be the null value in the following cases:
-
-1. For property type, value 0 is considered to represent null. Issuers should not issue
-   credential with any property-typed claims being 0.
-2. For Signature ID, 0 is also an invalid value. For revocable credential with signature
-   ID 0, they are considered to be non-revocable, meaning that they generate proof against
-   any revocation tree root hash, because the verification will be skipped.
-3. For revocable credentials, the merkle root 0 meaning that no credential has been revoked.
-   Circuit will skip merkle proof verification when the root is 0.
-
-## NOTICE
-
-For better bundling experience for end users, we make manually copied the browser bundled version of `eta` into site-packages.
+accessible for developers. If there are any more details you would like to add or adjust, just let me know!

@@ -89,8 +89,8 @@
     {
       "group": "Use Cases",
       "pages": [
-        "identity/use-cases/examples",
-        "identity/use-cases/galxe-passport"
+        "identity/use-cases/galxe-passport",
+        "identity/use-cases/examples"
       ]
     },
     {

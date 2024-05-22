@@ -16,7 +16,7 @@ Note that:
 
 ## prerequisites
 
-To run this tutorial, you need to have an funded address on Sepolia as Nebra signer. This address is used to submit proofs to the Nebra Upa receiver. Example proof submission transaction can be found [here](https://sepolia.etherscan.io/tx/0x9f8b405edbfd11bb758695b90a94408030d7aba94d44312824329bee62d49132).
+To run this tutorial, you need to have an funded address on Sepolia as Nebra signer. This address is used to submit proofs to the Nebra Upa receiver. Example proof submission transaction can be found [here](https://sepolia.etherscan.io/tx/0x6e09db9f92aa7bf110400e61f840a39ee420a7176e1da5e4bf5683c6e56ef574).
 
 - Create `.env` file using `.env.example` as a template. Update `NEBRA_SIGNER_PK` with your private key.
 
@@ -30,7 +30,7 @@ npm install @galxe-identity-protocol/sdk ethers @nebrazkp/upa
 
 ## Step 2: Import necessary dependencies and setup issuer
 
-Note that the dummy issuer used in this tutorial has been registered on Sepolia testnet. Check out the registration transaction [here](https://sepolia.etherscan.io/tx/0x2d05e7965dd3bb71deae303e14760f178d4bb243f8f202b116d27423fe222e98).
+Note that the dummy issuer used in this tutorial has been registered on Sepolia testnet. Check out the registration transaction [here](https://sepolia.etherscan.io/tx/0x89c0cf5af6f6c0b6750bd6b3a4b93c02605d0ba1541c26387ed7da3ae7df3ffa).
 
 This issuer is registered with the following parameters:
 
@@ -45,9 +45,9 @@ This issuer is registered with the following parameters:
 
 ## Step 3: Register your circuit on NEBRA
 
-Since this tutorial uses the `Unit` primitive type, you can skip this step and use the pre-registered circuit ID instead - `19492248766170790707669674188275240677746386057031629350922666022616552857566`.
+Since this tutorial uses the `Unit` primitive type, you can skip this step and use the pre-registered circuit ID instead - `535783125321978663259414080602879573584328345995263811920911450103380255481`.
 
-This circuit is registed with this [transaction](https://sepolia.etherscan.io/tx/0x2d1515bbb8680144d06ce61323e080aac7396b820a14382413eb983493c7e980).
+This circuit is registed with this [transaction](https://sepolia.etherscan.io/tx/0x89c0cf5af6f6c0b6750bd6b3a4b93c02605d0ba1541c26387ed7da3ae7df3ffa).
 
 To register your own circuit, follow the tutorial [here](https://docs.nebra.one/developer-guide/registering-applications).
 
@@ -81,9 +81,9 @@ const provider = new ethers.JsonRpcProvider(RPC);
 const context = "Proof Aggregation Tutorial Example Context";
 
 // registered with this tx:
-// https://sepolia.etherscan.io/tx/0x2d1515bbb8680144d06ce61323e080aac7396b820a14382413eb983493c7e980
+// https://sepolia.etherscan.io/tx/0x89c0cf5af6f6c0b6750bd6b3a4b93c02605d0ba1541c26387ed7da3ae7df3ffa
 const circuidId = BigInt(
-  "19492248766170790707669674188275240677746386057031629350922666022616552857566"
+  "535783125321978663259414080602879573584328345995263811920911450103380255481"
 );
 
 // This is a dummy issuer's EVM address that has been registered on sepolia.
@@ -144,20 +144,31 @@ async function proofGenProcess(myCred: credential.Credential, u: user.User) {
     provider
   );
   console.log("proof generation gadgets are downloaded successfully.");
-  const proof = await u.genBabyzkProof(
+  // Let's generate the proof.
+  // Assume that we want to verify that the credential is still valid after 3 days.
+  const expiredAtLowerBound = BigInt(
+    Math.ceil(new Date().getTime() / 1000) + 3 * 24 * 60 * 60
+  );
+  // Do not reveal the credential's actual id, which is the evm address in this example
+  const equalCheckId = BigInt(0);
+  // Instead, claim to be Mr.Deadbeef. It's verifier's responsibility to verify that the pseudonym is who
+  // he claims to be, after verifying the proof.
+  const pseudonym = BigInt("0xdeadbeef");
+  // Here we ignore the conditions and just use the options in the query, since unit credential needs no conditions.
+  const proof = await u.genBabyzkProofWithQuery(
     u.getIdentityCommitment("evm")!,
     myCred,
-    // proof generation options
-    {
-      expiratedAtLowerBound: BigInt(
-        Math.ceil(new Date().getTime() / 1000) + 3 * 24 * 60 * 60
-      ), // assume that we want to verify that the credential is still valid after 3 days.
-      externalNullifier: externalNullifier,
-      equalCheckId: BigInt(0), // do not reveal the credential's actual id, which is the evm address in this example
-      pseudonym: BigInt("0xdeadbeef"),
-    },
     proofGenGagets,
-    []
+    `
+    {
+      "options": {
+        "expiredAtLowerBound": "${expiredAtLowerBound}",
+        "externalNullifier": "${externalNullifier}",
+        "equalCheckId": "${equalCheckId}",
+        "pseudonym": "${pseudonym}"
+      }
+    }
+    `
   );
   return proof;
 }
@@ -271,3 +282,5 @@ And note that in `verifyByCallingAggregatedStatefulVerifier`, we can now verify 
 # Conclusion
 
 Congratulations! You've successfully issued a credential, generated a zero-knowledge proof, submit the proof to be aggregated by NEBRA, and verified it on-chain. This tutorial demonstrates how NEBRA can be utilized to aggregate and verify proofs off-chain, reducing the costly on-chain proof verifications.
+
+The code used in this tutorial is available [here](https://github.com/Galxe/identity-protocol/blob/main/apps/tutorial/src/useNebraUpa.ts)

@@ -21,7 +21,7 @@ crendential for user  <----   Expression evaluation on response         <----
 
 It's the HTTPs endpoint where Subgraph queries go to, see the example below.
 
-**For security reasons, you must add _[https://app.galxe.com](https://app.galxe.com)_ to the API server's [`Access-Control-Allow-Origin`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) header to avoid [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) issues. Please note that you will also need to set the `access-control-allow-methods`, as if we are sending a preflight request. We will perform a [CORS check](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#preflighted%5Frequests%5Fin%5Fcors) during the creation process, and if it's not included, the creation will fail.**
+**For security reasons, you must add _[https://dashboard.galxe.com](https://dashboard.galxe.com)_ to the API server's [`Access-Control-Allow-Origin`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) header to avoid [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) issues. Please note that you will also need to set the `access-control-allow-methods`, as if we are sending a preflight request. We will perform a [CORS check](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#preflighted%5Frequests%5Fin%5Fcors) during the creation process, and if it's not included, the creation will fail.**
 
 Please note that when we check the endpoint, we _always_ send a preflight request, **ignoring the so-called [simple_requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests) convention**, for security reasons. You might see that your configuration works ok when clicking test button in our app, but later failed to save. We always encourage you to use the following cURL command to check if the endpoint is compliant.
 
@@ -29,11 +29,11 @@ To check if it is compliant, you can use cURL:
 
 ```
 // for GraphQL
-curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: POST' -H 'Origin: https://app.galxe.com' '$YOUR_URL_HERE$'
+curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: POST' -H 'Origin: https://dashboard.galxe.com' '$YOUR_URL_HERE$'
 
 // Example of a correct query and response
-curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: POST' -H 'Origin: https://app.galxe.com' 'https://graphigo.prd.galaxy.eco/'
-access-control-allow-origin: https://app.galxe.com
+curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: POST' -H 'Origin: https://dashboard.galxe.com' 'https://graphigo.prd.galaxy.eco/'
+access-control-allow-origin: https://dashboard.galxe.com
 access-control-allow-methods: POST,GET,OPTIONS
 ```
 

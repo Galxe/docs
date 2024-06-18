@@ -20,7 +20,7 @@ We support GET and POST method:
 * **GET**: Endpoint, Headers and Expression.
 * **POST**: Endpoint, Headers, Post Body and Expression
 
-**For security reasons, you must add _[`https://app.galxe.com`](https://app.galxe.com)_ to the API server's [`Access-Control-Allow-Origin`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) header to avoid [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) issues. Please note that you will also need to add either GET or POST to the `access-control-allow-methods` header in the response, as if we are sending a preflight request. We will perform a [CORS check](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#preflighted%5Frequests%5Fin%5Fcors) during the creation process, and if it's not included, the creation will fail.**
+**For security reasons, you must add _[`https://dashboard.galxe.com`](https://dashboard.galxe.com)_ to the API server's [`Access-Control-Allow-Origin`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) header to avoid [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) issues. Please note that you will also need to add either GET or POST to the `access-control-allow-methods` header in the response, as if we are sending a preflight request. We will perform a [CORS check](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#preflighted%5Frequests%5Fin%5Fcors) during the creation process, and if it's not included, the creation will fail.**
 
 Please note that when we check the endpoint, we *always* send a preflight request, **ignoring the so-called [simple_requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests) convention**, for security reasons. You might see that your configuration works ok when clicking test button in our app, but later failed to save. We always encourage you to use the following cURL command to check if the endpoint is compliant.
 
@@ -30,14 +30,14 @@ To check if the endpoint is compliant, you can use cURL:
 // NOTE: no address will be replaced in this request. For example if the endpoint is
 // https://xxx.com/check?address=$address, the request will be sent to exacly this URL when we check
 // CORS, instead of with some addresses like https//:xxx.com/check?address=0x123...
-curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: GET' -H 'Origin: https://app.galxe.com' '$END_POINT_URL_WITHOUT_ADDRESS_REPLACED$'
+curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: GET' -H 'Origin: https://dashboard.galxe.com' '$END_POINT_URL_WITHOUT_ADDRESS_REPLACED$'
 
 // For POST
-curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: POST' -H 'Origin: https://app.galxe.com' '$YOUR_URL_HERE$'
+curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: POST' -H 'Origin: https://dashboard.galxe.com' '$YOUR_URL_HERE$'
 
 // Example of a correct query and response
-curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: POST' -H 'Origin: https://app.galxe.com' 'https://graphigo.prd.galaxy.eco/'
-access-control-allow-origin: https://app.galxe.com
+curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: POST' -H 'Origin: https://dashboard.galxe.com' 'https://graphigo.prd.galaxy.eco/'
+access-control-allow-origin: https://dashboard.galxe.com
 access-control-allow-methods: POST,GET,OPTIONS
 ```
 
@@ -85,7 +85,7 @@ The RESTFul style URL to which we will sent the HTTP GET request. The `$address`
 
 The response of the request **must** a valid JSON string.
 
-NOTE: [app.galxe.com](http://app.galxe.com) isn’t allowed.
+NOTE: [dashboard.galxe.com](http://dashboard.galxe.com) isn’t allowed.
 
 ### Headers[](#headers "Direct link to heading")
 
@@ -262,7 +262,7 @@ function(resp) {
 
 ## FAQ: Cannot test response on Galxe because of CORS?[](#faq-cannot-test-response-on-galxe-because-of-cors "Direct link to heading")
 
-[Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a security check of browser. If your API does not add `app.galxe.com` to the `Access-Control-Allow-Origin` header of the response, you cannot run the 'test' on Galxe website. Although it will not affect verification, because our backend will no check CORS header, it is recommended to add `app.galxe.com` or ``galxe.com`` to the CORS list. Otherwise, you will have to disable CORS in your browser to run the test, e.g., using plugins like [this](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino).
+[Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a security check of browser. If your API does not add `dashboard.galxe.com` to the `Access-Control-Allow-Origin` header of the response, you cannot run the 'test' on Galxe website. Although it will not affect verification, because our backend will no check CORS header, it is recommended to add `dashboard.galxe.com` to the CORS list. Otherwise, you will have to disable CORS in your browser to run the test, e.g., using plugins like [this](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino).
 
 ## FAQ: Users getting 403 error?[](#faq-users-getting-403-error "Direct link to heading")
 

@@ -33,12 +33,12 @@
       "url": "galxe-id"
     },
     {
-      "name": "Alva Docs ↗",
-      "url": "https://docs.alva.xyz"
-    },
-    {
       "name": "About",
       "url": "about"
+    },
+    {
+      "name": "Alva Docs ↗",
+      "url": "https://docs.alva.xyz"
     }
   ],
   "anchors": [
@@ -154,17 +154,17 @@
       ]
     },
     {
+      "group": "Platform Overview",
+      "pages": [
+        "about/introduction"
+      ]
+    },
+    {
       "group": "GAL",
       "pages": [
         "about/gal/dao",
         "about/gal/tokenomics",
         "about/gal/early-adopter-rewards-2022"
-      ]
-    },
-    {
-      "group": "Platform Overview",
-      "pages": [
-        "about/introduction"
       ]
     },
     {

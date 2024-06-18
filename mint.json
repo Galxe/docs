@@ -164,10 +164,7 @@
     {
       "group": "Platform Overview",
       "pages": [
-        "about/introduction",
-        "about/overview/credential-data-network",
-        "about/overview/build-with-credentials",
-        "about/overview/galxe-oat"
+        "about/introduction"
       ]
     },
     {

@@ -25,10 +25,6 @@
   },
   "tabs": [
     {
-      "name": "About",
-      "url": "about"
-    },
-    {
       "name": "Galxe Identity Protocol",
       "url": "identity"
     },

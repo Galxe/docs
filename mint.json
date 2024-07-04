@@ -21,9 +21,13 @@
     "url": "https://app.galxe.com"
   },
   "primaryTab": {
-    "name": "Galxe Identity Protocol"
+    "name": "About"
   },
   "tabs": [
+    {
+      "name": "Galxe Identity Protocol",
+      "url": "identity"
+    },
     {
       "name": "Galxe Quest",
       "url": "quest"
@@ -31,10 +35,6 @@
     {
       "name": "Galxe ID",
       "url": "galxe-id"
-    },
-    {
-      "name": "About",
-      "url": "about"
     },
     {
       "name": "Alva Docs ↗",

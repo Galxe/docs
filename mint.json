@@ -25,6 +25,10 @@
   },
   "tabs": [
     {
+      "name": "About",
+      "url": "about"
+    },
+    {
       "name": "Galxe Identity Protocol",
       "url": "identity"
     },
@@ -54,6 +58,35 @@
     }
   ],
   "navigation": [
+      {
+      "group": "Platform Overview",
+      "pages": [
+        "about/introduction"
+      ]
+    },
+    {
+      "group": "GAL",
+      "pages": [
+        "about/gal/dao",
+        "about/gal/tokenomics",
+        "about/gal/early-adopter-rewards-2022"
+      ]
+    },
+    {
+      "group": "Legal",
+      "pages": [
+        "about/legal/terms-of-service",
+        "about/legal/privacy-policy",
+        "about/legal/staking-terms-and-conditions"
+      ]
+    },
+    {
+      "group": "Community Programs",
+      "pages": [
+        "about/community-programs/galxe-contributor",
+        "about/community-programs/galxe-astronaut"
+      ]
+    },
     {
       "group": "Getting Started",
       "pages": ["identity/introduction", "identity/sdk"]
@@ -151,35 +184,6 @@
       "pages": [
         "galxe-id/galxe-id-integration/galxe-id-oauth",
         "galxe-id/galxe-id-integration/galxe-passport-oauth"
-      ]
-    },
-    {
-      "group": "Platform Overview",
-      "pages": [
-        "about/introduction"
-      ]
-    },
-    {
-      "group": "GAL",
-      "pages": [
-        "about/gal/dao",
-        "about/gal/tokenomics",
-        "about/gal/early-adopter-rewards-2022"
-      ]
-    },
-    {
-      "group": "Legal",
-      "pages": [
-        "about/legal/terms-of-service",
-        "about/legal/privacy-policy",
-        "about/legal/staking-terms-and-conditions"
-      ]
-    },
-    {
-      "group": "Community Programs",
-      "pages": [
-        "about/community-programs/galxe-contributor",
-        "about/community-programs/galxe-astronaut"
       ]
     }
   ],

@@ -28,14 +28,16 @@ query campaignParticipants($id: ID!, $pfirst: Int!, $pafter: String!) {
     participants {
       participants(first: $pfirst, after: $pafter) {
         list {
-          username
-          avatar
-          address
-          email
-          solanaAddress
-          aptosAddress
-          seiAddress
-          discordUserID
+          address {
+            username
+            avatar
+            address
+            email
+            solanaAddress
+            aptosAddress
+            seiAddress
+            discordUserID
+          }
         }
       }
       participantsCount
@@ -67,18 +69,20 @@ Response:
         "participants": {
           "list": [
             {
-              "username": "oojojoj",
-              "avatar": "https://source.boringavatars.com/marble/120/0x00000000ccd193975907ddb660b4692bb4257f9f",
-              "address": "0x00000000ccd193975907ddb660b4692bb4257f9f",
-              "email": "",
-              "solanaAddress": "",
-              "aptosAddress": "",
-              "seiAddress": "",
-              "discordUserID": ""
+              "address": {
+                "username": "0xdoxes",
+                "avatar": "https://source.boringavatars.com/marble/120/blunder8888@gmail.com",
+                "address": "0x00000000ccd193975907ddb660b4692bb4257f9f",
+                "email": "",
+                "solanaAddress": "",
+                "aptosAddress": "",
+                "seiAddress": "",
+                "discordUserID": ""
+              }
             }
           ]
         },
-        "participantsCount": 310277
+        "participantsCount": 234163
       }
     }
   }
@@ -1064,14 +1068,16 @@ query campaignParticipants($id: ID!, $pfirst: Int!, $pafter: String!) {
     participants {
       participants(first: $pfirst, after: $pafter) {
         list {
-          username
-          avatar
-          address
-          email
-          solanaAddress
-          aptosAddress
-          seiAddress
-          discordUserID
+          address {
+            username
+            avatar
+            address
+            email
+            solanaAddress
+            aptosAddress
+            seiAddress
+            discordUserID
+          }
         }
       }
       participantsCount
@@ -1103,18 +1109,20 @@ Response:
         "participants": {
           "list": [
             {
-              "username": "oojojoj",
-              "avatar": "https://source.boringavatars.com/marble/120/0x00000000ccd193975907ddb660b4692bb4257f9f",
-              "address": "0x00000000ccd193975907ddb660b4692bb4257f9f",
-              "email": "",
-              "solanaAddress": "",
-              "aptosAddress": "",
-              "seiAddress": "",
-              "discordUserID": ""
+              "address": {
+                "username": "0xdoxes",
+                "avatar": "https://source.boringavatars.com/marble/120/blunder8888@gmail.com",
+                "address": "0x00000000ccd193975907ddb660b4692bb4257f9f",
+                "email": "",
+                "solanaAddress": "",
+                "aptosAddress": "",
+                "seiAddress": "",
+                "discordUserID": ""
+              }
             }
           ]
         },
-        "participantsCount": 310277
+        "participantsCount": 234163
       }
     }
   }
@@ -1235,13 +1243,13 @@ Response:
 
 Arguments:
 
-| Name       | Description                                       |
-| ---------- | ------------------------------------------------- |
-| `id`                   | Space id.                                         |
-| `order`                | Sort by Points/GalxeID.                           |
-| `seasonId`             | Query for season ranking. Overall ranking is null |
-| `cursorAfter` String   | You don't need to pass in this value on the first page. On the second page, you can start passing in the `endCursor` value returned by the first page.                               |
-| `sprintId` Int         | The id value of the Session can access the data of the specified Session.                               |
+| Name                 | Description                                                                                                                                            |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                 | Space id.                                                                                                                                              |
+| `order`              | Sort by Points/GalxeID.                                                                                                                                |
+| `seasonId`           | Query for season ranking. Overall ranking is null                                                                                                      |
+| `cursorAfter` String | You don't need to pass in this value on the first page. On the second page, you can start passing in the `endCursor` value returned by the first page. |
+| `sprintId` Int       | The id value of the Session can access the data of the specified Session.                                                                              |
 
 Request:
 
@@ -1334,6 +1342,7 @@ Response:
   }
 }
 ```
+
 ### Query leaderboard data for one address
 
 Arguments:
@@ -1378,8 +1387,8 @@ Response:
       "addressLoyaltyPoints": {
         "id": "sa-lb-xxx-xx",
         "points": 15,
-        "rank": 10064,
-      },
+        "rank": 10064
+      }
     }
   }
 }

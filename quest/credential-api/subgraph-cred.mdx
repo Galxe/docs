@@ -113,6 +113,20 @@ function(resp) {
 
 ```
 
+**Multi Expression**
+
+![Specify Dimensions](images/cred/WX20240801-174031@2x.png "Specify Dimensions")
+
+```java
+function(resp) {
+  if (BigInt(resp.result)) {
+    return {"mainnet_eth_balance":BigInt(resp.result)}
+  }
+  return 0
+}
+
+```
+
 ### Expression output[](#expression-output "Direct link to heading")
 
 ```
@@ -125,7 +139,20 @@ function(resp) {
 Make sure the endpoint has whitelisted our server:
 
 ```
-44.240.68.227
-35.81.233.163
+34.82.233.174
+34.168.161.3
+34.105.112.99
+35.247.62.73
+35.197.67.121
+35.233.185.238
+34.83.100.41
+34.82.5.253
+34.82.190.147
+35.247.34.12
+34.82.247.15
+34.83.231.252
+34.168.181.112
+35.185.229.76
+34.83.184.83
 
 ```

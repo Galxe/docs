@@ -248,12 +248,25 @@ Hold at least 1 NFT of contract 0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB, veri
 
 ```
 
-**Expression**
+**Single Expression**
 
 ```java
 function(resp) {
   if (BigInt(resp.result) > 0) {
     return 1
+  }
+  return 0
+}
+
+```
+**Multi Expression**
+
+![Specify Dimensions](images/cred/WX20240801-174031@2x.png "Specify Dimensions")
+
+```java
+function(resp) {
+  if (BigInt(resp.result)) {
+    return {"mainnet_eth_balance":BigInt(resp.result)}
   }
   return 0
 }

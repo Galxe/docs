@@ -208,6 +208,22 @@ function(resp) {
 }
 
 ```
+**Multi Expression**
+
+<img alt="Specify Dimensions" height="600" src="../../images/cred/WX20240801-174031@2x.png" title="Specify Dimensions"
+     width="900"/>
+
+```java
+function(resp) {
+  try {
+    let balance = BigInt(resp.result);
+    return { "mainnet_eth_balance": balance };
+  } catch (error) {
+    return { "mainnet_eth_balance": 0 };
+  }
+}
+
+```
 
 ### Example2: NFT holder[](#example2-nft-holder "Direct link to heading")
 
@@ -261,14 +277,17 @@ function(resp) {
 ```
 **Multi Expression**
 
-![Specify Dimensions](images/cred/WX20240801-174031@2x.png "Specify Dimensions")
+<img alt="Specify Dimensions" height="600" src="../../images/cred/WX20240801-174031@2x.png" title="Specify Dimensions"
+     width="900"/>
 
 ```java
 function(resp) {
-  if (BigInt(resp.result)) {
-    return {"mainnet_eth_balance":BigInt(resp.result)}
+  try {
+    let balance = BigInt(resp.result);
+    return { "mainnet_eth_balance": balance };
+  } catch (error) {
+    return { "mainnet_eth_balance": 0 };
   }
-  return 0
 }
 
 ```

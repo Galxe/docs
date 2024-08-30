@@ -294,7 +294,7 @@ function(resp) {
 
 ## FAQ: Cannot test response on Galxe because of CORS?[](#faq-cannot-test-response-on-galxe-because-of-cors "Direct link to heading")
 
-[Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a security check of browser. If your API does not add `dashboard.galxe.com` to the `Access-Control-Allow-Origin` header of the response, you cannot run the 'test' on Galxe website. Although it will not affect verification, because our backend will no check CORS header, it is recommended to add `dashboard.galxe.com` to the CORS list. Otherwise, you will have to disable CORS in your browser to run the test, e.g., using plugins like [this](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino).
+[Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a security check of browser. If your API does not add `dashboard.galxe.com` to the `Access-Control-Allow-Origin` header of the response, you cannot run the 'test' on Galxe website. Although it will not affect verification, because our backend will no check CORS header, it is recommended to add `https://dashboard.galxe.com` to the CORS list. Otherwise, you will have to disable CORS in your browser to run the test, e.g., using plugins like [this](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino).
 
 ## FAQ: Users getting 403 error?[](#faq-users-getting-403-error "Direct link to heading")
 

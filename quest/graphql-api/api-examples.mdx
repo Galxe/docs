@@ -12,7 +12,7 @@ description: "For more information on our GraphQL endpoint, please refer to [thi
 Arguments:
 
 | Name     | Description       |
-| -------- | ----------------- |
+|----------|-------------------|
 | `id`     | Campaign hash id. |
 | `pfirst` | Query limit.      |
 | `pafter` | Query offset.     |
@@ -94,7 +94,7 @@ Response:
 Arguments:
 
 | Name    | Description       |
-| ------- | ----------------- |
+|---------|-------------------|
 | `id`    | Campaign hash id. |
 | `block` | Chain block.      |
 | `first` | Query limit.      |
@@ -184,7 +184,7 @@ Response:
 Arguments:
 
 | Name    | Description       |
-| ------- | ----------------- |
+|---------|-------------------|
 | `input` | Campaign hash id. |
 
 Request:
@@ -317,7 +317,7 @@ Response:
 Arguments:
 
 | Name            | Description             |
-| --------------- | ----------------------- |
+|-----------------|-------------------------|
 | `id`            | Space id.               |
 | `alias`         | Space alias.            |
 | `campaignInput` | Campaigns query params. |
@@ -423,7 +423,7 @@ Response:
 Arguments:
 
 | Name      | Description       |
-| --------- | ----------------- |
+|-----------|-------------------|
 | `address` | Contract address. |
 | `first`   | Query limit.      |
 | `after`   | Query offset.     |
@@ -493,31 +493,31 @@ Response:
 
 Arguments:
 
-| Name       | Description                                       |
-| ---------- | ------------------------------------------------- |
-| `id`       | Space id.                                         |
-| `first`    | Query limit.                                      |
-| `after`    | Query offset.                                     |
-| `order`    | Sort by Points/GalxeID.                           |
-| `seasonId` | Query for season ranking. Overall ranking is null |
+| Name          | Description                                                                                                                                            |
+|---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`          | Space id.                                                                                                                                              |
+| `pageSize`    | Query limit.                                                                                                                                           |
+| `cursorAfter` | You don't need to pass in this value on the first page. On the second page, you can start passing in the `endCursor` value returned by the first page. |
+| `order`       | Sort by Points/GalxeID.                                                                                                                                |
+| `seasonId`    | Query for season ranking. Overall ranking is null                                                                                                      |
 
 Request:
 
 ```graphql
 query SpaceLeaderboard(
-  $id: Int!
-  $first: Int
-  $after: String
-  $order: LoyaltyPointsRankOrder
+  $id: Int!,
+  $pageSize: Int,
+  $order: LoyaltyPointsRankOrder,
+  $cursorAfter: String,
   $seasonId: Int
 ) {
   space(id: $id) {
     id
     name
     loyaltyPointsRanks(
-      first: $first
-      after: $after
+      first: $pageSize
       order: $order
+      cursorAfter: $cursorAfter
       sprintId: $seasonId
     ) {
       pageInfo {
@@ -525,28 +525,40 @@ query SpaceLeaderboard(
         endCursor
         hasNextPage
         hasPreviousPage
+        __typename
       }
       totalCount
-      list {
-        id
-        rank
-        points
-        space {
-          name
-        }
-        address {
-          username
+      edges {
+        node {
           id
-          avatar
-          address
-          solanaAddress
-          aptosAddress
-          seiAddress
-          twitterUserName
-          discordUserName
+          rank
+          points
+          space {
+            name
+            __typename
+          }
+          address {
+            username
+            id
+            avatar
+            address
+            solanaAddress
+            aptosAddress
+            seiAddress
+            twitterUserName
+            discordUserName
+            displayNamePref
+            displayTwitter
+            displayDiscord
+            __typename
+          }
+          __typename
         }
+        __typename
       }
+      __typename
     }
+    __typename
   }
 }
 ```
@@ -556,8 +568,8 @@ Variables:
 ```json
 {
   "id": 40,
-  "first": 2,
-  "after": "-1",
+  "pageSize": 2,
+  "cursorAfter": "Mg==",
   "order": "Points",
   "seasonId": null
 }
@@ -573,115 +585,101 @@ Response:
       "name": "BNB Chain",
       "loyaltyPointsRanks": {
         "pageInfo": {
-          "startCursor": "0",
-          "endCursor": "2",
+          "startCursor": "Mw==",
+          "endCursor": "NA==",
           "hasNextPage": true,
-          "hasPreviousPage": false
+          "hasPreviousPage": true,
+          "__typename": "PageInfo"
         },
-        "totalCount": 183473,
-        "list": [
+        "totalCount": 5509,
+        "edges": [
           {
-            "id": "lbrank-0L1xIfY6d1VYrlKAFOmZvT-40",
-            "rank": 1,
-            "points": 300,
-            "space": {
-              "name": "BNB Chain"
+            "node": {
+              "id": "lbrank-DJkB89vLsPMm44LuraURi8-40",
+              "rank": 2,
+              "points": 180,
+              "space": {
+                "name": "BNB Chain",
+                "__typename": "Space"
+              },
+              "address": {
+                "username": "DJkB89vLsPMm44LuraURi8",
+                "id": "DJkB89vLsPMm44LuraURi8",
+                "avatar": "https://cdn.galxe.com/galaxy/score/c6096a05-45f3-4427-8961-3326f9812ae1.png",
+                "address": "0x1fa5b7fc4da7777d211ed41d31f8b84735fd41b1",
+                "solanaAddress": "",
+                "aptosAddress": "",
+                "seiAddress": "",
+                "twitterUserName": "",
+                "discordUserName": "",
+                "displayNamePref": "USERNAME",
+                "displayTwitter": false,
+                "displayDiscord": false,
+                "__typename": "Address"
+              },
+              "__typename": "LoyaltyPointsRank"
             },
-            "address": {
-              "username": "HansaMR",
-              "id": "0L1xIfY6d1VYrlKAFOmZvT",
-              "avatar": "https://source.boringavatars.com/marble/120/0x61e305B027482358eCda2e7A56a150E0593e5cdA",
-              "address": "0x61e305b027482358ecda2e7a56a150e0593e5cda",
-              "solanaAddress": "",
-              "aptosAddress": "",
-              "seiAddress": "",
-              "twitterUserName": "",
-              "discordUserName": ""
-            }
+            "__typename": "LoyaltyPointsRankEdge"
           },
           {
-            "id": "lbrank-1L3UPNocTIIJid0tRIszgV-40",
-            "rank": 1,
-            "points": 300,
-            "space": {
-              "name": "BNB Chain"
+            "node": {
+              "id": "lbrank-XHKvqqv82igAiiWjA7TEHH-40",
+              "rank": 2,
+              "points": 180,
+              "space": {
+                "name": "BNB Chain",
+                "__typename": "Space"
+              },
+              "address": {
+                "username": "tiepvien1111",
+                "id": "XHKvqqv82igAiiWjA7TEHH",
+                "avatar": "https://cdn.galxe.com/galaxy/score/30c28119-a45d-4591-ad22-436726404634.png",
+                "address": "0x3739734419c979730fb0d0a4da42a840010e3cb1",
+                "solanaAddress": "",
+                "aptosAddress": "",
+                "seiAddress": "",
+                "twitterUserName": "",
+                "discordUserName": "",
+                "displayNamePref": "USERNAME",
+                "displayTwitter": false,
+                "displayDiscord": false,
+                "__typename": "Address"
+              },
+              "__typename": "LoyaltyPointsRank"
             },
-            "address": {
-              "username": "barossafeed",
-              "id": "1L3UPNocTIIJid0tRIszgV",
-              "avatar": "https://d257b89266utxb.cloudfront.net/galaxy/images/avatar/0xc3b8e4fedb31c756fae84e0c65475dcbb6ffd308-1670560267167156585.png",
-              "address": "0xc3b8e4fedb31c756fae84e0c65475dcbb6ffd308",
-              "solanaAddress": "",
-              "aptosAddress": "",
-              "seiAddress": "",
-              "twitterUserName": "",
-              "discordUserName": ""
-            }
+            "__typename": "LoyaltyPointsRankEdge"
           }
-        ]
-      }
+        ],
+        "__typename": "LoyaltyPointsRankConnection"
+      },
+      "__typename": "Space"
     }
   }
 }
 ```
 
-#### Season
+### Query leaderboard data for one address
 
 Arguments:
 
-| Name       | Description               |
-| ---------- | ------------------------- |
-| `id`       | Space id.                 |
-| `first`    | Query limit.              |
-| `after`    | Query offset.             |
-| `order`    | Sort by Points/GalxeID.   |
-| `seasonId` | Query for season ranking. |
+| Name       | Description                                       |
+|------------|---------------------------------------------------|
+| `id`       | Space id.                                         |
+| `seasonId` | Query for season ranking. Overall ranking is null |
 
 Request:
 
 ```graphql
-query SpaceLeaderboard(
-  $id: Int!
-  $first: Int
-  $after: String
-  $order: LoyaltyPointsRankOrder
-  $seasonId: Int
-) {
+query SpaceLoyaltyPoints(
+  $id: Int,
+  $address: String!,
+  $seasonId: Int) {
   space(id: $id) {
     id
-    name
-    loyaltyPointsRanks(
-      first: $first
-      after: $after
-      order: $order
-      sprintId: $seasonId
-    ) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      totalCount
-      list {
-        id
-        rank
-        points
-        space {
-          name
-        }
-        address {
-          username
-          id
-          avatar
-          address
-          solanaAddress
-          aptosAddress
-          seiAddress
-          twitterUserName
-          discordUserName
-        }
-      }
+    addressLoyaltyPoints(address: $address, sprintId: $seasonId) {
+      id
+      points
+      rank
     }
   }
 }
@@ -692,10 +690,8 @@ Variables:
 ```json
 {
   "id": 40,
-  "first": 2,
-  "after": "-1",
-  "order": "Points",
-  "seasonId": 1
+  "address": "0x1fa5b7fc4da7777d211ed41d31f8b84735fd41b1",
+  "seasonId": null
 }
 ```
 
@@ -706,60 +702,17 @@ Response:
   "data": {
     "space": {
       "id": "40",
-      "name": "BNB Chain",
-      "loyaltyPointsRanks": {
-        "pageInfo": {
-          "startCursor": "0",
-          "endCursor": "2",
-          "hasNextPage": true,
-          "hasPreviousPage": false
-        },
-        "totalCount": 183473,
-        "list": [
-          {
-            "id": "lbrank-0L1xIfY6d1VYrlKAFOmZvT-40",
-            "rank": 1,
-            "points": 300,
-            "space": {
-              "name": "BNB Chain"
-            },
-            "address": {
-              "username": "HansaMR",
-              "id": "0L1xIfY6d1VYrlKAFOmZvT",
-              "avatar": "https://source.boringavatars.com/marble/120/0x61e305B027482358eCda2e7A56a150E0593e5cdA",
-              "address": "0x61e305b027482358ecda2e7a56a150e0593e5cda",
-              "solanaAddress": "",
-              "aptosAddress": "",
-              "seiAddress": "",
-              "twitterUserName": "",
-              "discordUserName": ""
-            }
-          },
-          {
-            "id": "lbrank-1L3UPNocTIIJid0tRIszgV-40",
-            "rank": 1,
-            "points": 300,
-            "space": {
-              "name": "BNB Chain"
-            },
-            "address": {
-              "username": "barossafeed",
-              "id": "1L3UPNocTIIJid0tRIszgV",
-              "avatar": "https://d257b89266utxb.cloudfront.net/galaxy/images/avatar/0xc3b8e4fedb31c756fae84e0c65475dcbb6ffd308-1670560267167156585.png",
-              "address": "0xc3b8e4fedb31c756fae84e0c65475dcbb6ffd308",
-              "solanaAddress": "",
-              "aptosAddress": "",
-              "seiAddress": "",
-              "twitterUserName": "",
-              "discordUserName": ""
-            }
-          }
-        ]
+      "addressLoyaltyPoints": {
+        "id": "sa-lb-0x1fa5b7fc4da7777d211ed41d31f8b84735fd41b1-40",
+        "points": 180,
+        "rank": 2
       }
     }
   }
 }
 ```
+
+
 
 ### Distribute loyalty points
 
@@ -1052,7 +1005,7 @@ query credential($id: ID!, $eligibleAddress: String!) {
 Arguments:
 
 | Name     | Description       |
-| -------- | ----------------- |
+|----------|-------------------|
 | `id`     | Campaign hash id. |
 | `pfirst` | Query limit.      |
 | `pafter` | Query offset.     |
@@ -1136,7 +1089,7 @@ Response:
 Arguments:
 
 | Name            | Description             |
-| --------------- | ----------------------- |
+|-----------------|-------------------------|
 | `id`            | Space id.               |
 | `alias`         | Space alias.            |
 | `campaignInput` | Campaigns query params. |
@@ -1231,163 +1184,6 @@ Response:
             "name": "BNB Chain 3 YA NFT "
           }
         ]
-      }
-    }
-  }
-}
-```
-
-### Query leaderboard data
-
-#### Overall
-
-Arguments:
-
-| Name                 | Description                                                                                                                                            |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                 | Space id.                                                                                                                                              |
-| `order`              | Sort by Points/GalxeID.                                                                                                                                |
-| `seasonId`           | Query for season ranking. Overall ranking is null                                                                                                      |
-| `cursorAfter` String | You don't need to pass in this value on the first page. On the second page, you can start passing in the `endCursor` value returned by the first page. |
-| `sprintId` Int       | The id value of the Session can access the data of the specified Session.                                                                              |
-
-Request:
-
-```graphql
-query SpaceLeaderboard(
-  $id: Int!
-  $first: Int
-  $after: String
-  $order: LoyaltyPointsRankOrder
-  $seasonId: Int
-) {
-  space(id: $id) {
-    id
-    name
-    loyaltyPointsRanks(
-      first: $first
-      after: $after
-      order: $order
-      sprintId: $seasonId
-    ) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      totalCount
-      list {
-        id
-        rank
-        points
-        address {
-          username
-          id
-          avatar
-          address
-        }
-      }
-    }
-  }
-}
-```
-
-Variables:
-
-```json
-{
-  "id": xx,
-  "first": 2,
-  "after": "-1",
-  "order": "Points",
-  "seasonId": null
-}
-```
-
-Response:
-
-```json
-{
-  "data": {
-    "space": {
-      "id": "xx",
-      "name": "xx",
-      "loyaltyPointsRanks": {
-        "pageInfo": {
-          "startCursor": "xxxx",
-          "endCursor": "xxxx",
-          "hasNextPage": true,
-          "hasPreviousPage": false
-        },
-        "totalCount": 100,
-        "edges": [
-          {
-            "node": {
-              "id": "xxx",
-              "rank": 1,
-              "points": 65,
-              "address": {
-                "username": "xx",
-                "id": "xxx",
-                "avatar": "xxx",
-                "address": "xxxx"
-              }
-            }
-          },
-          ...
-        ]
-      }
-    }
-  }
-}
-```
-
-### Query leaderboard data for one address
-
-Arguments:
-
-| Name       | Description                                       |
-| ---------- | ------------------------------------------------- |
-| `id`       | Space id.                                         |
-| `seasonId` | Query for season ranking. Overall ranking is null |
-
-Request:
-
-```graphql
-query SpaceLoyaltyPoints($id: Int, $address: String!, $seasonId: Int) {
-  space(id: $id) {
-    id
-    addressLoyaltyPoints(address: $address, sprintId: $seasonId) {
-      id
-      points
-      rank
-    }
-  }
-}
-```
-
-Variables:
-
-```json
-{
-  "id": xx,
-  "address": "xxxxx",
-  "seasonId": null
-}
-```
-
-Response:
-
-```json
-{
-  "data": {
-    "space": {
-      "id": "xx",
-      "addressLoyaltyPoints": {
-        "id": "sa-lb-xxx-xx",
-        "points": 15,
-        "rank": 10064
       }
     }
   }

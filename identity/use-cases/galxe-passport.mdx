@@ -73,6 +73,61 @@ Galxe Passport v2.1 type definition contains the following fields:
 - `last_selfie_date:uint<64>`: Unix timestamp of user's latest Galxe Passport Selfie verification date.
 - `total_sefie_verified:uint<8>`: Count of user's successful Selfie Verifications.
 
+### Example signed credential
+
+```json
+{
+  "header": {
+    "version": "1",
+    "type": "10001",
+    "context": "238277854774670540602918445255683183190672363274",
+    "id": "<omitted>"
+  },
+  "body": {
+    "birthdate": "<omitted>",
+    "gender": { "str": "M", "value": "1" },
+    "id_country": { "str": "US", "value": "840" },
+    "id_class": { "str": "dl", "value": "3" },
+    "document_expiration_date": "<omitted>",
+    "proof_of_time": "<omitted>",
+    "last_revoke_time": "0",
+    "last_selfie_date": "<omitted>",
+    "total_sefie_verified": "1"
+  },
+  "signatures": [
+    {
+      "metadata": {
+        "verification_stack": 1,
+        "signature_id": "<omitted>",
+        "expired_at": "<omitted>",
+        "identity_commitment": "<omitted>",
+        "issuer_id": "278006727486904618205999958244923369060433544",
+        "chain_id": "97",
+        "public_key": "GtrdrhiIorbpEkCJb15QN5UgE392xCR1Uhet4A+LLRhaBakE10XuJGktkc90Ql1CcYF+ZOYwEVRp8/KJ0NBrLw=="
+      },
+      "signature": "<omitted>",
+      "attachmentsSignature": "<omitted>"
+    }
+  ],
+  "attachments": {
+    "country_code": "US",
+    "first_verification_date": "<omitted>",
+    "passport_version": "v2.1",
+    "first_name": "<omitted>",
+    "birth_date": "<omitted>",
+    "sex": "M",
+    "id_issue_date": "<omitted>",
+    "id_expiration_date": "<omitted>",
+    "persona_id": "<omitted>",
+    "last_name": "<omitted>",
+    "nationality": "<omitted>",
+    "id_number": "<omitted>",
+    "id_class": "dl"
+  }
+}
+
+```
+
 ## Passport v2.0
 
 ### Type
@@ -131,22 +186,6 @@ Galxe Passport v2 type definition contains the following fields:
 
 Type Artifacts can be found here: https://ipfs.io/ipfs/QmZ4UghikEohVtpJaiAQorBeHNPFZ9vq5TfnE8jTAyLU9k
 
-### Issurance Workflow
-
-Once user passes KYC verification with Persona, our KYC provider, upon user request, Galxe backend will:
-
-1. Retrieve all necessary personal identifiable information to issue a Galxe Passport credential
-2. Generate credential using pre-defined type
-3. Append the following information as attachments:
-   - first_name
-   - last_name
-   - id_number: user's government ID number
-   - passport_version: v2.0 for now
-   - persona_id: unique identifier that serves as the only mapping of user's wallet to KYC data stored in Persona
-   - nationality: if provided by user's government ID
-4. Galxe-managed issuer sign the credential and its attachments, then add both signatures to the credential
-5. Return the signed credential back to user, and user will encrypt it with their own passport.
-6. User store the encrypted file in their preferred storage. For now, user will use Galxe Vault for storage with no charge
 
 ### Example signed credential
 
@@ -200,3 +239,14 @@ Once user passes KYC verification with Persona, our KYC provider, upon user requ
   }
 }
 ```
+
+## Issurance Workflow
+
+Once user passes KYC verification with Persona, our KYC provider, upon user request, Galxe backend will:
+
+1. Retrieve all necessary personal identifiable information to issue a Galxe Passport credential.
+2. Generate credential using pre-defined type.
+3. Append other relevant information as attachments.
+4. Galxe-managed issuer sign the credential and its attachments, then add both signatures to the credential.
+5. Return the signed credential back to user, and user will encrypt it with their own passport.
+6. User store the encrypted file in their preferred storage. For now, user will use Galxe Vault for storage with no charge.

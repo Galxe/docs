@@ -7,7 +7,75 @@ description: "Issue and verify Galxe Passport v2 credential"
   You can claim your Galxe Passport here: https://app.galxe.com/passport
 </Info>
 
-## Type
+## Passport v2.1
+
+In mid-September 2024, we upgraded Passport from version v2.0 to v2.1. Key updates include:
+
+- Added `document_expiration_date` to the schema, allowing rejection of documents that are near expiration.
+- Introduced `proof_of_time` to the schema, which tracks the time difference between the first and most recent verification. For example, if a user first verified their government ID in 2022 and re-verified their selfie in 2024, the time delta is 2 years, increasing confidence in the user's authenticity.
+- Added `last_revoke_time` to the schema to store the timestamp of the user's most recent passport revocation.
+
+New users will automatically receive their passport credential in v2.1. Existing users on v1 and v2 can upgrade by clicking the upgrade button at https://app.galxe.com/passport.
+
+### Type
+
+"Galxe Passport v2.1" credential type is registered onchain as a custom primitive type with type ID 10001.
+
+
+| Type ID | Name              | Description       | Definition                                                                                                                                                                                              | Example                                                                                                          |
+| ------- | ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| 10001   | Galxe Passport v2.1 | Galxe Passport v2.1 | `birthdate:uint<64>; gender:prop<8,c,1>; id_country:prop<16,c,1>; id_class:prop<8,c,1>;  document_expiration_date:uint<64>; proof_of_time:uint<64>; last_revoke_time:uint<64>; last_selfie_date:uint<64>; total_sefie_verified:uint<8>` | Your Personal Identifiable Information (PII) after creating your passport [here](https://app.galxe.com/passport) |
+
+Galxe Passport v2.1 type definition contains the following fields:
+
+- `birthdate:uint<64>`: User's birthdate in unix timestamp.
+- `gender:prop<8,c,1>`: User's gender, according to their government issued ID.
+  - Custom hash function mapping:
+    - Male = 1
+    - Female = 2
+    - X = 3 (undermined from government ID)
+- `id_country:prop<16,c,1>`: Country of ID issurance.
+  - Custom hash function mapping:
+    - ISO-3166-1 Alpha 2 format (2-letter country code) = ISO-3166-1 numeric code
+- `id_class:prop<8,c,1>`:
+  - Custom hash function mapping:
+    - CertificateOfCitizenship = 1
+    - ConsularID = 2
+    - DriversLicense = 3
+    - ColombiaForeignerID = 4
+    - CanadaHealthInsuranceCard = 5
+    - IdentificationCard = 6
+    - RussiaInternalPassport = 7
+    - AustraliaKeypassID = 8
+    - SingaporeLongTermVisitPass = 9
+    - MunicipalID = 10
+    - JapanMyNumberCard = 11
+    - PhilippinesNationalBureauOfInvestigationCertificate = 12
+    - SingaporeNationalResidencyID = 13
+    - PhilippinesOverseasForeignWorkerCard = 14
+    - ResidencePermit = 15
+    - IndiaPermanentAccountNumberCard = 16
+    - PhilippinesPostalIdentificationCard = 17
+    - Passport = 18
+    - PassportCard = 19
+    - PermanentResidenceCard = 20
+    - PhilippinesSocialSecuritySystemCard = 21
+    - USRefugeeTravelDocument = 22
+    - CanadaTribalID = 23
+    - PhilippinesUnitedMultiPurposeID = 24
+    - VoterID = 25
+    - ImmigrationVisa = 26
+    - WorkPermit = 27
+  - More information can be found here: https://docs.withpersona.com/reference/government-id-verifications#government-id-types
+- `document_expiration_date:uint<64>`: Government ID expiration date in unix timestamp.
+- `proof_of_time:uint<64>`: Time delta in Unix timestamp between first and latest verification.
+- `last_revoke_time:uint<64>`: Unix timestamp of user's latest Galxe Passport revocation date.
+- `last_selfie_date:uint<64>`: Unix timestamp of user's latest Galxe Passport Selfie verification date.
+- `total_sefie_verified:uint<8>`: Count of user's successful Selfie Verifications.
+
+## Passport v2.0
+
+### Type
 
 "Galxe Passport v2" credential type is registered onchain as a custom primitive type with type ID 10000.
 
@@ -63,7 +131,7 @@ Galxe Passport v2 type definition contains the following fields:
 
 Type Artifacts can be found here: https://ipfs.io/ipfs/QmZ4UghikEohVtpJaiAQorBeHNPFZ9vq5TfnE8jTAyLU9k
 
-## Issurance Workflow
+### Issurance Workflow
 
 Once user passes KYC verification with Persona, our KYC provider, upon user request, Galxe backend will:
 
@@ -80,7 +148,7 @@ Once user passes KYC verification with Persona, our KYC provider, upon user requ
 5. Return the signed credential back to user, and user will encrypt it with their own passport.
 6. User store the encrypted file in their preferred storage. For now, user will use Galxe Vault for storage with no charge
 
-## Example signed credential
+### Example signed credential
 
 ```json
 {

@@ -19,6 +19,8 @@ crendential for user  <----   Expression evaluation on response         <----
 
 ### GraphQL Endpoint (HTTPs):[](#graphql-endpoint-https "Direct link to heading")
 
+Please note that for custom ports, we only support 80, 443, and 8000.
+
 It's the HTTPs endpoint where Subgraph queries go to, see the example below.
 
 **For security reasons, you must add _[https://dashboard.galxe.com](https://dashboard.galxe.com)_ to the API server's [`Access-Control-Allow-Origin`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) header to avoid [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) issues. Please note that you will also need to set the `access-control-allow-methods`, as if we are sending a preflight request. We will perform a [CORS check](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#preflighted%5Frequests%5Fin%5Fcors) during the creation process, and if it's not included, the creation will fail.**
@@ -101,7 +103,7 @@ query info($address: String!) {
 }
 ```
 
-### Expression[](#expression-1 "Direct link to heading")
+### Single Expression[](#expression-1 "Direct link to heading")
 
 ```java
 function(resp) {
@@ -110,6 +112,13 @@ function(resp) {
   }
   return 0
 }
+
+```
+
+### Single Expression output[](#expression-output "Direct link to heading")
+
+```
+1
 
 ```
 
@@ -130,10 +139,10 @@ function(resp) {
 
 ```
 
-### Expression output[](#expression-output "Direct link to heading")
+### Multi Expression[](#expression-output "Direct link to heading")
 
 ```
-1
+"mainnet_eth_balance": 10
 
 ```
 

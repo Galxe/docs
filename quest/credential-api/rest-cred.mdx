@@ -85,6 +85,8 @@ The RESTFul style URL to which we will sent the HTTP GET request. The `$address`
 
 The response of the request **must** a valid JSON string.
 
+Please note that for custom ports, we only support 80, 443, and 8000.
+
 NOTE: [dashboard.galxe.com](http://dashboard.galxe.com) isn’t allowed.
 
 ### Headers[](#headers "Direct link to heading")
@@ -275,6 +277,13 @@ function(resp) {
 }
 
 ```
+### Single Expression output[](#expression-output "Direct link to heading")
+
+```
+1
+
+```
+
 **Multi Expression**
 
 <img alt="Specify Dimensions" height="600" src="../../images/cred/WX20240801-174031@2x.png" title="Specify Dimensions"
@@ -289,6 +298,13 @@ function(resp) {
     return { "mainnet_eth_balance": 0 };
   }
 }
+
+```
+
+### Multi Expression[](#expression-output "Direct link to heading")
+
+```
+"mainnet_eth_balance": 10
 
 ```
 

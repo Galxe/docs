@@ -1,0 +1,86 @@
+---
+title: "Quick Start"
+---
+
+This quick start guide will walk you through deploying and interacting with your own LoyaltyPoint contract. Follow the steps below to set up your loyalty points system quickly.
+
+# **Prerequisites**
+
+Before you begin, ensure you have the following tools and dependencies installed:
+
+- **Foundry**: Install Foundry by following the instructions at https://book.getfoundry.sh/getting-started/installation
+
+# **Contract Deployment**
+
+## **Step 1: Clone the Repository**
+
+```bash
+git clone https://github.com/galxe/loyalty-point.git
+cd loyalty-point
+```
+
+## **Step 2: Install Dependencies**
+
+```bash
+forge install
+```
+
+## **Step 3: Compile Contracts**
+
+```bash
+forge build
+```
+
+## **Step 4: Deploy your own LoyaltyPoint**
+
+Set up necessary environment variables:
+
+```bash
+FACTORY_ADDRESS=<factory-address>
+PRIVATE_KEY=<private-key>
+OWNER=<owner-address>
+MINTER=<minter-address>
+```
+
+- `FACTORY_ADDRESS` is the address of the deployed LoyaltyPointFactory contract on the network you are deploying to. For example, on Gravity Alpha Testnet Sepolia, the factory address is `0x8a85eC5AE1ae2c757eEfBb10b1203C984120bf8c`.
+- `PRIVATE_KEY` is the private key of the owner address.
+- `OWNER` is the owner address of the LoyaltyPoint contract.
+- `MINTER` is the minter address of the LoyaltyPoint contract.
+
+Run the deployment script:
+
+```bash
+forge script script/DeployLoyaltyPoint.s.sol:DeployLoyaltyPoint --rpc-url <rpc-url> --broadcast
+```
+
+- `rpc-url` is the RPC URL of the network you are deploying to. For example, on Gravity Alpha Testnet Sepolia, the RPC URL is `https://rpc-sepolia.gravity.xyz`.
+
+# **Interacting with the LoyaltyPoint Contract**
+
+## **Mint Loyalty Points to user**
+
+Using the `MINTER` address, you can mint loyalty points to a user:
+
+Set up necessary environment variables:
+
+```bash
+PRIVATE_KEY=<private-key>
+LOYALTY_POINT_ADDRESS=<loyalty-point-address>
+USER_ADDRESS=<user-address>
+```
+
+- `PRIVATE_KEY` is the private key of the MINTER address.
+- `LOYALTY_POINT_ADDRESS` is the address of the deployed LoyaltyPoint contract.
+- `USER_ADDRESS` is the address of the user to mint points to.
+
+Run the minting script:
+
+```bash
+forge script script/MintLoyaltyPoint.s.sol:MintLoyaltyPoint --rpc-url <rpc-url> --broadcast
+```
+
+# **Conclusion**
+
+You've successfully deployed your loyalty points system! The LoyaltyPoint contract provides a robust system for minting, burning, and controlling loyalty points for your users, while the factory allows for easy contract creation and management.
+
+Continue by integrating the contracts with your frontend or dApp to offer a seamless user experience.

@@ -1,0 +1,90 @@
+---
+title: "Hook"
+---
+
+Hooks are functions that can be added to the Loyalty Point contract to extend its functionality. They are executed during token transfers and can be used to implement custom logic, such as access control, rewards distribution, or external event triggers.
+
+## Creating a Hook
+
+To create a hook, you need to implement the `ILoyaltyPointHook` interface:
+
+```solidity
+interface ILoyaltyPointHook {
+  function onUpdate(address from, address to, uint256 value) external returns (bool);
+}
+```
+
+Now let's see how to create a hook and add it to your Loyalty Point contract. For this example, we'll create a hook that will trigger an event when user points are updated.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+import "../interface/ILoyaltyPointHook.sol"; // Adjust the path as necessary
+
+contract ExampleLoyaltyPointHook is ILoyaltyPointHook {
+    // Event emitted when points are updated
+    event PointsUpdated(
+        address indexed from,
+        address indexed to,
+        uint256 value
+    );
+
+    // Implementing the onUpdate function
+    function onUpdate(
+        address from,
+        address to,
+        uint256 value
+    ) external override returns (bool) {
+        // Emit the PointsUpdated event
+        emit PointsUpdated(from, to, value);
+        return true; // Indicate success
+    }
+}
+```
+
+## Deploying the Hook
+
+Set up the environment variables:
+
+```bash
+PRIVATE_KEY=<private-key>
+```
+
+Deploy the hook:
+
+```bash
+forge script script/DeployExampleLoyaltyPointHook.s.sol:DeployExampleLoyaltyPointHook --rpc-url <rpc-url> --broadcast
+```
+
+## Setup hook on Loyalty Point contract
+
+Set up necessary environment variables:
+
+```bash
+PRIVATE_KEY=<private-key>
+LOYALTY_POINT_ADDRESS=<loyalty-point-address>
+HOOK_ADDRESS=<hook-address>
+```
+
+- `PRIVATE_KEY`: The private key of the admin account of the Loyalty Point contract.
+- `LOYALTY_POINT_ADDRESS`: The address of the Loyalty Point contract.
+- `HOOK_ADDRESS`: The address of the hook contract.
+
+Add the hook to the Loyalty Point contract:
+
+```bash
+forge script script/AddHook.s.sol:AddHook --rpc-url <rpc-url> --broadcast
+```
+
+## Testing the Hook
+
+You can test the hook by minting or burning points to a user. The hook should be triggered and the event should be emitted.
+
+## Example
+
+An example of a hook that distributes rewards to a user has been deployed [here](https://explorer-sepolia.gravity.xyz/address/0xf385b659DD1B6785d4FDf83E34Ee228d2Fb10281).
+
+And here is a transaction that triggers the hook: [0xa4d01f742a1f532cecdb3b0c0a1a3b0922603cec4cf0edf46bd00c549ad03b75](https://explorer-sepolia.gravity.xyz/tx/0xa4d01f742a1f532cecdb3b0c0a1a3b0922603cec4cf0edf46bd00c549ad03b75).
+
+In the transaction logs, you can see that the hook is called and the `PointsUpdated` event is emitted.

@@ -1,0 +1,38 @@
+---
+title: "Galxe Loyalty Points"
+sidebarTitle: "Introduction"
+---
+
+The Galxe Loyalty Point System is an on-chain solution designed for the creation, distribution, and management of loyalty points. The system leverages blockchain technology to offer transparency, immutability, and security, providing projects and developers with an efficient way to engage users through loyalty programs.
+
+This system allows loyalty point issuers (such as brands or event organizers) to create custom loyalty point tokens that are fully verifiable and transferable on-chain. By interacting with this system, users can earn, transfer, and manage their loyalty points seamlessly, with full control over token issuance and burning.
+
+## Core Features
+
+1. Customizable Loyalty Point Contracts
+   Loyalty points are represented as ERC-20 tokens, which can be customized by the issuer. Each loyalty point contract is created using the factory method and is managed by a designated admin.
+
+The contract supports:
+
+- Minting and burning of loyalty points for individual users or in batches.
+- Custom token names and symbols, which can be updated as needed.
+- Transferability options, allowing the admin to control whether tokens can be transferred between users.
+
+2. Minting & Burning Mechanism
+   Loyalty points are issued (minted) by entities with the `MINTER_ROLE` and can be burned by the same. This ensures that only authorized entities can control the issuance and removal of points. Minting and burning can be done individually or in batches, allowing for flexibility in managing large groups of users.
+
+3. Transferability Control
+   Admins have the ability to toggle the transferability of loyalty points. By default, points are non-transferable, but this setting can be changed by the admin. This feature is useful for programs where points can only be redeemed but not traded or transferred between users.
+
+4. Hooks for Custom Logic
+   The Loyalty Point contract allows for the integration of custom logic through Hooks. These hooks can be used to introduce additional functionality, such as access control, rewards distribution, or external event triggers. Admins can add or remove hooks, which are executed during token transfers.
+
+5. Pausable Contract
+   To ensure security and flexibility, the contract is pausable. Admins can pause or unpause the contract, freezing all token transactions during maintenance or in case of security issues. This feature is integrated using OpenZeppelin’s ERC20Pausable extension.
+
+## Use Cases
+
+- Retail Loyalty Programs: Brands can issue loyalty points that are awarded based on customer activities such as purchases, reviews, or engagement. The points can be redeemed for discounts, rewards, or exclusive access, with full control over how they are managed.
+- Event Ticketing & Rewards: Event organizers can create loyalty points to reward attendees for participation, early registration, or referrals. Points can be used for priority access, VIP services, or redeemable rewards during the event.
+- Gaming & Competition: Game developers can issue points for in-game achievements, which can later be redeemed for in-game assets or advantages. The leaderboard system can be integrated to track top players and enhance competition.
+- Community Engagement: Communities can use loyalty points to reward members for participation, content creation, or contributions. These points can then be redeemed for recognition, special roles, or other benefits within the community.

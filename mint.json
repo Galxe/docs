@@ -37,6 +37,10 @@
       "url": "galxe-id"
     },
     {
+      "name": "Galxe Loyalty Points",
+      "url": "loyalty-points"
+    },
+    {
       "name": "Alva Docs ↗",
       "url": "https://docs.alva.xyz"
     }
@@ -54,18 +58,13 @@
     }
   ],
   "navigation": [
-      {
+    {
       "group": "Platform Overview",
-      "pages": [
-        "about/introduction"
-      ]
+      "pages": ["about/introduction"]
     },
     {
       "group": "GAL",
-      "pages": [
-        "about/gal/dao",
-        "about/gal/tokenomics"
-      ]
+      "pages": ["about/gal/dao", "about/gal/tokenomics"]
     },
     {
       "group": "Legal",
@@ -116,10 +115,7 @@
     },
     {
       "group": "Use Cases",
-      "pages": [
-        "identity/use-cases/galxe-passport",
-        "identity/use-cases/ideas"
-      ]
+      "pages": ["identity/use-cases/galxe-passport", "identity/use-cases/ideas"]
     },
     {
       "group": "Future Works",
@@ -179,6 +175,21 @@
       "pages": [
         "galxe-id/galxe-id-integration/galxe-id-oauth",
         "galxe-id/galxe-id-integration/galxe-passport-oauth"
+      ]
+    },
+    {
+      "group": "Getting Started",
+      "pages": [
+        "loyalty-points/getting-started/introduction",
+        "loyalty-points/getting-started/quick-start",
+        "loyalty-points/getting-started/hook"
+      ]
+    },
+    {
+      "group": "Contract",
+      "pages": [
+        "loyalty-points/contracts/loyalty-point",
+        "loyalty-points/contracts/loyalty-point-factory"
       ]
     }
   ],

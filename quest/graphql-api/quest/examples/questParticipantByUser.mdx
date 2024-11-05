@@ -1,0 +1,41 @@
+---
+title: "Quest Participant By User"
+---
+
+### Query campaign participants
+
+Arguments:
+
+| Name     | Description       |
+|----------|-------------------|
+| `id`     | Campaign hash id. |
+| `address`     | The address bound by the user |
+
+Request:
+
+```graphql
+query participantByUser{
+  campaign(id:"GChdWUjXX3"){
+    id
+    name 
+    description
+    status
+    claimedTimes(address:"0x4afae8d221e2c766925dcea195a96bd36e7b441a")
+  }
+}
+```
+
+Respon:
+```
+{
+  "data": {
+    "campaign": {
+      "id": "GChdWUjXX3",
+      "name": "Introduction to Web3!",
+      "description": "Welcome to Module 1-Course 1 of Mission Web3! This course covers the basics of how the web evolved from Web1 to Web3. You will learn about the unique value propositions of Web3 and why they matter. ",
+      "status": "Active",
+      "claimedTimes": 1
+    }
+  }
+}
+```

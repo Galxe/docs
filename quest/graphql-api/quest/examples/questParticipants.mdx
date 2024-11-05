@@ -1,0 +1,89 @@
+---
+title: "Quest Participants"
+---
+
+# Space Access:
+
+## Campaign
+
+### Query campaign participants
+
+Arguments:
+
+| Name     | Description       |
+|----------|-------------------|
+| `id`     | Campaign hash id. |
+| `pfirst` | Query limit.      |
+| `pafter` | Query offset.     |
+
+Request:
+
+```graphql
+query campaignParticipants($id: ID!, $pfirst: Int!, $pafter: String!) {
+  campaign(id: $id) {
+    id
+    numberID
+    numNFTMinted
+    participants {
+      participants(first: $pfirst, after: $pafter) {
+        list {
+          address {
+            username
+            avatar
+            address
+            email
+            solanaAddress
+            aptosAddress
+            seiAddress
+            discordUserID
+          }
+        }
+      }
+      participantsCount
+    }
+  }
+}
+```
+
+Variables:
+
+```json
+{
+  "id": "GCn45UjHXE",
+  "pfirst": 1,
+  "pafter": "-1"
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "campaign": {
+      "id": "GCn45UjHXE",
+      "numberID": 151178,
+      "numNFTMinted": 0,
+      "participants": {
+        "participants": {
+          "list": [
+            {
+              "address": {
+                "username": "0xdoxes",
+                "avatar": "https://source.boringavatars.com/marble/120/blunder8888@gmail.com",
+                "address": "0x00000000ccd193975907ddb660b4692bb4257f9f",
+                "email": "",
+                "solanaAddress": "",
+                "aptosAddress": "",
+                "seiAddress": "",
+                "discordUserID": ""
+              }
+            }
+          ]
+        },
+        "participantsCount": 234163
+      }
+    }
+  }
+}
+```

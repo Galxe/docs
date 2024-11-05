@@ -12,7 +12,6 @@ Arguments:
 | `address`     | The address bound by the user |
 
 Request:
-
 ```graphql
 query participantByUser{
   campaign(id:"GChdWUjXX3"){
@@ -25,7 +24,9 @@ query participantByUser{
 }
 ```
 
-Respon:
+
+Response:
+<Check>When `claimedTimes` is greater than `0`, it indicates that the user has completed and received the reward.</Check>
 ```
 {
   "data": {
@@ -39,3 +40,4 @@ Respon:
   }
 }
 ```
+

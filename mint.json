@@ -155,12 +155,7 @@
             {
               "group": "Queries",
               "pages": [
-                "quest/graphql-api/overview/campaign"
-              ]
-            },
-            {
-              "group": "Examples",
-              "pages": [
+                "quest/graphql-api/overview/quest/queries"
               ]
             }
           ]

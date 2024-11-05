@@ -155,7 +155,7 @@
             {
               "group": "Queries",
               "pages": [
-                "quest/graphql-api/overview/quest/queries/campaign"
+                "quest/graphql-api/quest/queries/campaign"
               ]
             }
           ]

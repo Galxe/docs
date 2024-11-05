@@ -14,9 +14,7 @@ Find Quest's ID
 
 `Campaign`
 
-<details>
-  <summary><strong>Show fields</strong></summary>
-
+<Accordion title="Show fields">
   `id`: ID!  
   unique hash ID
 
@@ -45,18 +43,12 @@ Find Quest's ID
   Quest claim end time, represented by a timestamp
 
   `participants`: CampaignParticipant!
-
-  <details>
-    <summary><strong>Show fields</strong></summary>
-
-    `participantsCount`: Int!  
+  <Accordion title="Show fields">
+  `participantsCount`: Int!  
     Number of users participating in the Quest
 
-    `participants`: ParticipantsConnection!
-
-    <details>
-      <summary><strong>Show arguments and fields</strong></summary>
-
+  `participants`: ParticipantsConnection!
+      <Accordion title="Show arguments and fields">
       **Arguments**
 
       `first`: Int = 0  
@@ -74,16 +66,11 @@ Find Quest's ID
       An object that's used to retrieve cursor information about the current page.
 
       `list`: [ParticipationRecord!]!
-
-      <details>
-        <summary><strong>Show fields</strong></summary>
-
+        <Accordion title="Show fields">
         `address`: Address!  
         Some basic information about the user, depending on the scope of data collected by the Quest
-
-        <details>
-          <summary><strong>Show fields</strong></summary>
-
+          <Accordion title="Show fields">
+          
           `id`: String!  
           `address`: String!  
           `evmAddressSecondary`: [EvmAddressSecondaryInfo!]  
@@ -106,9 +93,8 @@ Find Quest's ID
 
           `points`: Int!  
           The number of points currently received by the user
-
-        </details>
-      </details>
-    </details>
-  </details>
-</details>
+        </Accordion>
+      </Accordion>
+    </Accordion>
+  </Accordion>
+</Accordion>

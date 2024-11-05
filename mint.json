@@ -155,14 +155,18 @@
             {
               "group": "Queries",
               "pages": [
-                "quest/graphql-api/quest/queries/campaign"
+                "quest/graphql-api/quest/queries/quest"
+              ]
+            },
+            {
+              "group": "Examples",
+              "pages": [
+                "quest/graphql-api/quest/examples/questParticipants",
+                "quest/graphql-api/quest/examples/questParticipantByUser"
               ]
             }
           ]
-        },
-        "quest/graphql-api/api-examples",
-        "quest/graphql-api/claim-integrate",
-        "quest/graphql-api/claim-galxe-nft"
+        }
       ]
     },
     {

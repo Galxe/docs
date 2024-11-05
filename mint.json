@@ -140,8 +140,31 @@
     {
       "group": "GraphQL API",
       "pages": [
-        "quest/graphql-api/overview",
-        "quest/graphql-api/rate-limit",
+        {
+          "group": "Overview",
+          "pages": [
+            "quest/graphql-api/overview/authentication",
+            "quest/graphql-api/overview/endpoint-and-queries",
+            "quest/graphql-api/overview/rate-limit",
+            "quest/graphql-api/overview/status-and-error-codes"
+          ]
+        },
+        {
+          "group": "Quest",
+          "pages": [
+            {
+              "group": "Queries",
+              "pages": [
+                "quest/graphql-api/overview/campaign"
+              ]
+            },
+            {
+              "group": "Examples",
+              "pages": [
+              ]
+            }
+          ]
+        },
         "quest/graphql-api/api-examples",
         "quest/graphql-api/claim-integrate",
         "quest/graphql-api/claim-galxe-nft"

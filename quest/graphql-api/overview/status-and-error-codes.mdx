@@ -1,0 +1,31 @@
+# Status and error codes
+
+All API queries return HTTP status codes that contain more information about the response.
+
+### **`200 OK`**
+
+GraphQL HTTP status codes are different from REST API status codes. Most importantly, the GraphQL API can return a `200 OK` response code in cases that would typically produce `4xx` or `5xx` errors in REST.
+
+### `422 Unprocessable Content`
+
+The `422 Unprocessable Content` status code indicates that the request is syntactically correct, but the Galxe server cannot process it due to semantic or logical issues. This typically occurs when input value validation fails or business rules are violated, such as submitting an invalid address format or attempting to create duplicate records.
+
+Unlike a 200 OK response with errors in the GraphQL response, a `422` indicates that the server cannot complete the request because of problems with the data, even though the request itself is well-formed.
+
+### `429 **Too Many Requests**`
+
+The `429 Too Many Requests` status code indicates that your client has sent too many requests within a given timeframe, exceeding the rate limit of the Galxe server. When this happens, the Galxe server will block subsequent requests for a period of time to prevent overloading.
+
+A Retry-After header is often included in the response to indicate how long the client should wait before making another request.
+
+### Error handling
+
+The response for the errors object contains additional detail to help you debug your operation.
+
+The response for mutations contains additional detail to help debug your query. To access this, you must request `userErrors`.
+
+### Properties
+
+errors `array`
+
+A list of all errors returned

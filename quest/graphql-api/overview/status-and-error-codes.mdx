@@ -1,4 +1,3 @@
-# Status and error codes
 
 All API queries return HTTP status codes that contain more information about the response.
 
@@ -12,7 +11,7 @@ The `422 Unprocessable Content` status code indicates that the request is syntac
 
 Unlike a 200 OK response with errors in the GraphQL response, a `422` indicates that the server cannot complete the request because of problems with the data, even though the request itself is well-formed.
 
-### `429 **Too Many Requests**`
+### `429 Too Many Requests`
 
 The `429 Too Many Requests` status code indicates that your client has sent too many requests within a given timeframe, exceeding the rate limit of the Galxe server. When this happens, the Galxe server will block subsequent requests for a period of time to prevent overloading.
 

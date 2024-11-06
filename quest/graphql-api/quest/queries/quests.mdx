@@ -1,0 +1,35 @@
+---
+title: 'Quests'
+description: 'Find Quests (Campaigns) details.'
+---
+
+**Arguments**
+
+`input`: ListCampaignInput (required)
+
+<Accordion title="Show arguments">
+`ids`: [ID!]
+
+Find Quest's Hash ID array.
+
+`spaceId`: ID
+Query the Quest under Space through Space ID.
+
+`first`: Int
+
+The first n elements from the paginated list.
+
+`after`: String
+
+The elements that come after the specified cursor.
+</Accordion>
+
+**Quests possible returns**
+
+<Warning>When Quest is set to **Private** status, it will not appear under batch query, which does not depend on whether you have space admin permissions.</Warning>
+
+`campaigns`
+
+<Accordion title="Show fields">
+
+</Accordion>

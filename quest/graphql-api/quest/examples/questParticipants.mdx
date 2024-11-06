@@ -88,15 +88,127 @@ Response:
 
 <CodeGroup>
 
-```javascript main.js
+```javascript JavaScript
+var https = require('follow-redirects').https;
+var fs = require('fs');
 
+var options = {
+  'method': 'POST',
+  'hostname': 'graphigo.prd.galaxy.eco',
+  'path': '/query',
+  'headers': {
+    'content-type': 'application/json',
+  },
+  'maxRedirects': 20
+};
+
+var req = https.request(options, function (res) {
+  var chunks = [];
+
+  res.on("data", function (chunk) {
+    chunks.push(chunk);
+  });
+
+  res.on("end", function (chunk) {
+    var body = Buffer.concat(chunks);
+    console.log(body.toString());
+  });
+
+  res.on("error", function (error) {
+    console.error(error);
+  });
+});
+
+var postData = JSON.stringify({
+  query: `query campaignParticipants($id: ID!, $pfirst: Int!, $pafter: String!) {
+  campaign(id: $id) {
+    id
+    numberID
+    numNFTMinted
+    participants {
+      participantsCount
+      participants(first: $pfirst, after: $pafter) {
+        list {
+          points
+          address {
+            username
+            avatar
+            address
+            email
+            solanaAddress
+            aptosAddress
+            seiAddress
+            discordUserID
+          }
+        }
+      }
+      participantsCount
+    }
+  }
+}`,
+  variables: {"id":"GCn45UjHXE","pfirst":1,"pafter":"-1"}
+});
+
+req.write(postData);
+
+req.end();
 ```
 
-```python main.py
+```python Python
+import http.client
+import json
 
+conn = http.client.HTTPSConnection("graphigo.prd.galaxy.eco")
+payload = "{\"query\":\"query campaignParticipants($id: ID!, $pfirst: Int!, $pafter: String!) {\\n  campaign(id: $id) {\\n    id\\n    numberID\\n    numNFTMinted\\n    participants {\\n      participantsCount\\n      participants(first: $pfirst, after: $pafter) {\\n        list {\\n          points\\n          address {\\n            username\\n            avatar\\n            address\\n            email\\n            solanaAddress\\n            aptosAddress\\n            seiAddress\\n            discordUserID\\n          }\\n        }\\n      }\\n      participantsCount\\n    }\\n  }\\n}\\n\",\"variables\":{\"id\":\"GCn45UjHXE\",\"pfirst\":1,\"pafter\":\"-1\"}}"
+headers = {
+  'Content-Type': 'application/json'
+}
+conn.request("POST", "/query", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
 ```
 
-```go main.go
+```go Go
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"strings"
+)
+
+func main() {
+
+	url := "https://graphigo.prd.galaxy.eco/query"
+	method := "POST"
+
+	payload := strings.NewReader("{\"query\":\"query campaignParticipants($id: ID!, $pfirst: Int!, $pafter: String!) {\\n  campaign(id: $id) {\\n    id\\n    numberID\\n    numNFTMinted\\n    participants {\\n      participantsCount\\n      participants(first: $pfirst, after: $pafter) {\\n        list {\\n          points\\n          address {\\n            username\\n            avatar\\n            address\\n            email\\n            solanaAddress\\n            aptosAddress\\n            seiAddress\\n            discordUserID\\n          }\\n        }\\n      }\\n      participantsCount\\n    }\\n  }\\n}\\n\",\"variables\":{\"id\":\"GCn45UjHXE\",\"pfirst\":1,\"pafter\":\"-1\"}}")
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, payload)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	req.Header.Add("Content-Type", "application/json")
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(body))
+}
 
 ```
 

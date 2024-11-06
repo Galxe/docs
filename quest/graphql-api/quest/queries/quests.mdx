@@ -30,6 +30,31 @@ The elements that come after the specified cursor.
 
 `campaigns`
 
+`list`: [CampaignConnection!]!
 <Accordion title="Show fields">
+`totalCount`: Int!
 
+The total number of campaigns under the current query, calculating the **Private** portion.
+
+`edges`: [CampaignEdge!]!
+
+`pageInfo`: PageInfo!
+
+An object that's used to retrieve cursor information about the current page.
+
+`list`: [Campaign!]!
+<Accordion title="Show fields">
+  `id`: ID!  
+  unique hash ID
+
+  `numberID`: Int!  
+  unique number ID
+
+  `name`: String!  
+  Quest name
+
+  <Tip>For more information, please jump to the quest introduction.</Tip>
+
+
+</Accordion>
 </Accordion>

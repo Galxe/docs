@@ -1,0 +1,170 @@
+---
+title: "Query Leaderboard Data"
+---
+
+Arguments:
+
+| Name          | Description                                                                                                                                            |
+|---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`          | Space id.                                                                                                                                              |
+| `pageSize`    | Query limit.                                                                                                                                           |
+| `cursorAfter` | You don't need to pass in this value on the first page. On the second page, you can start passing in the `endCursor` value returned by the first page. |
+| `order`       | Sort by Points/GalxeID.                                                                                                                                |
+| `seasonId`    | Query for season ranking. Overall ranking is null                                                                                                      |
+
+Request:
+
+```graphql
+query SpaceLeaderboard(
+  $id: Int!,
+  $pageSize: Int,
+  $order: LoyaltyPointsRankOrder,
+  $cursorAfter: String,
+  $seasonId: Int
+) {
+  space(id: $id) {
+    id
+    name
+    loyaltyPointsRanks(
+      first: $pageSize
+      order: $order
+      cursorAfter: $cursorAfter
+      sprintId: $seasonId
+    ) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        __typename
+      }
+      totalCount
+      edges {
+        node {
+          id
+          rank
+          points
+          space {
+            name
+            __typename
+          }
+          address {
+            username
+            id
+            avatar
+            address
+            solanaAddress
+            aptosAddress
+            seiAddress
+            twitterUserName
+            discordUserName
+            displayNamePref
+            displayTwitter
+            displayDiscord
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+```
+
+Variables:
+
+```json
+{
+  "id": 40,
+  "pageSize": 2,
+  "cursorAfter": "Mg==",
+  "order": "Points",
+  "seasonId": null
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "space": {
+      "id": "40",
+      "name": "BNB Chain",
+      "loyaltyPointsRanks": {
+        "pageInfo": {
+          "startCursor": "Mw==",
+          "endCursor": "NA==",
+          "hasNextPage": true,
+          "hasPreviousPage": true,
+          "__typename": "PageInfo"
+        },
+        "totalCount": 5509,
+        "edges": [
+          {
+            "node": {
+              "id": "lbrank-DJkB89vLsPMm44LuraURi8-40",
+              "rank": 2,
+              "points": 180,
+              "space": {
+                "name": "BNB Chain",
+                "__typename": "Space"
+              },
+              "address": {
+                "username": "DJkB89vLsPMm44LuraURi8",
+                "id": "DJkB89vLsPMm44LuraURi8",
+                "avatar": "https://cdn.galxe.com/galaxy/score/c6096a05-45f3-4427-8961-3326f9812ae1.png",
+                "address": "0x1fa5b7fc4da7777d211ed41d31f8b84735fd41b1",
+                "solanaAddress": "",
+                "aptosAddress": "",
+                "seiAddress": "",
+                "twitterUserName": "",
+                "discordUserName": "",
+                "displayNamePref": "USERNAME",
+                "displayTwitter": false,
+                "displayDiscord": false,
+                "__typename": "Address"
+              },
+              "__typename": "LoyaltyPointsRank"
+            },
+            "__typename": "LoyaltyPointsRankEdge"
+          },
+          {
+            "node": {
+              "id": "lbrank-XHKvqqv82igAiiWjA7TEHH-40",
+              "rank": 2,
+              "points": 180,
+              "space": {
+                "name": "BNB Chain",
+                "__typename": "Space"
+              },
+              "address": {
+                "username": "tiepvien1111",
+                "id": "XHKvqqv82igAiiWjA7TEHH",
+                "avatar": "https://cdn.galxe.com/galaxy/score/30c28119-a45d-4591-ad22-436726404634.png",
+                "address": "0x3739734419c979730fb0d0a4da42a840010e3cb1",
+                "solanaAddress": "",
+                "aptosAddress": "",
+                "seiAddress": "",
+                "twitterUserName": "",
+                "discordUserName": "",
+                "displayNamePref": "USERNAME",
+                "displayTwitter": false,
+                "displayDiscord": false,
+                "__typename": "Address"
+              },
+              "__typename": "LoyaltyPointsRank"
+            },
+            "__typename": "LoyaltyPointsRankEdge"
+          }
+        ],
+        "__typename": "LoyaltyPointsRankConnection"
+      },
+      "__typename": "Space"
+    }
+  }
+}
+```

@@ -162,8 +162,8 @@
             {
               "group": "Examples",
               "pages": [
-                "quest/graphql-api/quest/examples/questParticipants",
-                "quest/graphql-api/quest/examples/questParticipantByUser"
+                "quest/graphql-api/quest/examples/quest-participants",
+                "quest/graphql-api/quest/examples/quest-participant-by-user"
               ]
             }
           ]
@@ -175,6 +175,18 @@
               "group":"Queries",
               "pages":[
                 "quest/graphql-api/space/queries/space"
+              ]
+            },
+            {
+              "group":"Examples",
+              "pages":[
+                "quest/graphql-api/space/examples/leaderboard-data"
+              ]
+            },
+            {
+              "group":"Mutaions",
+              "pages":[
+                "quest/graphql-api/space/mutaions/upload-leaderboard-points"
               ]
             }
           ]

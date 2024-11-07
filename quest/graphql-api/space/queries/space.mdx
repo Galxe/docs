@@ -35,7 +35,34 @@ Space's alias
 
 `banner`: String!
 
- `sprints`
+ `sprints`:SprintConnection!
+
+<Accordion title="Show arguments and fields">
+  **Arguments**
+
+  `first`: Int  
+  The first n elements from the paginated list.
+
+  `after`: String 
+  The elements that come after the specified cursor.
+
+  `isAdminView`: Boolean
+
+  **Fields**
+
+  `id`: ID!
+
+  `space`: Space!
+
+  `name`: String!
+
+  `startTime`: Int!
+
+  `endTime`: Int
+
+  `isVisible`: Boolean!
+
+</Accordion>
 
 </Accordion>
 

@@ -180,7 +180,8 @@
             {
               "group":"Examples",
               "pages":[
-                "quest/graphql-api/space/examples/leaderboard-data"
+                "quest/graphql-api/space/examples/leaderboard-data",
+                "quest/graphql-api/space/examples/leaderboard-data-by-user"
               ]
             },
             {

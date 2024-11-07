@@ -1,4 +1,55 @@
 ---
-title: 'New file'
-description: 'Description of your new file.'
+title: "QueryLeaderboardDataByUser"
 ---
+
+Arguments:
+
+| Name       | Description                                       |
+|------------|---------------------------------------------------|
+| `id`       | Space id.                                         |
+| `seasonId` | Query for season ranking. Overall ranking is null |
+
+Request:
+
+```graphql
+query SpaceLoyaltyPoints(
+  $id: Int,
+  $address: String!,
+  $sprintId: Int) {
+  space(id: $id) {
+    id
+    addressLoyaltyPoints(address: $address, sprintId: $sprintId) {
+      id
+      points
+      rank
+    }
+  }
+}
+```
+
+Variables:
+
+```json
+{
+  "id": 40,
+  "address": "0x1fa5b7fc4da7777d211ed41d31f8b84735fd41b1",
+  "sprintId": null
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "space": {
+      "id": "40",
+      "addressLoyaltyPoints": {
+        "id": "sa-lb-0x1fa5b7fc4da7777d211ed41d31f8b84735fd41b1-40",
+        "points": 180,
+        "rank": 2
+      }
+    }
+  }
+}
+```

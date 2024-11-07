@@ -64,5 +64,42 @@ Space's alias
 
 </Accordion>
 
+`loyaltyPointsRanks`:LoyaltyPointsRankConnection!
+
+Ranking query under Space
+<Accordion title="Show arguments and fields">
+
+**Arguments**
+
+`sprintId`: Int
+Used for passing when querying the season leaderboard.
+
+`order`: LoyaltyPointsRankOrder
+Sorting rules, you can choose **Points** or **GalxeID**
+
+`first`: Int
+Number of records per page
+
+`cursorAfter`: String
+Retrieve records after a certain position.
+
+
+`cursorBefore`: String
+Retrieve records prior to a certain location.
+
+**Fields**
+
+totalCount: Int!
+
+edges: [LoyaltyPointsRankEdge!]!
+
+pageInfo: PageInfo!
+
+list: [LoyaltyPointsRank!]!
+
+
+</Accordion>
+
+
 </Accordion>
 

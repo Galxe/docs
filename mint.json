@@ -167,6 +167,17 @@
               ]
             }
           ]
+        },
+        {
+          "group":"Space",
+          "pages":[
+            {
+              "group":"Queries",
+              "pages":[
+                "quest/graphql-api/space/queries/space"
+              ]
+            }
+          ]
         }
       ]
     },

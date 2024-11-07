@@ -7,29 +7,29 @@ Arguments:
 | Name          | Description                                                                                                                                            |
 |---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`          | Space id.                                                                                                                                              |
-| `pageSize`    | Query limit.                                                                                                                                           |
+| `first`    | Query limit.                                                                                                                                           |
 | `cursorAfter` | You don't need to pass in this value on the first page. On the second page, you can start passing in the `endCursor` value returned by the first page. |
 | `order`       | Sort by Points/GalxeID.                                                                                                                                |
-| `seasonId`    | Query for season ranking. Overall ranking is null                                                                                                      |
+| `sprintId`    | Query for season ranking. Overall ranking is null                                                                                                      |
 
 Request:
 
 ```graphql
 query SpaceLeaderboard(
   $id: Int!,
-  $pageSize: Int,
+  $first: Int,
   $order: LoyaltyPointsRankOrder,
   $cursorAfter: String,
-  $seasonId: Int
+  $sprintId: Int
 ) {
   space(id: $id) {
     id
     name
     loyaltyPointsRanks(
-      first: $pageSize
+      first: $first
       order: $order
       cursorAfter: $cursorAfter
-      sprintId: $seasonId
+      sprintId: $sprintId
     ) {
       pageInfo {
         startCursor
@@ -58,9 +58,6 @@ query SpaceLeaderboard(
             seiAddress
             twitterUserName
             discordUserName
-            displayNamePref
-            displayTwitter
-            displayDiscord
             __typename
           }
           __typename
@@ -72,6 +69,7 @@ query SpaceLeaderboard(
     __typename
   }
 }
+
 ```
 
 Variables:
@@ -79,10 +77,10 @@ Variables:
 ```json
 {
   "id": 40,
-  "pageSize": 2,
+  "first": 2,
   "cursorAfter": "Mg==",
   "order": "Points",
-  "seasonId": null
+  "sprintId": null
 }
 ```
 
@@ -123,9 +121,6 @@ Response:
                 "seiAddress": "",
                 "twitterUserName": "",
                 "discordUserName": "",
-                "displayNamePref": "USERNAME",
-                "displayTwitter": false,
-                "displayDiscord": false,
                 "__typename": "Address"
               },
               "__typename": "LoyaltyPointsRank"
@@ -151,9 +146,6 @@ Response:
                 "seiAddress": "",
                 "twitterUserName": "",
                 "discordUserName": "",
-                "displayNamePref": "USERNAME",
-                "displayTwitter": false,
-                "displayDiscord": false,
                 "__typename": "Address"
               },
               "__typename": "LoyaltyPointsRank"

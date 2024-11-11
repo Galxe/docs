@@ -189,7 +189,7 @@
             {
               "group": "Mutaions",
               "pages": [
-                "quest/graphql-api/credential/mutaions/credential-holder-update"
+                "quest/graphql-api/credential/mutations/credential-holder-update"
               ]
             }
           ]
@@ -213,7 +213,7 @@
             {
               "group":"Mutaions",
               "pages":[
-                "quest/graphql-api/space/mutaions/upload-leaderboard-points"
+                "quest/graphql-api/space/mutations/upload-leaderboard-points"
               ]
             }
           ]

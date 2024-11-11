@@ -174,22 +174,22 @@
             {
               "group": "Queries",
               "pages": [
-                "quest/graphql-api/quest/queries/credential"
+                "quest/graphql-api/credential/queries/credential"
               ]
             },
             {
               "group": "Examples",
               "pages": [
-                "quest/graphql-api/quest/queries/cred-info",
-                "quest/graphql-api/quest/queries/cred-holders",
-                "quest/graphql-api/quest/queries/cred-holder-by-user",
-                "quest/graphql-api/quest/queries/cred-holder-update"
+                "quest/graphql-api/credential/queries/cred-info",
+                "quest/graphql-api/credential/queries/cred-holders",
+                "quest/graphql-api/credential/queries/cred-holder-by-user",
+                "quest/graphql-api/credential/queries/cred-holder-update"
               ]
             },
             {
               "group": "Mutaions",
               "pages": [
-                "quest/graphql-api/quest/examples/credential-holder-update"
+                "quest/graphql-api/credential/examples/credential-holder-update"
               ]
             }
           ]

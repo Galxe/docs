@@ -225,7 +225,7 @@ async function main() {
   const evmIdSlice = u.createNewIdentitySlice("evm");
 
   // User's identity commitment is computed based on the secrets of the identity slice.
-  // You can also retrive the identity commitment from the identity slice.
+  // You can also retrieve the identity commitment from the identity slice.
   const userIdc = user.User.computeIdentityCommitment(evmIdSlice);
 
   // let's use a famous Ethereum address in this example.

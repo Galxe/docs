@@ -7,3 +7,5 @@ Some Galxe GraphQL API queries require a valid Galxe access token.
 Create `access-token` in personal settings
 
 Include your token as the `access-token` header in all API queries.
+
+<Warning>Your `access-token` is a secret. To keep your integration secure, never store the token in your source code or commit it in version control. Instead, read the token from an environment variable. Use a secret manager or deployment system to set the token in the environment.</Warning>

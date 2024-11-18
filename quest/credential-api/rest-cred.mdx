@@ -15,20 +15,18 @@ crendential for user  <----   Expression evaluation on response.body    <----
 
 ```
 
-| Endpoints                             | 5 minutes | 60 minutes
-|---------------------------------------|-----------|------------
-| https://graphigo.prd.galaxy.eco/query | 1500      | 10000      
-
 We support GET and POST method:
 
 * **GET**: Endpoint, Headers and Expression.
+
 * **POST**: Endpoint, Headers, Post Body and Expression
 
-**For security reasons, you must add _[`https://dashboard.galxe.com`](https://dashboard.galxe.com)_ to the API server's [`Access-Control-Allow-Origin`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) header to avoid [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) issues. Please note that you will also need to add either GET or POST to the `access-control-allow-methods` header in the response, as if we are sending a preflight request. We will perform a [CORS check](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#preflighted%5Frequests%5Fin%5Fcors) during the creation process, and if it's not included, the creation will fail.**
+**For security reasons, you must add** [`https://dashboard.galxe.com`](https://dashboard.galxe.com) **to the API server's** [`Access-Control-Allow-Origin`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) **header to avoid** [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) **issues. Please note that you will also need to add either GET or POST to the `access-control-allow-methods` header in the response, as if we are sending a preflight request. We will perform a** [CORS check](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#preflighted%5Frequests%5Fin%5Fcors) **during the creation process, and if it's not included, the creation will fail.**
 
-Please note that when we check the endpoint, we *always* send a preflight request, **ignoring the so-called [simple_requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests) convention**, for security reasons. You might see that your configuration works ok when clicking test button in our app, but later failed to save. We always encourage you to use the following cURL command to check if the endpoint is compliant.
+Please note that when we check the endpoint, we *always* send a preflight request, **ignoring the so-called** [simple\_requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests) **convention**, for security reasons. You might see that your configuration works ok when clicking test button in our app, but later failed to save. We always encourage you to use the following cURL command to check if the endpoint is compliant.
 
 To check if the endpoint is compliant, you can use cURL:
+
 ```
 // For GET
 // NOTE: no address will be replaced in this request. For example if the endpoint is
@@ -50,6 +48,7 @@ access-control-allow-methods: POST,GET,OPTIONS
 In the request body, we support two placeholders:
 
 * **$address**: which will be replaced by the hex string of the user's address with 0x prefix, e.g., `0x95ad73...`
+
 * **$addressWithout0x**: which will be replaced by the hex string of the user's address without 0x prefix, e.g., `95ad73...`. Useful when constructing a `eth_call`, see example below.
 
 Please note that for addresses encoded with case-insensitive schema, like EVM and aptos addresses that are 0x-prefixed hex string, addresses will be **lowercased** before sending to the endpoint.
@@ -214,10 +213,10 @@ function(resp) {
 }
 
 ```
+
 **Multi Expression**
 
-<img alt="Specify Dimensions" height="600" src="../../images/cred/WX20240801-174031@2x.png" title="Specify Dimensions"
-     width="900"/>
+<img height="600" width="900" alt="Specify Dimensions" title="Specify Dimensions" src="../../images/cred/WX20240801-174031@2x.png" />
 
 ```java
 function(resp) {
@@ -281,6 +280,7 @@ function(resp) {
 }
 
 ```
+
 ### Single Expression output[](#expression-output "Direct link to heading")
 
 ```
@@ -290,8 +290,7 @@ function(resp) {
 
 **Multi Expression**
 
-<img alt="Specify Dimensions" height="600" src="../../images/cred/WX20240801-174031@2x.png" title="Specify Dimensions"
-     width="900"/>
+<img height="600" width="900" alt="Specify Dimensions" title="Specify Dimensions" src="../../images/cred/WX20240801-174031@2x.png" />
 
 ```java
 function(resp) {
@@ -314,7 +313,7 @@ function(resp) {
 
 ## FAQ: Cannot test response on Galxe because of CORS?[](#faq-cannot-test-response-on-galxe-because-of-cors "Direct link to heading")
 
-[Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a security check of browser. If your API does not add `dashboard.galxe.com` to the `Access-Control-Allow-Origin` header of the response, you cannot run the 'test' on Galxe website. Although it will not affect verification, because our backend will no check CORS header, it is recommended to add `https://dashboard.galxe.com` to the CORS list. Otherwise, you will have to disable CORS in your browser to run the test, e.g., using plugins like [this](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino).
+[Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a security check of browser. If your API does not add `dashboard.galxe.com` to the `Access-Control-Allow-Origin` header of the response, you cannot run the 'test' on Galxe website. Although it will not affect verification, because our backend will no check CORS header, it is recommended to add [`https://dashboard.galxe.com`](https://dashboard.galxe.com) to the CORS list. Otherwise, you will have to disable CORS in your browser to run the test, e.g., using plugins like [this](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino).
 
 ## FAQ: Users getting 403 error?[](#faq-users-getting-403-error "Direct link to heading")
 

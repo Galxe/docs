@@ -189,7 +189,8 @@
             {
               "group": "Mutaions",
               "pages": [
-                "quest/graphql-api/credential/mutations/credential-holder-update"
+                "quest/graphql-api/credential/mutations/credential-holder-update",
+                "quest/graphql-api/credential/mutations/credential-holder-verify",
               ]
             }
           ]

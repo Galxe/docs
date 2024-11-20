@@ -3,7 +3,6 @@ title: "CORS Check"
 description: "The Galxe platform uses a Cross-Origin Resource Sharing (CORS) check mechanism to ensure that the target API explicitly authorizes calls from the Galxe backend. The role of CORS is to verify whether the API accepts cross-origin requests, ensuring the legality and security of interactions. The target API can authorize access for Galxe by specifying the source or using a wildcard (*)."
 ---
 
-#
 
 ## Why Does Galxe Need Cross-Domain Checks?
 
@@ -111,6 +110,6 @@ Access-Control-Allow-Methods: GET, POST
 
 Because Galxe’s check only verifies whether the target API supports cross-origin, \* indicates that all origins are authorized, including Galxe, which meets the requirements.
 
-1. Why Did the Test Succeed but the Save Fail?
+2. Why Did the Test Succeed but the Save Fail?
 
 The target API may not be handling preflight requests correctly. Ensure that OPTIONS requests are supported and that a complete CORS configuration is returned.

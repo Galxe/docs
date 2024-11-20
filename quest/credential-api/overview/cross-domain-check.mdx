@@ -1,0 +1,116 @@
+---
+title: "CORS Check"
+description: "The Galxe platform uses a Cross-Origin Resource Sharing (CORS) check mechanism to ensure that the target API explicitly authorizes calls from the Galxe backend. The role of CORS is to verify whether the API accepts cross-origin requests, ensuring the legality and security of interactions. The target API can authorize access for Galxe by specifying the source or using a wildcard (*)."
+---
+
+#
+
+## Why Does Galxe Need Cross-Domain Checks?
+
+### **1. Ensure Target API Authorization**
+
+When Galxe calls third-party APIs from the backend, it is necessary to confirm whether these APIs have open access permissions. The CORS configuration authorizes access by returning the `Access-Control-Allow-Origin` header:
+
+* **Designated Source**: Such as [`https://dashboard.galxe.com`.](https://dashboard.galxe.com.)
+
+* **Wildcard (`*`)**: Allows all sources, including Galxe.
+
+### **2. Prevent Unauthorized Calls**
+
+CORS checks can prevent:
+
+* **Data Breach**: Prevent unauthorized sources from accessing the API.
+
+* **Abuse of Functionality**: Restrict the scope of API calls.
+
+***
+
+## The Working Mechanism of CORS
+
+### **1. Access-Control-Allow-Origin**
+
+The target API can be authorized in two ways:
+
+* **Designated Source**: More stringent configuration, allowing requests only from Galxe.
+
+```http
+  Access-Control-Allow-Origin: https://dashboard.galxe.com
+```
+
+* **Wildcard (\*)**: Allows cross-origin requests from all sources and meets authorization requirements.
+
+```http
+Access-Control-Allow-Origin: *
+```
+
+### **2.  Access-Control-Allow-Methods**
+
+Specify the allowed HTTP methods, for example:
+
+```http
+Access-Control-Allow-Methods: GET, POST
+```
+
+### **3.  Preflight Request**
+
+Galxe requires that the target API supports OPTIONS requests to verify that the CORS configuration is correct.
+
+## Server Configuration Requirements
+
+### **1. Example Configuration**
+
+The target API needs to support the following CORS configuration:
+
+Open Authorization:
+
+```http
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST
+Access-Control-Allow-Headers: Content-Type, Authorization
+```
+
+Designated Source Authorization:
+
+```http
+Access-Control-Allow-Origin: https://dashboard.galxe.com
+Access-Control-Allow-Methods: GET, POST
+Access-Control-Allow-Headers: Content-Type, Authorization
+```
+
+### **2. Response to Preflight Request**
+
+The target server must appropriately respond to preflight requests:
+
+```http
+HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST
+```
+
+## Testing and Verification
+
+Recommended to Use curl Command
+
+```base
+curl -X OPTIONS https://your-api-endpoint.com \
+-H "Origin: https://dashboard.galxe.com" \
+-H "Access-Control-Request-Method: POST"
+```
+
+Correct Response Example
+
+```http
+HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST
+```
+
+## Frequently Asked Questions
+
+1. Why Is Access-Control-Allow-Origin: \* Allowed?
+
+Because Galxe’s check only verifies whether the target API supports cross-origin, \* indicates that all origins are authorized, including Galxe, which meets the requirements.
+
+1. Why Did the Test Succeed but the Save Fail?
+
+The target API may not be handling preflight requests correctly. Ensure that OPTIONS requests are supported and that a complete CORS configuration is returned.

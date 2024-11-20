@@ -183,7 +183,8 @@
                 "quest/graphql-api/credential/examples/cred-info",
                 "quest/graphql-api/credential/examples/cred-holders",
                 "quest/graphql-api/credential/examples/cred-holder-by-user",
-                "quest/graphql-api/credential/examples/cred-holder-update"
+                "quest/graphql-api/credential/examples/cred-holder-update",
+                "quest/graphql-api/credential/examples/cred-holder-verify"
               ]
             },
             {

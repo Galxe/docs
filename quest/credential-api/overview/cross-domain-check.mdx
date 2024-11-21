@@ -9,17 +9,17 @@ description: "The Galxe platform uses a Cross-Origin Resource Sharing (CORS) che
 
 When Galxe calls third-party APIs from the backend, it is necessary to confirm whether these APIs have open access permissions. The CORS configuration authorizes access by returning the `Access-Control-Allow-Origin` header:
 
-* **Designated Source**: Such as [`https://dashboard.galxe.com`.](https://dashboard.galxe.com.)
+**Designated Source**: Such as [`https://dashboard.galxe.com`.](https://dashboard.galxe.com.)
 
-* **Wildcard (`*`)**: Allows all sources, including Galxe.
+**Wildcard (`*`)**: Allows all sources, including Galxe.
 
 ### **2. Prevent Unauthorized Calls**
 
 CORS checks can prevent:
 
-* **Data Breach**: Prevent unauthorized sources from accessing the API.
+**Data Breach**: Prevent unauthorized sources from accessing the API.
 
-* **Abuse of Functionality**: Restrict the scope of API calls.
+**Abuse of Functionality**: Restrict the scope of API calls.
 
 ## The Working Mechanism of CORS
 
@@ -27,7 +27,7 @@ CORS checks can prevent:
 
 The target API can be authorized in two ways:
 
-* **Designated Source**: More stringent configuration, allowing requests only from Galxe.
+**Designated Source**: More stringent configuration, allowing requests only from Galxe.
 
 ```http
   Access-Control-Allow-Origin: https://dashboard.galxe.com
@@ -102,7 +102,6 @@ Access-Control-Allow-Methods: GET, POST
 ```
 
 ## Frequently Asked Questions
-
 
 ### 1. Why Is Access-Control-Allow-Origin: \* Allowed?
 

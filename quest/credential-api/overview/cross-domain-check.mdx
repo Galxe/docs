@@ -30,13 +30,13 @@ The target API can be authorized in two ways:
 **Designated Source**: More stringent configuration, allowing requests only from Galxe.
 
 ```http
-  Access-Control-Allow-Origin: https://dashboard.galxe.com
+  access-control-allow-origin: https://dashboard.galxe.com
 ```
 
 * **Wildcard (\*)**: Allows cross-origin requests from all sources and meets authorization requirements.
 
 ```http
-Access-Control-Allow-Origin: *
+access-Control-Allow-Origin: *
 ```
 
 ### **2.  Access-Control-Allow-Methods**
@@ -44,7 +44,7 @@ Access-Control-Allow-Origin: *
 Specify the allowed HTTP methods, for example:
 
 ```http
-Access-Control-Allow-Methods: GET, POST
+access-control-allow-methods: GET, POST,OPTIONS
 ```
 
 ### **3.  Preflight Request**
@@ -60,17 +60,17 @@ The target API needs to support the following CORS configuration:
 Open Authorization:
 
 ```http
-Access-Control-Allow-Origin: *
-Access-Control-Allow-Methods: GET, POST
-Access-Control-Allow-Headers: Content-Type, Authorization
+access-control-allow-origin: *
+access-control-allow-methods: GET, POST,OPTIONS
+access-control-allow-headers: Content-Type, Authorization
 ```
 
 Designated Source Authorization:
 
 ```http
-Access-Control-Allow-Origin: https://dashboard.galxe.com
-Access-Control-Allow-Methods: GET, POST
-Access-Control-Allow-Headers: Content-Type, Authorization
+access-control-allow-origin: https://dashboard.galxe.com
+access-control-allow-methods: GET, POST,OPTIONS
+access-control-allow-headers: Content-Type, Authorization
 ```
 
 ### **2. Response to Preflight Request**
@@ -79,8 +79,8 @@ The target server must appropriately respond to preflight requests:
 
 ```http
 HTTP/1.1 204 No Content
-Access-Control-Allow-Origin: *
-Access-Control-Allow-Methods: GET, POST
+access-control-allow-origin: *
+access-control-allow-methods: GET, POST,OPTIONS
 ```
 
 ## Testing and Verification
@@ -88,17 +88,19 @@ Access-Control-Allow-Methods: GET, POST
 Recommended to Use curl Command
 
 ```base
-curl -X OPTIONS https://your-api-endpoint.com \
--H "Origin: https://dashboard.galxe.com" \
--H "Access-Control-Request-Method: POST"
+// For GET
+curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: GET' -H 'Origin: https://dashboard.galxe.com' '$END_POINT_URL_WITHOUT_ADDRESS_REPLACED$'
+
+// For POST
+curl --head -X 'OPTIONS' -H 'Access-Control-Request-Headers: Content-Type' -H 'Access-Control-Request-Method: POST' -H 'Origin: https://dashboard.galxe.com' '$YOUR_URL_HERE$'
 ```
 
 Correct Response Example
 
 ```http
 HTTP/1.1 204 No Content
-Access-Control-Allow-Origin: *
-Access-Control-Allow-Methods: GET, POST
+access-control-allow-origin: https://dashboard.galxe.com
+access-control-allow-methods: POST,GET,OPTIONS
 ```
 
 ## Frequently Asked Questions

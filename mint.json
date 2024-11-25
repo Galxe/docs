@@ -130,8 +130,15 @@
       "pages": ["quest/introduction"]
     },
     {
-      "group": "Credential API",
+      "group": "Credential Advanced",
       "pages": [
+        {
+          "group": "Overview",
+          "pages": [
+            "quest/credential-api/overview/introduction",
+            "quest/credential-api/overview/cross-domain-check"
+          ]
+        },
         "quest/credential-api/api-cred-items-update",
         "quest/credential-api/rest-cred",
         "quest/credential-api/subgraph-cred"

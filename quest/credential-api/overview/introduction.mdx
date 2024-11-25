@@ -1,0 +1,38 @@
+---
+title: "Intrduction"
+description: ""
+---
+Galxe offers a variety of **Credential Advanced Configuration Types**, allowing you to validate and showcase user-specific information or on-chain interaction records in multiple ways:
+
+| **Type**            | **Features**                                                             |
+|---------------------|--------------------------------------------------------------------------|
+| **CSV File**        | Easy to use, suitable for small-scale data validation, requires manual upload. |
+| **Google Sheets**   | Periodic synchronization, easy to manage, relies on Google services.     |
+| **API Push**        | Supports real-time data push to Galxe.                                   |
+| **REST API**        | Supports dynamic updates, ideal for developers needing complex data structures and real-time validation. |
+| **GraphQL API**     | Provides flexible querying capabilities, suitable for complex interaction scenarios. |
+| **Contract Query**  | Enables contract query capabilities, commonly used to query ERC20/ERC721 holders. |
+
+---
+
+## CORS Check
+
+For REST, GraphQL, and Contract Query types with custom RPCs, it is necessary to check whether the endpoints have CORS issues.
+
+---
+
+## Recommended Configuration Steps
+
+1. **Select a Type**: Choose the appropriate type based on the use case (e.g., CSV, API).
+2. **CORS Check**: Check for potential CORS issues for REST and GraphQL types.
+3. **Upload or Integrate Data**: Upload CSV files as required or push data via API.
+4. **Set Rules**: Configure validation logic (e.g., specify fields, conditions).
+5. **Test and Validate**: Verify the configuration in a test quest.
+6. **Publish and Monitor**: Deploy to activities and monitor real-time performance.
+
+---
+
+## Use Cases
+
+- **On-Chain Interactions**: Validate the authenticity of users' on-chain interaction records.
+- **Data-Driven Marketing**: Design marketing campaigns using custom data uploaded by users.

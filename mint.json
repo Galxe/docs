@@ -139,6 +139,12 @@
             "quest/credential-api/overview/cross-domain-check"
           ]
         },
+        {
+          "group": "REST Credential",
+          "pages": [
+            "quest/credential-api/rest-cred/introduction"
+          ]
+        },
         "quest/credential-api/api-cred-items-update",
         "quest/credential-api/rest-cred",
         "quest/credential-api/subgraph-cred"

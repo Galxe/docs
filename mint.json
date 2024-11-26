@@ -140,14 +140,32 @@
           ]
         },
         {
-          "group": "REST Credential",
+          "group": "API Credential",
           "pages": [
-            "quest/credential-api/rest-cred/introduction"
+            "quest/credential-api/api-cred/introduction",
+            "quest/credential-api/api-cred/api-cred-items-update"
           ]
         },
-        "quest/credential-api/api-cred-items-update",
-        "quest/credential-api/rest-cred",
-        "quest/credential-api/subgraph-cred"
+        {
+          "group": "REST Credential",
+          "pages": [
+            "quest/credential-api/rest-cred/introduction",
+            "quest/credential-api/rest-cred/rest-cred"
+          ]
+        },
+        {
+          "group": "GraphQL Credential",
+          "pages": [
+            "quest/credential-api/graphql-cred/introduction",
+            "quest/credential-api/graphql-cred/subgraph-cred"
+          ]
+        },
+        {
+          "group": "Contract Query Credential",
+          "pages": [
+            "quest/credential-api/contract-query-cred/introduction"
+          ]
+        }
       ]
     },
     {
@@ -323,6 +341,10 @@
     {
       "destination": "/quest/graphql-api/overview",
       "source": "/developer/graphql-api/overview"
+    },
+    {
+      "destination": "/quest/credential-api/overview/cross-domain-check",
+      "source": "/developer/credential-api/overview/cross-domain-check"
     }
   ]
 }

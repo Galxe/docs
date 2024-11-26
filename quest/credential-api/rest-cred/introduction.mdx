@@ -3,46 +3,38 @@ title: "Introduction"
 description: ""
 ---
 
-### **Overview**
+`REST` Credentials support integration with any available `REST` endpoints and send requests during user verification for interaction.
 
-Galxe REST Credentials support integration with any available REST API endpoints and send requests during user verification for interaction.
-
-The REST Credential is a method used by Galxe to pull data from your RESTful HTTPS backend (or any legally accessible HTTP RESTful endpoint). It takes a single wallet address as input and outputs `1` (eligible) or `0` (not eligible) to determine whether the wallet address qualifies.
+The `REST` Credential is a method used by Galxe to pull data from your `RESTful HTTPS` backend (or any legally accessible `HTTP RESTful` endpoint). It takes a single wallet address as input and outputs `1` (eligible) or `0` (not eligible) to determine whether the wallet address qualifies.
 
 ---
 
 ### **Workflow**
-
+<img height="200" src="../../../images/cred/cred-rest-workflow.png" />
 1. **app.galxe.com**: When a user clicks "Verify" on the Quest page, Galxe sends the user's wallet address or other social media information as an input parameter.
-2. **Galxe Backend**: Based on the pre-configuration, Galxe sends an HTTP request containing the wallet address to your REST API and waits for the response.
+2. **Galxe Backend**: Based on the pre-configuration, Galxe sends an HTTP request containing the wallet address to your `REST API` and waits for the response.
 3. **Your Backend**: After receiving the HTTP request from Galxe, your backend processes the request and returns the response data related to the wallet address.
 4. **Galxe Backend**: Processes the `response.body` from your backend using predefined expressions to determine if the user meets the conditions.
-<Note>For Multi-type, the eligibility is determined based on the rules configured in the Quest, not just the expression output (1/0).</Note>
-
+<Note>For Multi-type, the eligibility is determined based on the rules configured in the Quest, not just the expression output (`1/0`).</Note>
 ---
 
-### **Diagram**
-
-*(Insert a diagram here for visual representation of the workflow.)*
-
----
-
-### **Requirements for Configuring Galxe Credential with REST API**
+### **Configuration Requirements**
 
 **API Specification**
 
 - **Endpoint**:  
-  The URL of the REST API endpoint.
+  The URL of the `REST` endpoint.
 
-- **(Optional) Headers**:  
-  Key-value pairs included in the REST API request.
+- **(Optional) Headers**:
+  `Key-value` pairs included in the `REST` request.
 
 **Parameter Mapping (Placeholders)**
 
 - `$address`: Replaced with the user's wallet address as a hexadecimal string with the `0x` prefix, e.g., **`0x95ad73...`**.
 - `$addressWithout0x`: Replaced with the user's wallet address as a hexadecimal string without the `0x` prefix, e.g., **`95ad73...`**, typically used for constructing **`eth_call`** requests.
-- `$value`: Used when user information is not an address (e.g., email or Telegram ID) and replaced with the respective information.
-<Warning>For addresses encoded in case-insensitive formats (e.g., EVM or Aptos addresses starting with `0x`), Galxe converts them to lowercase before sending to your endpoint.</Warning>
+- `$value`: Used when user information is not an address (email or Telegram ID) and replaced with the respective information.
+
+<Warning>For addresses encoded in case-insensitive formats (EVM or Aptos addresses starting with `0x`), Galxe converts them to lowercase before sending to your endpoint.</Warning>
 
 ---
 
@@ -64,7 +56,7 @@ Galxe supports **JSON body format** exclusively for both `GET` and `POST` respon
 
 **Function Requirements**
 
-1. Write an anonymous JavaScript (ES6) function with the type signature `(object) => int`.
+1. Write an anonymous `JavaScript (ES6)` function with the type signature `(object) => int`.
 2. The function takes the entire response object `resp` as a parameter.
 3. It must return the number `1` or `0`, indicating whether the address qualifies for the credential.
 <Warning>
@@ -73,9 +65,20 @@ Do not return Boolean values (`true/false`) or strings (`"0"/"1"`).
 
 **Anonymous Function Format**
 
-The function must be anonymous, with the first line written in the following format:
+The function must be `anonymous`, with the first line written in the following format:
 
 ```javascript
 function(resp) {
   /* Function body */
 }
+```
+
+### **Security and Authorization**
+When configuring the `REST API`, you can achieve secure access through request headers (such as `API KEY` or `tokens`). This information will not be exposed by Galxe, and only users with Space admin privileges can view it.
+<Warning>You should still be careful not to embed other private information in the expression encoding, as this will be made public.</Warning>
+
+### **CORS**
+
+Galxe's API calls are not made through the browser but via backend servers. Although this avoids triggering browser CORS restrictions, we still send preflight `OPTIONS` requests during API configuration to validate the API's correctness. This process does not adhere to the [Simple Request Convention](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests). 
+
+<Tip>For more information, visit [CORS Check](/quest/credential-api/overview/cross-domain-check).</Tip>

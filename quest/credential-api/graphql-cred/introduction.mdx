@@ -9,7 +9,7 @@ description: ""
 ### **Workflow**
 <img height="200" src="../../../images/cred/cred-rest-workflow.png" />
 1. **app.galxe.com**: When a user clicks "Verify" on the Quest page, Galxe sends the user's wallet address or other social media information as an input parameter.
-2. **Galxe Backend**: Based on the pre-configuration, Galxe sends an HTTP request containing the wallet address to your `REST API` and waits for the response.
+2. **Galxe Backend**: Based on the pre-configuration, Galxe sends an HTTP request containing the wallet address to your `GraphQL API` and waits for the response.
 3. **Your Backend**: After receiving the HTTP request from Galxe, your backend processes the request and returns the response data related to the wallet address.
 4. **Galxe Backend**: Processes the `response.body` from your backend using predefined expressions to determine if the user meets the conditions.
 <Note>For Multi-type, the eligibility is determined based on the rules configured in the Quest, not just the expression output (`1/0`).</Note>
@@ -30,7 +30,7 @@ description: ""
 - `$address`: Replaced with the user's wallet address as a hexadecimal string with the `0x` prefix, e.g., **`0x95ad73...`**.
 - `$value`: Used when user information is not an address (email or Telegram ID) and replaced with the respective information.
 
-<Warning>For addresses encoded in case-insensitive formats (EVM or Aptos addresses starting with `0x`), Galxe converts them to lowercase before sending to your endpoint.</Warning>
+<Warning>For addresses encoded in case-insensitive formats (EVM or Aptos address starting with `0x`), Galxe converts them to lowercase before sending to your endpoint.</Warning>
 
 ---
 

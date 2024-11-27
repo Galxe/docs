@@ -1,0 +1,122 @@
+---
+title: "Introduction"
+description: ""
+---
+
+## Overview
+
+**Contract Query Credentials** allow you to fetch on-chain data from smart contracts to verify user eligibility. By specifying the blockchain network, contract address, and method to call, Galxe dynamically queries the data and evaluates results to determine if users meet the credential conditions.
+
+---
+
+## Key Features
+
+1. **Chain Selection**:
+   - Choose a blockchain network (e.g., Ethereum, Polygon, or Binance Smart Chain).
+   - For unsupported networks or private chains, use **Customized RPC**.
+
+2. **Contract ABI and Address**:
+   - Provide the smart contract's ABI (Application Binary Interface).
+   - Specify the **contract address** where the query will be sent.
+
+3. **Method Selection**:
+   - Choose the specific method to call from the contract’s ABI.
+   - Pass the user’s wallet address as a parameter.
+
+4. **Snapshot Feature**:
+   - Use the **Snapshot** feature to lock the query at a specific block height, ensuring data consistency.
+
+5. **Real-Time Testing**:
+   - Use the **Test Response** section to send test queries and validate the results.
+
+---
+
+## Workflow
+
+1. **Define Credential Title**:
+   - Enter a descriptive title to clearly indicate the purpose of the credential.
+
+2. **Choose Blockchain Network**:
+   - Select a supported chain or provide a customized RPC endpoint.
+
+3. **Provide Contract Details**:
+   - Input the target smart contract’s address and paste its ABI.
+   - Select the method to call and define relevant parameters.
+
+4. **Test Configuration**:
+   - Simulate the query using a test address and confirm the response meets expectations.
+
+5. **Deploy and Use**:
+   - Save and integrate the credential into your campaign to verify user eligibility based on on-chain data.
+
+---
+
+## Contract Method Requirements
+
+To use Contract Query Credentials in Galxe, your smart contract methods must meet the following requirements for ABI-based queries:
+
+1. **stateMutability: view**
+   - **Requirement**: The method must be declared as `view`.
+   - **Reason**: Galxe only calls read-only methods, which do not modify the blockchain state.
+   - **Use Case**: Retrieve on-chain data like token balances, NFT ownership, or staking status.
+   - **Advantage**: No gas fee required for direct calls (off-chain queries only).
+
+2. **type: function**
+   - **Requirement**: The method must be a standard callable function (`function`).
+   - **Reason**: Galxe queries functions via ABI and only supports standard function types.
+   - **Note**: Constructors or other special function types are not supported.
+
+3. **input: address**
+   - **Requirement**: The method must accept an address (`address`) as a dynamic input parameter.
+   - **Use Case**: The address typically identifies the user's wallet, a smart contract, or the owner of an asset.
+   - **Functionality**: This parameter allows Galxe to query specific address-related data or validate logic.
+
+Example ABI:
+
+```json
+{
+  "constant": true,
+  "inputs": [
+    {
+      "name": "<parameter_name>",
+      "type": "address"
+    }
+  ],
+  "name": "balanceOf",
+  "outputs": [
+    {
+      "name": "<output_name>",
+      "type": "uint256"
+    }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+}
+```
+
+---
+
+
+## Example Use Cases
+
+- **NFT Ownership Verification**:
+  - Use the `balanceOf` method in ERC-721 contracts to verify if a user holds a specific NFT.
+
+- **Token Holding Requirements**:
+  - Use the `balanceOf` method in ERC-20 contracts to verify if a user holds a certain amount of tokens.
+
+<Note>When querying this method, ensure the `Output Parameter` includes `Decimals` to avoid incorrect balance displays.</Note>
+
+- **Custom Logic**:
+  - Check for more complex conditions, such as staking, governance participation, or other contract interactions.
+
+---
+
+## Notes
+
+- **Snapshot Feature**: Execute queries at a specific block height, useful for checking data at a specific point in time.
+
+<Note>If the snapshot is not enabled and the credential queries transferable tokens, there is a Sybil-attack risk. A user could transfer tokens to multiple addresses and claim multiple rewards from a single campaign.</Note>
+
+- **Testing**: Always validate your setup in the "Test Response" section before deployment.
+- **RPC Configuration**: Ensure the selected chain or RPC endpoint is reliable, accessible, and compliant with Galxe's [CORS Check](/quest/credential-api/overview/cross-domain-check) standards.

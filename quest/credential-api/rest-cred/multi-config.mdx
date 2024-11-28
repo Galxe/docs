@@ -1,0 +1,88 @@
+---
+title: "REST Multi Config"
+description: "Learn how to configure REST Multi-Dimensional Credential"
+---
+
+## Overview
+
+REST Multi-Dimensional Credential allows you to fetch user data via RESTful APIs and validate eligibility across multiple dimensions. It is suitable for use cases such as whitelist checks or balance validations.
+
+---
+
+## API & Expression Configuration
+
+### 1. Specify Dimensions
+
+In Multi-Dimensional Credential configuration, you need to define specific dimensions to ensure each dimension is clearly identified and usable.
+
+- **Identifier**:
+   - Enter a unique identifier for the dimension, e.g., `mainnet_eth_balance`.
+   - The identifier is used for internal calls and logic operations, and it must be globally unique.
+
+- **Display Name**:
+   - Enter a display name for the dimension, e.g., `ETH balance on Mainnet`.
+   - This name will be displayed in the UI for user understanding.
+
+- **Type**:
+   - Select the dimension type `COUNTER` from the dropdown menu.
+
+- **Description**:
+   - Enter a description to explain the purpose of the dimension, e.g., "This dimension tracks the ETH balance of a user on Mainnet".
+   - The description must be within 256 characters.
+
+---
+
+### 2. Configure API
+
+- **Input Endpoint**:
+
+GET Request Example:
+```plaintext
+https://api.example.com/check-user?wallet=$address
+```
+
+POST Request Example:
+```plaintext
+https://api.example.com/check-user
+```
+
+- **Add Headers (Optional)**:
+
+```json
+`Authorization`: `Bearer YOUR_API_KEY`
+```
+
+- **Input Body (For POST Requests Only)**:
+
+```json
+{
+  "check_user_address": "$address"
+}
+```
+
+---
+
+### 3. Test API Response
+
+- **Input a test address and send the request to confirm the response**:
+  ```json
+  {
+    "isWhitelisted": true,
+    "balance": 1000
+  }
+  ```
+
+---
+
+### 4. Write Expressions
+
+1. **Token Balance Output**:
+   ```javascript
+   function(resp) {
+       return {
+         "mainnet_eth_balance": resp.balance
+       };
+   }
+   ```
+
+---

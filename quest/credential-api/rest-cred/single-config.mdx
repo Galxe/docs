@@ -1,0 +1,80 @@
+---
+title: "REST Single Config"
+description: "Learn how to configure REST Single-Dimensional Credential"
+---
+
+## Overview
+
+REST Single-Dimensional Credential allows you to fetch user data via RESTful APIs and validate user eligibility based on a single condition. It is suitable for simple use cases such as whitelist checks or balance validations.
+
+---
+
+## API & Expression Configuration
+
+### 1. Configure API
+
+- Input Endpoint
+
+GET Request Example:
+```plaintext
+https://api.example.com/check-user?wallet=$address
+```
+
+POST Request Example:
+```plaintext
+https://api.example.com/check-user
+```
+
+- Add Headers (Optional)
+
+```json
+`Authorization`: `Bearer YOUR_API_KEY`
+```
+
+- Input Body (For POST Requests Only):
+
+```json
+{
+  "check_user_address": "$address"
+}
+```
+
+---
+
+### 2. Test API Response
+
+- Input a test address, send the request, and confirm whether the response is correct.
+- The response must be in JSON format. Example:
+  ```json
+  {
+    "isWhitelisted": true,
+    "balance": 1000
+  }
+  ```
+
+---
+
+### 3. Write Expressions
+
+1. **Whitelist Validation**:
+   ```javascript
+   function(resp) {
+       return resp.isWhitelisted ? 1 : 0;
+   }
+   ```
+
+2. **Token Balance Validation**:
+   ```javascript
+   function(resp) {
+       return resp.balance >= 1000 ? 1 : 0;
+   }
+   ```
+
+3. **Combined Condition Validation**:
+   ```javascript
+   function(resp) {
+       return resp.isWhitelisted && resp.balance >= 500 ? 1 : 0;
+   }
+   ```
+
+---

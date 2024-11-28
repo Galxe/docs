@@ -150,6 +150,8 @@
           "group": "REST Credential",
           "pages": [
             "quest/credential-api/rest-cred/introduction",
+            "quest/credential-api/rest-cred/single-config",
+            "quest/credential-api/rest-cred/multi-config",
             "quest/credential-api/rest-cred/rest-cred"
           ]
         },

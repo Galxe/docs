@@ -72,6 +72,9 @@ function(resp) {
   /* Function body */
 }
 ```
+<Tip>To ensure a more secure `function`, always validate the structure of the `resp` object before accessing its properties,
+this helps prevent errors or unexpected behavior when the API response is incomplete or incorrectly formatted.</Tip>
+
 
 ### **Security and Authorization**
 When configuring the `REST API`, you can achieve secure access through request headers (such as `API KEY` or `tokens`). This information will not be exposed by Galxe, and only users with Space admin privileges can view it.

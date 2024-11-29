@@ -86,3 +86,65 @@ https://api.example.com/check-user
    ```
 
 ---
+
+## Example
+
+### ETH Balance Amount Credential
+
+  - **Specify Dimensions**
+
+  Identifier:`mainnet_eth_balance`
+
+  Display Name:`ETH balance on Mainnet`
+
+  Type:`COUNTER`
+
+  Description:`The amount of ETH you hold on mainnet`
+
+  - **Endpoint**
+  ```plaintext
+  https://mainnet.infura.io/v3/YOUR-API-KEY
+  ```
+  - **Request Type**
+  
+  `POST`
+
+  - **Headers**
+
+  `No header`
+
+  - **Body**
+
+  ```json
+  {
+      "jsonrpc": "2.0",
+      "method": "eth_getBalance",
+      "params": [
+          "$address",
+          "latest"
+      ],
+      "id": 1
+  }
+  ```
+
+  - **Response**
+
+  ```json
+  {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": "0x7c2562030800"
+  }
+  ```
+  - **Expression**
+
+  ```javascript
+  function(resp) {
+   try {
+      let balance = BigInt(resp.result);
+      return { "mainnet_eth_balance": balance };
+   } catch (error) {
+      return { "mainnet_eth_balance": 0 };
+   }
+  }
+  ```

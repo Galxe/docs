@@ -1,11 +1,11 @@
 ---
-title: "REST Multi Config"
-description: "Learn how to configure REST Multi-Dimensional Credential"
+title: "GraphQL Multi Config"
+description: "Learn how to configure GraphQL Multi-Dimensional Credential"
 ---
 
 ## Overview
 
-REST Multi-Dimensional Credential allows you to fetch user data via RESTful APIs and validate eligibility across multiple dimensions. It is suitable for use cases such as whitelist checks or balance validations.
+GraphQL Multi-Dimensional Credential allows you to fetch user data via GraphQL APIs and validate eligibility across multiple dimensions. It is suitable for use cases such as whitelist checks or balance validations.
 
 ---
 
@@ -34,29 +34,24 @@ In Multi-Dimensional Credential configuration, you need to define specific dimen
 
 ### 2. Configure API
 
-- **Input Endpoint**:
-
-GET Request Example:
+- Input Endpoint Example:
 ```plaintext
-https://api.example.com/check-user?wallet=$address
+https://api.example.com/query
 ```
 
-POST Request Example:
-```plaintext
-https://api.example.com/check-user
-```
-
-- **Add Headers (Optional)**:
+- Add Headers (Optional)
 
 ```json
-`Authorization`: `Bearer YOUR_API_KEY`
+`access-token`: `YOUR_TOKEN`
 ```
 
-- **Input Body (For POST Requests Only)**:
+- Input Query:
 
-```json
-{
-  "check_user_address": "$address"
+```graphql
+query info($address: String!) {
+    tokenBalance(address: $address) {
+    balance
+    }
 }
 ```
 
@@ -67,8 +62,7 @@ https://api.example.com/check-user
 - **Input a test address and send the request to confirm the response**:
   ```json
   {
-    "isWhitelisted": true,
-    "balance": 1000
+    "balance": 100
   }
   ```
 
@@ -89,62 +83,60 @@ https://api.example.com/check-user
 
 ## Example
 
-### ETH Balance Amount
+### Galxe MSU Space points balance
 
   - **Specify Dimensions**
 
-  Identifier:`mainnet_eth_balance`
+  Identifier:`points_balance`
 
-  Display Name:`ETH balance on Mainnet`
+  Display Name:`points balance on msu`
 
   Type:`COUNTER`
 
-  Description:`The amount of ETH you hold on mainnet`
+  Description:`The balance of points you hold on msu`
 
   - **Endpoint**
+
   ```plaintext
-  https://mainnet.infura.io/v3/YOUR-API-KEY
+  https://graphigo.prd.galaxy.eco/query
   ```
-  - **Request Type**
-  
-  `POST`
 
   - **Headers**
 
   `No header`
 
-  - **Body**
+  - **Query**
 
-  ```json
-  {
-      "jsonrpc": "2.0",
-      "method": "eth_getBalance",
-      "params": [
-          "$address",
-          "latest"
-      ],
-      "id": 1
-  }
-  ```
+    ```graphql
+    query info($address: String!) {
+        space(id: 68267) {
+            addressLoyaltyPoints(address: $address) {
+            points
+            }
+        }
+    }
+    ```
 
   - **Response**
 
   ```json
-  {
-      "jsonrpc": "2.0",
-      "id": 1,
-      "result": "0x7c2562030800"
-  }
+    {
+        "space": {
+        "addressLoyaltyPoints": {
+            "points": 100
+        }
+        }
+    }
   ```
   - **Expression**
 
   ```javascript
   function(resp) {
    try {
-      let balance = BigInt(resp.result);
-      return { "mainnet_eth_balance": balance };
+      let points = BigInt(resp.space.addressLoyaltyPoints.points);
+      return { "points_balance": points };
    } catch (error) {
-      return { "mainnet_eth_balance": 0 };
+      return { "points_balance": 0 };
    }
   }
   ```

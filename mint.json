@@ -159,6 +159,8 @@
           "group": "GraphQL Credential",
           "pages": [
             "quest/credential-api/graphql-cred/introduction",
+            "quest/credential-api/graphql-cred/single-config",
+            "quest/credential-api/graphql-cred/multi-config",
             "quest/credential-api/graphql-cred/subgraph-cred"
           ]
         },

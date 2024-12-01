@@ -1,0 +1,104 @@
+---
+title: "GraphQL Single Config"
+description: "Learn how to configure GraphQL Single-Dimensional Credential"
+---
+
+## Overview
+
+GraphQL Single-Dimensional Credential allows you to fetch user data via GraphQL APIs and validate user eligibility based on a single condition. It is suitable for simple use cases such as whitelist checks or balance validations.
+
+---
+
+## API & Expression Configuration
+
+### 1. Configure API
+
+- Input Endpoint Example:
+```plaintext
+https://api.example.com/query
+```
+
+- Add Headers (Optional)
+
+```json
+`access-token`: `YOUR_TOKEN`
+```
+
+- Input Query:
+
+```graphql
+query info($address: String!) {
+    tokenBalance(address: $address) {
+    balance
+    }
+}
+```
+
+---
+
+### 2. Test API Response
+
+- Input a test address, send the request, and confirm whether the response is correct.
+- The response must be in JSON format. Example:
+  ```json
+    {
+        "balance":100
+    }
+  ```
+
+---
+
+### 3. Write Expressions
+
+1. **Points balance validation**:
+   ```javascript
+   function(resp) {
+       return resp.balance >= 100 ? 1 : 0;
+   }
+   ```
+---
+
+## Example
+
+### Galxe MSU Space requires holding at least 100 points
+
+  - **Endpoint**
+  ```plaintext
+  https://graphigo.prd.galaxy.eco/query
+  ```
+
+  - **Headers**
+
+  `No header`
+
+  - **Query**
+
+    ```graphql
+    query info($address: String!) {
+        space(id: 68267) {
+            addressLoyaltyPoints(address: $address) {
+            points
+            }
+        }
+    }
+    ```
+
+  - **Response**
+
+  ```json
+    {
+        "space": {
+        "addressLoyaltyPoints": {
+            "points": 100
+        }
+        }
+    }
+  ```
+  - **Expression**
+
+   ```javascript
+   function(resp) {
+       return resp.space.addressLoyaltyPoints >= 100 ? 1 : 0;
+   }
+   ```
+

@@ -15,6 +15,8 @@ REST Multi-Dimensional Credential allows you to fetch user data via RESTful APIs
 
 In Multi-Dimensional Credential configuration, you need to define specific dimensions to ensure each dimension is clearly identified and usable.
 
+<img height="200" src="../../../images/cred/cred-rest-multi-0.gif" />
+
 - **Identifier**:
    - Enter a unique identifier for the dimension, e.g., `mainnet_eth_balance`.
    - The identifier is used for internal calls and logic operations, and it must be globally unique.
@@ -76,7 +78,7 @@ https://api.example.com/check-user
 
 ### 4. Write Expressions
 
-1. **Token Balance Output**:
+- **Token Balance Output**:
    ```javascript
    function(resp) {
        return {
@@ -84,6 +86,22 @@ https://api.example.com/check-user
        };
    }
    ```
+
+### 5. Config Rule
+
+   Configure rules in Quest to determine whether users meet the criteria.
+
+- **Threshold Evaluation**:
+
+<img height="200" src="../../../images/cred/cred-rest-multi-1.gif" />
+
+When a certain threshold condition is met (e.g., >0), assign a fixed points directly.
+
+- **Multiple Entries(Optional)**:
+
+<img height="200" src="../../../images/cred/cred-rest-multi-2.gif" />
+
+Enable users to claim rewards repeatedly once certain credentials are fulfilled, for example, a user earns 10 points for each 1 ETH they hold. If the user holds 5 ETH, they will earn 50 points.
 
 ---
 

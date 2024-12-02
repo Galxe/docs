@@ -61,9 +61,8 @@ The body returned by `GraphQL` is in `JSON` format by default, compliant with Ga
 1. Write an anonymous `JavaScript (ES6)` function with the type signature `(object) => int`.
 2. The function takes the entire response object `resp` as a parameter.
 3. It must return the number `1` or `0`, indicating whether the address qualifies for the credential.
-<Warning>
-Do not return Boolean values (`true/false`) or strings (`"0"/"1"`).
-</Warning>
+
+<Warning>Do not return Boolean values (`true/false`) or strings (`"0"/"1"`).</Warning>
 
 **Anonymous Function Format**
 
@@ -77,6 +76,7 @@ function(resp) {
 
 ### **Security and Authorization**
 When configuring the `GraphQL`, you can achieve secure access through request headers (such as `API KEY` or `tokens`). This information will not be exposed by Galxe, and only users with Space admin privileges can view it.
+
 <Warning>You should still be careful not to embed other private information in the expression encoding, as this will be made public.</Warning>
 
 ### **CORS**

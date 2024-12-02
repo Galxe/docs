@@ -1,5 +1,5 @@
 ---
-title: "REST Multi Config"
+title: "Multi Config"
 description: "Learn how to configure REST Multi-Dimensional Credential"
 ---
 
@@ -9,9 +9,30 @@ REST Multi-Dimensional Credential allows you to fetch user data via RESTful APIs
 
 ---
 
-## API & Expression Configuration
+## Config process
 
-### 1. Specify Dimensions
+
+### 1. Basic Config
+
+- **ID Type**
+
+`ID Type` provides various identity options, including social accounts, blockchain addresses, and other unique identifiers.
+
+- **Title**
+
+Give your credential an enticing title.
+
+- **Credential Source**
+
+Choose `REST` type and select `GET` or `POST` based on your API request type.
+
+- **Type**:
+
+Choose `Multi Dimension`
+
+---
+
+### 2. Specify Dimensions
 
 In Multi-Dimensional Credential configuration, you need to define specific dimensions to ensure each dimension is clearly identified and usable.
 
@@ -34,7 +55,7 @@ In Multi-Dimensional Credential configuration, you need to define specific dimen
 
 ---
 
-### 2. Configure API
+### 3. Configure API
 
 - **Input Endpoint**:
 
@@ -64,7 +85,7 @@ https://api.example.com/check-user
 
 ---
 
-### 3. Test API Response
+### 4. Test API Response
 
 - **Input a test address and send the request to confirm the response**:
   ```json
@@ -76,7 +97,7 @@ https://api.example.com/check-user
 
 ---
 
-### 4. Write Expressions
+### 5. Write Expressions
 
 - **Token Balance Output**:
    ```javascript
@@ -87,7 +108,33 @@ https://api.example.com/check-user
    }
    ```
 
-### 5. Config Rule
+---
+
+### 6. Description
+
+Description of the certificate, supports rich text input, maximum 200 characters.
+
+---
+
+### 7. Call-to-Action Link
+
+Guide users to specific operation pages to complete interactive tasks.
+
+---
+
+### 8. Participation End Time && Update Frequency (Optional)
+
+- **Participation End Time**:
+
+Control the time range of the credential, prohibiting new validations after the deadline.
+
+- **Update Frequency**:
+
+Remind users of the frequency of API data source updates, such as once a day or once every two days.
+
+---
+
+### 9. Config Rule
 
    Configure rules in Quest to determine whether users meet the criteria.
 

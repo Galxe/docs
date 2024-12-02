@@ -15,6 +15,8 @@ description: ""
    - Choose a blockchain network (e.g., Ethereum, Polygon, or Binance Smart Chain).
    - For unsupported networks or private chains, use **Customized RPC**.
 
+<Warning> When using **Customized RPC**, ensure that the RPC endpoint is compatible with the changes introduced in [go-ethereum v1.13.0](https://github.com/ethereum/go-ethereum/issues/28608), where `eth_call` requests must use the `input` field instead of the `data` field. </Warning>  
+
 2. **Contract ABI and Address**:
    - Provide the smart contract's ABI (Application Binary Interface).
    - Specify the **contract address** where the query will be sent.

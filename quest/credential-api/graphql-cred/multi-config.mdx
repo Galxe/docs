@@ -1,5 +1,5 @@
 ---
-title: "GraphQL Multi Config"
+title: "Multi Config"
 description: "Learn how to configure GraphQL Multi-Dimensional Credential"
 ---
 
@@ -9,9 +9,29 @@ GraphQL Multi-Dimensional Credential allows you to fetch user data via GraphQL A
 
 ---
 
-## API & Expression Configuration
+## Config process
 
-### 1. Specify Dimensions
+### 1. Basic Config
+
+- **ID Type**
+
+`ID Type` provides various identity options, including social accounts, blockchain addresses, and other unique identifiers.
+
+- **Title**
+
+Give your credential an enticing title.
+
+- **Credential Source**
+
+Choose `GraphQL` type
+
+- **Type**:
+
+Choose `Multi Dimension`
+
+---
+
+### 2. Specify Dimensions
 
 In Multi-Dimensional Credential configuration, you need to define specific dimensions to ensure each dimension is clearly identified and usable.
 
@@ -32,7 +52,7 @@ In Multi-Dimensional Credential configuration, you need to define specific dimen
 
 ---
 
-### 2. Configure API
+### 3. Configure API
 
 - Input Endpoint Example:
 ```plaintext
@@ -57,7 +77,7 @@ query info($address: String!) {
 
 ---
 
-### 3. Test API Response
+### 4. Test API Response
 
 - **Input a test address and send the request to confirm the response**:
   ```json
@@ -68,9 +88,9 @@ query info($address: String!) {
 
 ---
 
-### 4. Write Expressions
+### 5. Write Expressions
 
-1. **Token Balance Output**:
+- **Token Balance Output**:
    ```javascript
    function(resp) {
        return {
@@ -78,8 +98,50 @@ query info($address: String!) {
        };
    }
    ```
+---
+
+### 6. Description
+
+Description of the certificate, supports rich text input, maximum 200 characters.
 
 ---
+
+### 7. Call-to-Action Link
+
+Guide users to specific operation pages to complete interactive tasks.
+
+---
+
+### 8. Participation End Time && Update Frequency (Optional)
+
+- **Participation End Time**:
+
+Control the time range of the credential, prohibiting new validations after the deadline.
+
+- **Update Frequency**:
+
+Remind users of the frequency of API data source updates, such as once a day or once every two days.
+
+---
+
+### 9. Config Rule
+
+   Configure rules in Quest to determine whether users meet the criteria.
+
+- **Threshold Evaluation**:
+
+<img height="200" src="../../../images/cred/cred-rest-multi-1.gif" />
+
+When a certain threshold condition is met (e.g., >0), assign a fixed points directly.
+
+- **Multiple Entries(Optional)**:
+
+<img height="200" src="../../../images/cred/cred-rest-multi-2.gif" />
+
+Enable users to claim rewards repeatedly once certain credentials are fulfilled, for example, a user earns 10 points for each 1 ETH they hold. If the user holds 5 ETH, they will earn 50 points.
+
+---
+
 
 ## Example
 

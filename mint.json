@@ -167,7 +167,8 @@
         {
           "group": "Contract Query Credential",
           "pages": [
-            "quest/credential-api/contract-query-cred/introduction"
+            "quest/credential-api/contract-query-cred/introduction",
+            "quest/credential-api/contract-query-cred/config"
           ]
         }
       ]

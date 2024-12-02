@@ -1,5 +1,5 @@
 ---
-title: "REST Single Config"
+title: "Single Config"
 description: "Learn how to configure REST Single-Dimensional Credential"
 ---
 
@@ -9,9 +9,30 @@ REST Single-Dimensional Credential allows you to fetch user data via RESTful API
 
 ---
 
-## API & Expression Configuration
+## Config process
 
-### 1. Configure API
+
+### 1. Basic Config
+
+- **ID Type**
+
+`ID Type` provides various identity options, including social accounts, blockchain addresses, and other unique identifiers.
+
+- **Title**
+
+Give your credential an enticing title.
+
+- **Credential Source**
+
+Choose `REST` type and select `GET` or `POST` based on your API request type.
+
+- **Type**:
+
+Choose `Single Dimension`
+
+---
+
+### 2. Configure API
 
 - Input Endpoint
 
@@ -41,7 +62,7 @@ https://api.example.com/check-user
 
 ---
 
-### 2. Test API Response
+### 3. Test API Response
 
 - Input a test address, send the request, and confirm whether the response is correct.
 - The response must be in JSON format. Example:
@@ -54,7 +75,7 @@ https://api.example.com/check-user
 
 ---
 
-### 3. Write Expressions
+### 4. Write Expressions
 
 1. **Whitelist Validation**:
    ```javascript
@@ -78,6 +99,31 @@ https://api.example.com/check-user
    ```
 
 ---
+
+### 5. Description
+
+Description of the certificate, supports rich text input, maximum 200 characters.
+
+---
+
+### 6. Call-to-Action Link
+
+Guide users to specific operation pages to complete interactive tasks.
+
+---
+
+### 7. Participation End Time && Update Frequency (Optional)
+
+- **Participation End Time**:
+
+Control the time range of the credential, prohibiting new validations after the deadline.
+
+- **Update Frequency**:
+
+Remind users of the frequency of API data source updates, such as once a day or once every two days.
+
+---
+
 
 ## Example
 

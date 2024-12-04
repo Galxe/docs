@@ -143,7 +143,7 @@
           "group": "API Credential",
           "pages": [
             "quest/credential-api/api-cred/introduction",
-            "quest/credential-api/api-cred/api-cred-items-update"
+            "quest/credential-api/api-cred/config"
           ]
         },
         {
@@ -151,8 +151,7 @@
           "pages": [
             "quest/credential-api/rest-cred/introduction",
             "quest/credential-api/rest-cred/single-config",
-            "quest/credential-api/rest-cred/multi-config",
-            "quest/credential-api/rest-cred/rest-cred"
+            "quest/credential-api/rest-cred/multi-config"
           ]
         },
         {
@@ -160,8 +159,7 @@
           "pages": [
             "quest/credential-api/graphql-cred/introduction",
             "quest/credential-api/graphql-cred/single-config",
-            "quest/credential-api/graphql-cred/multi-config",
-            "quest/credential-api/graphql-cred/subgraph-cred"
+            "quest/credential-api/graphql-cred/multi-config"
           ]
         },
         {

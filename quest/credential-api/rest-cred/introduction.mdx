@@ -15,7 +15,7 @@ The `REST` Credential is a method used by Galxe to pull data from your `RESTful 
 2. **Galxe Backend**: Based on the pre-configuration, Galxe sends an HTTP request containing the wallet address to your `REST API` and waits for the response.
 3. **Your Backend**: After receiving the HTTP request from Galxe, your backend processes the request and returns the response data related to the wallet address.
 4. **Galxe Backend**: Processes the `response.body` from your backend using predefined expressions to determine if the user meets the conditions.
-<Note>For Multi-type, the eligibility is determined based on the rules configured in the Quest, not just the expression output (`1/0`).</Note>
+<Note>`35.185.209.0` and `35.203.155.18` are our outbound IPs. Failure to whitelist these may result in 403 errors when accessing the service.</Note>
 ---
 
 ### **Configuration Requirements**
@@ -87,3 +87,4 @@ When configuring the `REST API`, you can achieve secure access through request h
 Galxe's API calls are not made through the browser but via backend servers. Although this avoids triggering browser CORS restrictions, we still send preflight `OPTIONS` requests during API configuration to validate the API's correctness. This process does not adhere to the [Simple Request Convention](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests). 
 
 <Tip>For more information, visit [CORS Check](/quest/credential-api/overview/cross-domain-check).</Tip>
+

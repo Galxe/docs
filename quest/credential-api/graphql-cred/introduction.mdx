@@ -12,7 +12,7 @@ description: ""
 2. **Galxe Backend**: Based on the pre-configuration, Galxe sends an HTTP request containing the wallet address to your `GraphQL API` and waits for the response.
 3. **Your Backend**: After receiving the HTTP request from Galxe, your backend processes the request and returns the response data related to the wallet address.
 4. **Galxe Backend**: Processes the `response.body` from your backend using predefined expressions to determine if the user meets the conditions.
-<Note>For Multi-type, the eligibility is determined based on the rules configured in the Quest, not just the expression output (`1/0`).</Note>
+<Note>`35.185.209.0` and `35.203.155.18` are our outbound IPs. Failure to whitelist these may result in 403 errors when accessing the service.</Note>
 ---
 
 ### **Configuration Requirements**

@@ -60,7 +60,7 @@
   "navigation": [
     {
       "group": "Platform Overview",
-      "pages": ["about/introduction"]
+      "pages": ["about/introduction", "about/official-channels"]
     },
     {
       "group": "GAL",

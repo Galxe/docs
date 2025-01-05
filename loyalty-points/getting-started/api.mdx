@@ -1,0 +1,49 @@
+---
+title: "API"
+---
+
+For all Loyalty Point contract deployed via our factory on Gravity chains, we provide the following GraphQL API to query the leaderboard:
+
+- Endpoint: https://graphigo.prd.galaxy.eco/query
+- Playground: https://graphigo.prd.galaxy.eco
+
+## Example
+
+Here is an example of how to query the API:
+
+```graphql
+query {
+  loyaltyPointLeaderboard(
+    loyaltyPointAddress: "0x6B08B2fC665F766193A0cB9a64bcfB8beaac03D4"
+    limit: 10
+  ) {
+    totalCount
+    list {
+      address
+      points
+      rank
+    }
+  }
+}
+```
+
+## Example Response
+
+```json
+{
+  "data": {
+    "loyaltyPointLeaderboard": {
+      "totalCount": 1,
+      "list": [
+        {
+          "address": "0xb85b3d61439a3d70d3df7913a3a764f352b32c55",
+          "points": 1,
+          "rank": 1
+        }
+      ]
+    }
+  }
+}
+```
+
+You can use cursor to paginate through the leaderboard.

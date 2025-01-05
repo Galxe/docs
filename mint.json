@@ -291,7 +291,8 @@
       "pages": [
         "loyalty-points/getting-started/introduction",
         "loyalty-points/getting-started/quick-start",
-        "loyalty-points/getting-started/hook"
+        "loyalty-points/getting-started/hook",
+        "loyalty-points/getting-started/api"
       ]
     },
     {

@@ -14,9 +14,6 @@ Before you begin, ensure you have the following tools and dependencies installed
 
 ## **Step 1: Clone the Repository**
 
-> Note: Repo will be published soon.
-
-
 ```bash
 git clone https://github.com/galxe/loyalty-point.git
 cd loyalty-point
@@ -57,6 +54,7 @@ forge script script/DeployLoyaltyPoint.s.sol:DeployLoyaltyPoint --rpc-url <rpc-u
 ```
 
 - `rpc-url` is the RPC URL of the network you are deploying to. For example, on Gravity Alpha Testnet Sepolia, the RPC URL is `https://rpc-sepolia.gravity.xyz`.
+- Example deployed contract: [0x6B08B2fC665F766193A0cB9a64bcfB8beaac03D4](https://explorer.gravity.xyz/address/0x6b08b2fc665f766193a0cb9a64bcfb8beaac03d4?tab=txs)
 
 # **Interacting with the LoyaltyPoint Contract**
 
@@ -81,6 +79,8 @@ Run the minting script:
 ```bash
 forge script script/MintLoyaltyPoint.s.sol:MintLoyaltyPoint --rpc-url <rpc-url> --broadcast
 ```
+
+- Example mint transaction: https://explorer.gravity.xyz/tx/0xc45af104acfc9f33df4a3ab877e114441113ad77cedb7044b789dad506970ac5
 
 # **Conclusion**
 

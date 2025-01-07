@@ -5,53 +5,57 @@ description: "Learn how to configure REST Single-Dimensional Credential"
 
 ## Overview
 
-REST Single-Dimensional Credential allows you to fetch user data via RESTful APIs and validate user eligibility based on a single condition. It is suitable for simple use cases such as whitelist checks or balance validations.
+REST Single-Dimensional Credential allows you to fetch user data via RESTful APIs and validate user eligibility based on a single condition. It is suitable for when task verification is equivalent to answering the question, D*id this particular user perform this task -- yes or no?*
 
----
+***
 
 ## Config process
 
+### &#xA;1\. Finding the Config in Task Settings&#x20;
 
-### 1. Basic Config
+The option to configure REST credential can be found in step 3, [Task Settings](https://help.galxe.com/en/articles/9728885-create-quest-tasks-settings) of quest creation on the Galxe Dashboard.
 
-- **ID Type**
+### 2. Basic Config
+
+* **ID Type**
 
 `ID Type` provides various identity options, including social accounts, blockchain addresses, and other unique identifiers.
 
-- **Title**
+* **Title**
 
-Give your credential an enticing title.
+Give your credential a descriptive title relevant to the task at hand.
 
-- **Credential Source**
+* **Credential Source**
 
 Choose `REST` type and select `GET` or `POST` based on your API request type.
 
-- **Type**
+* **Type**
 
 Choose `Single Dimension`
 
+### 3. Configure API
 
-### 2. Configure API
-
-- Input Endpoint
+* Input Endpoint URL
 
 GET Request Example:
+
 ```plaintext
 https://api.example.com/check-user?wallet=$address
 ```
 
 POST Request Example:
+
 ```plaintext
 https://api.example.com/check-user
 ```
 
-- Add Headers (Optional)
+* Add Headers (Optional)
 
 ```json
 `Authorization`: `Bearer YOUR_API_KEY`
 ```
 
-- Input Body (For POST Requests Only):
+* Input Body (For POST Requests Only):
 
 ```json
 {
@@ -59,201 +63,207 @@ https://api.example.com/check-user
 }
 ```
 
-### 3. Test API Response
+### 4. Test API Response
 
-- Input a test address, send the request, and confirm whether the response is correct.
-- The response must be in JSON format. Example:
-  ```json
+* Input a test address, send the request, and confirm whether the response is correct.
+
+* The response must be in JSON format. Example:```json
   {
     "isWhitelisted": true,
     "balance": 1000
   }
   ```
 
-### 4. Write Expressions
+### 5. Write Expressions
 
-1. **Whitelist Validation**:
-   ```javascript
+1. **Whitelist Validation**:```javascript
    function(resp) {
        return resp.isWhitelisted ? 1 : 0;
    }
    ```
 
-2. **Token Balance Validation**:
-   ```javascript
+2. **Token Balance Validation**:```javascript
    function(resp) {
        return resp.balance >= 1000 ? 1 : 0;
    }
    ```
 
-3. **Combined Condition Validation**:
-   ```javascript
+3. **Combined Condition Validation**:```javascript
    function(resp) {
        return resp.isWhitelisted && resp.balance >= 500 ? 1 : 0;
    }
    ```
 
-### 5. Description
+### 6. Description
 
 Description of the certificate, supports rich text input, maximum 200 characters.
 
-### 6. Call-to-Action Link
+### 7. Call-to-Action Link
 
 Guide users to specific operation pages to complete interactive tasks.
 
-### 7. Participation End Time && Update Frequency (Optional)
+### 8. Participation End Time & Update Frequency (Optional)
 
-- **Participation End Time**:
+* **Participation End Time**:
 
 Control the time range of the credential, prohibiting new validations after the deadline.
 
-- **Update Frequency**:
+* **Update Frequency**:
 
 Remind users of the frequency of API data source updates, such as once a day or once every two days.
 
----
+***
 
 ## Example
 
 ### Polygon OAT Holder
 
-  - **Endpoint**
-  ```plaintext
-  https://api.covalenthq.com/v1/matic-mainnet/address/$address/collection/0x5D666F215a85B87Cb042D59662A7ecd2C8Cc44e6/
-  ```
-  - **Request Type**
-  
-  `GET`
+* **Endpoint**
 
-  - **Headers**
-  ```json
-  Authorization: Bearer YOU_API_KEY
-  ```
-  - **Response**
+```plaintext
+https://api.covalenthq.com/v1/matic-mainnet/address/$address/collection/0x5D666F215a85B87Cb042D59662A7ecd2C8Cc44e6/
+```
 
-  ```plaintext
-  {
-    "data": {
-        "updated_at": "2023-06-26T05:12:35.553904397Z",
-        "address": "0x123",
-        "collection": "0x5d666f215a85b87cb042d59662a7ecd2c8cc44e6",
-        "is_spam": false,
-        "items": []
-    },
-    "error": false,
-    "error_message": null,
-    "error_code": null
+* **Request Type**
+
+`GET`
+
+* **Headers**
+
+```json
+Authorization: Bearer YOU_API_KEY
+```
+
+* **Response**
+
+```plaintext
+{
+  "data": {
+      "updated_at": "2023-06-26T05:12:35.553904397Z",
+      "address": "0x123",
+      "collection": "0x5d666f215a85b87cb042d59662a7ecd2c8cc44e6",
+      "is_spam": false,
+      "items": []
+  },
+  "error": false,
+  "error_message": null,
+  "error_code": null
+}
+```
+
+* **Expression**
+
+```javascript
+function(resp) {
+  if (resp.data.items != null && resp.data.items.length > 0) {
+    return 1
   }
-  ```
-  - **Expression**
-
-  ```javascript
-  function(resp) {
-    if (resp.data.items != null && resp.data.items.length > 0) {
-      return 1
-    }
-    return 0
-  }
-  ```
-
+  return 0
+}
+```
 
 ### ETH Balance Holder
 
-  - **Endpoint**
-  ```plaintext
-  https://mainnet.infura.io/v3/YOUR-API-KEY
-  ```
-  - **Request Type**
-  
-  `POST`
+* **Endpoint**
 
-  - **Headers**
+```plaintext
+https://mainnet.infura.io/v3/YOUR-API-KEY
+```
 
-  `No header`
+* **Request Type**
 
-  - **Body**
+`POST`
 
-  ```json
-  {
-      "jsonrpc": "2.0",
-      "method": "eth_getBalance",
-      "params": [
-          "$address",
-          "latest"
-      ],
-      "id": 1
+* **Headers**
+
+`No header`
+
+* **Body**
+
+```json
+{
+    "jsonrpc": "2.0",
+    "method": "eth_getBalance",
+    "params": [
+        "$address",
+        "latest"
+    ],
+    "id": 1
+}
+```
+
+* **Response**
+
+```json
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": "0x7c2562030800"
+}
+
+```
+
+* **Expression**
+
+```javascript
+function(resp) {
+  if (BigInt(resp.result) > 0) {
+    return 1
   }
-  ```
-
-  - **Response**
-
-  ```json
-  {
-      "jsonrpc": "2.0",
-      "id": 1,
-      "result": "0x7c2562030800"
-  }
-
-  ```
-  - **Expression**
-
-  ```javascript
-  function(resp) {
-    if (BigInt(resp.result) > 0) {
-      return 1
-    }
-    return 0
-  }
-  ```
+  return 0
+}
+```
 
 ### General NFT Holder
 
-  - **Endpoint**
-  ```plaintext
-  https://mainnet.infura.io/v3/YOUR-API-KEY
-  ```
-  - **Request Type**
-  
-  `POST`
+* **Endpoint**
 
-  - **Headers**
+```plaintext
+https://mainnet.infura.io/v3/YOUR-API-KEY
+```
 
-  `No header`
+* **Request Type**
 
-  - **Body**
+`POST`
 
-  ```json
-  {
-    "jsonrpc":"2.0",
-    "id":1,
-    "method":"eth_call",
-    "params":[
-        {
-          "data":"0x70a08231000000000000000000000000$addressWithout0x",
-          "to":"0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB"
-        },
-        "latest"
-    ]
+* **Headers**
+
+`No header`
+
+* **Body**
+
+```json
+{
+  "jsonrpc":"2.0",
+  "id":1,
+  "method":"eth_call",
+  "params":[
+      {
+        "data":"0x70a08231000000000000000000000000$addressWithout0x",
+        "to":"0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB"
+      },
+      "latest"
+  ]
+}
+```
+
+* **Response**
+
+```json
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": "0x00000000000000000000000000000001"
+}
+```
+
+* **Expression**
+
+```javascript
+function(resp) {
+  if (BigInt(resp.result) > 0) {
+    return 1
   }
-  ```
-
-  - **Response**
-
-  ```json
-  {
-      "jsonrpc": "2.0",
-      "id": 1,
-      "result": "0x00000000000000000000000000000001"
-  }
-  ```
-  - **Expression**
-
-  ```javascript
-  function(resp) {
-    if (BigInt(resp.result) > 0) {
-      return 1
-    }
-    return 0
-  }
-  ```
-
+  return 0
+}
+```

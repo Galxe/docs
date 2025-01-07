@@ -13,7 +13,7 @@ REST Single-Dimensional Credential allows you to fetch user data via RESTful API
 
 ### 1. Finding the Config in Task Settings
 
-The option to configure REST credential can be found in step 3, [Task Settings](https://help.galxe.com/en/articles/9728885-create-quest-tasks-settings) of quest creation on the Galxe Dashboard.
+The option to configure REST credential can be found in step 3, [Task Settings](https://help.galxe.com/en/articles/9728885-create-quest-tasks-settings) of quest creation on the Galxe Dashboard, under the `Import Your Own Data` task type.
 
 ### 2. Basic Config
 
@@ -68,35 +68,39 @@ https://api.example.com/check-user
 * Input a test address, send the request, and confirm whether the response is correct.
 
 * The response must be in JSON format. Example:
+
 ```json
   {
     "isWhitelisted": true,
     "balance": 1000
   }
-  ```
+```
 
 ### 5. Write Expressions
 
 1. **Whitelist Validation**:
+
 ```javascript
    function(resp) {
        return resp.isWhitelisted ? 1 : 0;
    }
-   ```
+```
 
-2. **Token Balance Validation**:
+1. **Token Balance Validation**:
+
 ```javascript
    function(resp) {
        return resp.balance >= 1000 ? 1 : 0;
    }
-   ```
+```
 
-3. **Combined Condition Validation**:
+1. **Combined Condition Validation**:
+
 ```javascript
    function(resp) {
        return resp.isWhitelisted && resp.balance >= 500 ? 1 : 0;
    }
-   ```
+```
 
 ### 6. Description
 

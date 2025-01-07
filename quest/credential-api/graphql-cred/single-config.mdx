@@ -5,13 +5,15 @@ description: "Learn how to configure GraphQL Single-Dimensional Credential"
 
 ## Overview
 
-GraphQL Single-Dimensional Credential allows you to fetch user data via GraphQL APIs and validate user eligibility based on a single condition. It is suitable for  when task verification is equivalent to answering the question, Did this particular user perform this task — yes or no?
-
-***
+GraphQL Single-Dimensional Credential allows you to fetch user data via GraphQL APIs and validate user eligibility based on a single condition. It is suitable for  when task verification is equivalent to answering the question, *Did this particular user perform this task — yes or no?*
 
 ## Config process
 
-### 1. Basic Config
+### 1. Finding the Config in Task Settings
+
+The option to configure GraphQL credential can be found in step 3, `Task Settings` of quest creation on the Galxe Dashboard, under the `Import Your Own Data` task type.
+
+### 2. Basic Config
 
 * **ID Type**
 
@@ -29,7 +31,7 @@ Choose `GraphQL` type
 
 Choose `Single Dimension`
 
-### 2. Configure API
+### 3. Configure API
 
 * Input Endpoint Example:
 
@@ -53,35 +55,37 @@ query info($address: String!) {
 }
 ```
 
-### 3. Test API Response
+### 4. Test API Response
 
 * Input a test address, send the request, and confirm whether the response is correct.
 
 * The response must be in JSON format. Example:
+
 ```json
     {
         "balance":100
     }
-  ```
+```
 
-### 4. Write Expressions
+### 5. Write Expressions
 
 1. **Points balance validation**:
+
 ```javascript
    function(resp) {
        return resp.balance >= 100 ? 1 : 0;
    }
-   ```
+```
 
-### 5. Description
+### 6. Description
 
 Description of the certificate, supports rich text input, maximum 200 characters.
 
-### 6. Call-to-Action Link
+### 7. Call-to-Action Link
 
 Guide users to specific operation pages to complete interactive tasks.
 
-### 7. Participation End Time && Update Frequency (Optional)
+### 8. Participation End Time && Update Frequency (Optional)
 
 * **Participation End Time**:
 
@@ -108,6 +112,7 @@ https://graphigo.prd.galaxy.eco/query
 `No header`
 
 * **Query**
+
 ```graphql
   query info($address: String!) {
       space(id: 68267) {
@@ -116,7 +121,7 @@ https://graphigo.prd.galaxy.eco/query
           }
       }
   }
-  ```
+```
 
 * **Response**
 

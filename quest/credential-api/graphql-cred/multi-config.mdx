@@ -7,61 +7,73 @@ description: "Learn how to configure GraphQL Multi-Dimensional Credential"
 
 GraphQL Multi-Dimensional Credential allows you to fetch user data via GraphQL APIs and validate eligibility across multiple dimensions. used to retrieve data for the extent of user participation.
 
----
+***
 
 ## Config process
 
-### 1. Basic Config
+### 1. Finding the Config in Task Settings
 
-- **ID Type**
+The option to configure GraphQL credential can be found in step 3, `Task Settings` of quest creation on the Galxe Dashboard, under the `Import Your Own Data` task type.
+
+### 2. Basic Config
+
+* **ID Type**
 
 `ID Type` provides various identity options, including social accounts, blockchain addresses, and other unique identifiers.
 
-- **Title**
+* **Title**
 
 Give your credential an enticing title.
 
-- **Credential Source**
+* **Credential Source**
 
 Choose `GraphQL` type
 
-- **Type**
+* **Type**
 
 Choose `Multi Dimension`
 
-### 2. Specify Dimensions
+### 3. Specify Dimensions
 
 In Multi-Dimensional Credential configuration, you need to define specific dimensions to ensure each dimension is clearly identified and usable.
 
-- **Identifier**:
-   - Enter a unique identifier for the dimension, e.g., `mainnet_eth_balance`.
-   - The identifier is used for internal calls and logic operations, and it must be globally unique.
+* **Identifier**:
 
-- **Display Name**:
-   - Enter a display name for the dimension, e.g., `ETH balance on Mainnet`.
-   - This name will be displayed in the UI for user understanding.
+  * Enter a unique identifier for the dimension, e.g., `mainnet_eth_balance`.
 
-- **Type**:
-   - Select the dimension type `COUNTER` from the dropdown menu.
+  * The identifier is used for internal calls and logic operations, and it must be globally unique.
 
-- **Description**:
-   - Enter a description to explain the purpose of the dimension, e.g., "This dimension tracks the ETH balance of a user on Mainnet".
-   - The description must be within 256 characters.
+* **Display Name**:
 
-### 3. Configure API
+  * Enter a display name for the dimension, e.g., `ETH balance on Mainnet`.
 
-- Input Endpoint Example:
+  * This name will be displayed in the UI for user understanding.
+
+* **Type**:
+
+  * Select the dimension type `COUNTER` from the dropdown menu.
+
+* **Description**:
+
+  * Enter a description to explain the purpose of the dimension, e.g., "This dimension tracks the ETH balance of a user on Mainnet".
+
+  * The description must be within 256 characters.
+
+### 4. Configure API
+
+* Input Endpoint Example:
+
 ```plaintext
 https://api.example.com/query
 ```
 
-- Add Headers (Optional)
+* Add Headers (Optional)
 
 ```json
 `access-token`: `YOUR_TOKEN`
 ```
 
-- Input Query:
+* Input Query:
 
 ```graphql
 query info($address: String!) {
@@ -71,119 +83,117 @@ query info($address: String!) {
 }
 ```
 
-### 4. Test API Response
+### 5. Test API Response
 
-- **Input a test address and send the request to confirm the response**:
-  ```json
+* **Input a test address and send the request to confirm the response**:```json
   {
     "balance": 100
   }
   ```
 
-### 5. Write Expressions
+### 6. Write Expressions
 
-- **Token Balance Output**:
-   ```javascript
-   function(resp) {
-       return {
-         "mainnet_eth_balance": resp.balance
-       };
-   }
-   ```
+* **Token Balance Output**:
+```javascript
+  function(resp) {
+      return {
+        "mainnet_eth_balance": resp.balance
+      };
+  }
+  ```
 
-### 6. Description
+### 7. Description
 
 Description of the certificate, supports rich text input, maximum 200 characters.
 
-### 7. Call-to-Action Link
+### 8. Call-to-Action Link
 
 Guide users to specific operation pages to complete interactive tasks.
 
-### 8. Participation End Time && Update Frequency (Optional)
+### 9. Participation End Time && Update Frequency (Optional)
 
-- **Participation End Time**:
+* **Participation End Time**:
 
 Control the time range of the credential, prohibiting new validations after the deadline.
 
-- **Update Frequency**:
+* **Update Frequency**:
 
 Remind users of the frequency of API data source updates, such as once a day or once every two days.
 
-### 9. Config Rule
+### 10. Config Rule
 
-   Configure rules in Quest to determine whether users meet the criteria.
+Configure rules in Quest to determine whether users meet the criteria.
 
-- **Threshold Evaluation**:
+* **Threshold Evaluation**:
 
 <img height="200" src="../../../images/cred/cred-rest-multi-1.gif" />
 
 When a certain threshold condition is met (e.g., >0), assign a fixed points directly.
 
-- **Multiple Entries(Optional)**:
+* **Multiple Entries(Optional)**:
 
 <img height="200" src="../../../images/cred/cred-rest-multi-2.gif" />
 
 Enable users to claim rewards repeatedly once certain credentials are fulfilled, for example, a user earns 10 points for each 1 ETH they hold. If the user holds 5 ETH, they will earn 50 points.
 
----
-
+***
 
 ## Example
 
 ### Galxe MSU Space points balance
 
-  - **Specify Dimensions**
+* **Specify Dimensions**
 
-  Identifier:`points_balance`
+Identifier:`points_balance`
 
-  Display Name:`points balance on msu`
+Display Name:`points balance on msu`
 
-  Type:`COUNTER`
+Type:`COUNTER`
 
-  Description:`The balance of points you hold on msu`
+Description:`The balance of points you hold on msu`
 
-  - **Endpoint**
+* **Endpoint**
 
-  ```plaintext
-  https://graphigo.prd.galaxy.eco/query
-  ```
+```plaintext
+https://graphigo.prd.galaxy.eco/query
+```
 
-  - **Headers**
+* **Headers**
 
-  `No header`
+`No header`
 
-  - **Query**
-
-    ```graphql
-    query info($address: String!) {
-        space(id: 68267) {
-            addressLoyaltyPoints(address: $address) {
-            points
-            }
-        }
-    }
-    ```
-
-  - **Response**
-
-  ```json
-    {
-        "space": {
-        "addressLoyaltyPoints": {
-            "points": 100
-        }
-        }
-    }
-  ```
-  - **Expression**
-
-  ```javascript
-  function(resp) {
-   try {
-      let points = BigInt(resp.space.addressLoyaltyPoints.points);
-      return { "points_balance": points };
-   } catch (error) {
-      return { "points_balance": 0 };
-   }
+* **Query**
+```graphql
+  query info($address: String!) {
+      space(id: 68267) {
+          addressLoyaltyPoints(address: $address) {
+          points
+          }
+      }
   }
   ```
+
+* **Response**
+
+```json
+  {
+      "space": {
+      "addressLoyaltyPoints": {
+          "points": 100
+      }
+      }
+  }
+```
+
+* **Expression**
+
+```javascript
+function(resp) {
+ try {
+    let points = BigInt(resp.space.addressLoyaltyPoints.points);
+    return { "points_balance": points };
+ } catch (error) {
+    return { "points_balance": 0 };
+ }
+}
+```

@@ -67,7 +67,8 @@ https://api.example.com/check-user
 
 * Input a test address, send the request, and confirm whether the response is correct.
 
-* The response must be in JSON format. Example:```json
+* The response must be in JSON format. Example:
+```json
   {
     "isWhitelisted": true,
     "balance": 1000
@@ -76,19 +77,22 @@ https://api.example.com/check-user
 
 ### 5. Write Expressions
 
-1. **Whitelist Validation**:```javascript
+1. **Whitelist Validation**:
+```javascript
    function(resp) {
        return resp.isWhitelisted ? 1 : 0;
    }
    ```
 
-2. **Token Balance Validation**:```javascript
+2. **Token Balance Validation**:
+```javascript
    function(resp) {
        return resp.balance >= 1000 ? 1 : 0;
    }
    ```
 
-3. **Combined Condition Validation**:```javascript
+3. **Combined Condition Validation**:
+```javascript
    function(resp) {
        return resp.isWhitelisted && resp.balance >= 500 ? 1 : 0;
    }

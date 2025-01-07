@@ -7,37 +7,41 @@ description: "Learn how to configure API Credential."
 
 GraphQL Single-Dimensional Credential allows you to fetch user data via GraphQL APIs and validate user eligibility based on a single condition. It is suitable for simple use cases such as whitelist checks or balance validations.
 
----
+***
 
 ## Config process
 
-### 1. Basic Config
+### 1. Finding the Config in Task Settings&#x20;
 
-- **ID Type**
+The option to configure API credential can be found in step 3, [Task Settings](https://help.galxe.com/en/articles/9728885-create-quest-tasks-settings) of quest creation on the Galxe Dashboard.
 
-`ID Type` provides various identity options, including social accounts, blockchain addresses, and other unique identifiers.
+### 2. Basic Config
 
-- **Title**
+* **ID Type**
 
-Give your credential an enticing title.
+`ID Type` provides various identity options, including social accounts, blockchain addresses, and other unique identifiers. Choose the one appropriate to your task.
 
-- **Credential Source**
+* **Title**
+
+Give your credential a descriptive title relevant to the task at hand.
+
+* **Credential Source**
 
 Choose `API` type
 
-- **Description**:
+* **Description**:
 
-Description of the certificate, supports rich text input, maximum 200 characters.
+Description of the task, supports rich text input, maximum 200 characters.
 
-- **Call-to-Action Link**:
+* **Call-to-Action Link**:
 
-Guide users to specific operation pages to complete interactive tasks.
+Guide users to the specific URL where they can complete the task.
 
-- **Participation End Time(Optional)**:
+* **Participation End Time(Optional)**:
 
-Control the time range of the credential, prohibiting new validations after the deadline.
+Control the time range of the credential, prohibiting new verifications after the deadline.
 
-- **Update Frequency (Optional)**:
+* **Update Frequency (Optional)**:
 
 Remind users of the frequency of API data source updates, such as once a day or once every two days.
 
@@ -45,7 +49,7 @@ Remind users of the frequency of API data source updates, such as once a day or 
 
 Use the [Galxe GraphQL API](https://docs.galxe.com/quest/graphql-api/credential/mutations/credential-holder-update) to push data to the credential.
 
-- **GraphQL Example**:
+* **GraphQL Example**:
 
 ```cs
 mutation {
@@ -72,192 +76,191 @@ mutation {
 
 ```
 
-- **Code Examples**:
+* **Code Examples**:
 
 <CodeGroup>
+  ```curl cURL
 
-```curl cURL
-
-curl 'https://graphigo.prd.galaxy.eco/query' \
-  -H 'access-token: YOUR-ACCESS-TOKEN' \
-  -H 'content-type: application/json' \
-  --data-raw '{"query":"mutation {\n  credentialItems(\n    input: {\n      credId: \"312\"\n      operation: APPEND\n      items: [\n        \"0x111fd6240381af2c5f1a9e27f282bae8b92b257\"\n        \"0x222dde76Cf5752f2bc1DC798BA1369dcA49d7c79\"\n        \"0x333eC1a5d0BC3C4291aeb962CBda49677E9a9FcB\"\n        \"0x444022af64bfc0f59ce1069e4ab51aa15148e60b\"\n        \"0x55526ef96b12fba7a507afba39bdfc78e0039742\"\n        \"0x6662c6b59e87b302b43400303427acd50f8071e6\"\n        \"0x777742ee649ee36edcf5ac9a97df34333a97fd24\"\n        \"0x8886b92fda46b8d9d33ca28d8837e1661edf8b97\"\n        \"0x999886e265cf2ec39f8868d7b6c67ab78e027736\"\n      ]\n    }\n  ) {\n    eligible(address:\"0x999886e265cf2ec39f8868d7b6c67ab78e027736\")\n  }\n}\n\n"}'
+  curl 'https://graphigo.prd.galaxy.eco/query' \
+    -H 'access-token: YOUR-ACCESS-TOKEN' \
+    -H 'content-type: application/json' \
+    --data-raw '{"query":"mutation {\n  credentialItems(\n    input: {\n      credId: \"312\"\n      operation: APPEND\n      items: [\n        \"0x111fd6240381af2c5f1a9e27f282bae8b92b257\"\n        \"0x222dde76Cf5752f2bc1DC798BA1369dcA49d7c79\"\n        \"0x333eC1a5d0BC3C4291aeb962CBda49677E9a9FcB\"\n        \"0x444022af64bfc0f59ce1069e4ab51aa15148e60b\"\n        \"0x55526ef96b12fba7a507afba39bdfc78e0039742\"\n        \"0x6662c6b59e87b302b43400303427acd50f8071e6\"\n        \"0x777742ee649ee36edcf5ac9a97df34333a97fd24\"\n        \"0x8886b92fda46b8d9d33ca28d8837e1661edf8b97\"\n        \"0x999886e265cf2ec39f8868d7b6c67ab78e027736\"\n      ]\n    }\n  ) {\n    eligible(address:\"0x999886e265cf2ec39f8868d7b6c67ab78e027736\")\n  }\n}\n\n"}'
 
 
-```
+  ```
 
-```javascript JavaScript
-const axios = require("axios");
+  ```javascript JavaScript
+  const axios = require("axios");
 
-const credId = "123";
-const operation = "APPEND";
-const items = ["0x123"];
+  const credId = "123";
+  const operation = "APPEND";
+  const items = ["0x123"];
 
-(async () => {
-  try {
-    let result = await axios.post(
-      "https://graphigo.prd.galaxy.eco/query",
-      {
-        operationName: "credentialItems",
-        query: `
-          mutation credentialItems($credId: ID!, $operation: Operation!, $items: [String!]!) {
-            credentialItems(input: { credId: $credId, operation: $operation, items: $items }) {
-              name
+  (async () => {
+    try {
+      let result = await axios.post(
+        "https://graphigo.prd.galaxy.eco/query",
+        {
+          operationName: "credentialItems",
+          query: `
+            mutation credentialItems($credId: ID!, $operation: Operation!, $items: [String!]!) {
+              credentialItems(input: { credId: $credId, operation: $operation, items: $items }) {
+                name
+              }
             }
-          }
-        `,
-        variables: {
-          credId: credId, // Ensure it's a string to avoid overflow
-          operation: operation,
-          items: items,
+          `,
+          variables: {
+            credId: credId, // Ensure it's a string to avoid overflow
+            operation: operation,
+            items: items,
+          },
         },
-      },
-      {
-        headers: {
-          "access-token": "access-token-of-yours",
-        },
+        {
+          headers: {
+            "access-token": "access-token-of-yours",
+          },
+        }
+      );
+
+      if (result.status != 200) {
+        throw new Error(result);
+      } else if (result.data.errors && result.data.errors.length > 0) {
+        console.error(result.data.errors);
+        throw new Error(result.data.errors);
+      } else {
+        console.log("Success:", result.data.data.credentialItems);
       }
-    );
-
-    if (result.status != 200) {
-      throw new Error(result);
-    } else if (result.data.errors && result.data.errors.length > 0) {
-      console.error(result.data.errors);
-      throw new Error(result.data.errors);
-    } else {
-      console.log("Success:", result.data.data.credentialItems);
+    } catch (error) {
+      console.error("Error:", error);
     }
-  } catch (error) {
-    console.error("Error:", error);
+  })();
+  ```
+
+  ```go Go
+  package main
+
+  import (
+  	"bytes"
+  	"encoding/json"
+  	"fmt"
+  	"io/ioutil"
+  	"net/http"
+  )
+
+  func main() {
+  	url := "https://graphigo.prd.galaxy.eco/query"
+  	accessToken := "access-token-of-yours"
+
+  	// Request payload
+  	payload := map[string]interface{}{
+  		"operationName": "credentialItems",
+  		"query": `
+  			mutation credentialItems($credId: ID!, $operation: Operation!, $items: [String!]!) {
+  				credentialItems(input: { credId: $credId, operation: $operation, items: $items }) {
+  					name
+  				}
+  			}
+  		`,
+  		"variables": map[string]interface{}{
+  			"credId":    "123",           // Ensure it's a string
+  			"operation": "APPEND",
+  			"items":     []string{"0x123"},
+  		},
+  	}
+
+  	// Convert payload to JSON
+  	payloadBytes, err := json.Marshal(payload)
+  	if err != nil {
+  		fmt.Println("Error marshalling payload:", err)
+  		return
+  	}
+
+  	// Create HTTP request
+  	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payloadBytes))
+  	if err != nil {
+  		fmt.Println("Error creating request:", err)
+  		return
+  	}
+
+  	// Add headers
+  	req.Header.Set("Content-Type", "application/json")
+  	req.Header.Set("access-token", accessToken)
+
+  	// Send HTTP request
+  	client := &http.Client{}
+  	resp, err := client.Do(req)
+  	if err != nil {
+  		fmt.Println("Error sending request:", err)
+  		return
+  	}
+  	defer resp.Body.Close()
+
+  	// Read response
+  	body, err := ioutil.ReadAll(resp.Body)
+  	if err != nil {
+  		fmt.Println("Error reading response:", err)
+  		return
+  	}
+
+  	// Parse response
+  	var result map[string]interface{}
+  	err = json.Unmarshal(body, &result)
+  	if err != nil {
+  		fmt.Println("Error unmarshalling response:", err)
+  		return
+  	}
+
+  	// Check for errors
+  	if errors, ok := result["errors"]; ok {
+  		fmt.Println("GraphQL Errors:", errors)
+  	} else {
+  		fmt.Println("Success:", result["data"])
+  	}
   }
-})();
-```
-```go Go
-package main
+  ```
 
-import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-)
+  ```java Java
+  const credId = "123";
+  const operation = "APPEND";
+  const items = ["0x123"];
 
-func main() {
-	url := "https://graphigo.prd.galaxy.eco/query"
-	accessToken := "access-token-of-yours"
-
-	// Request payload
-	payload := map[string]interface{}{
-		"operationName": "credentialItems",
-		"query": `
-			mutation credentialItems($credId: ID!, $operation: Operation!, $items: [String!]!) {
-				credentialItems(input: { credId: $credId, operation: $operation, items: $items }) {
-					name
-				}
-			}
-		`,
-		"variables": map[string]interface{}{
-			"credId":    "123",           // Ensure it's a string
-			"operation": "APPEND",
-			"items":     []string{"0x123"},
-		},
-	}
-
-	// Convert payload to JSON
-	payloadBytes, err := json.Marshal(payload)
-	if err != nil {
-		fmt.Println("Error marshalling payload:", err)
-		return
-	}
-
-	// Create HTTP request
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payloadBytes))
-	if err != nil {
-		fmt.Println("Error creating request:", err)
-		return
-	}
-
-	// Add headers
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("access-token", accessToken)
-
-	// Send HTTP request
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Error sending request:", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Read response
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Error reading response:", err)
-		return
-	}
-
-	// Parse response
-	var result map[string]interface{}
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		fmt.Println("Error unmarshalling response:", err)
-		return
-	}
-
-	// Check for errors
-	if errors, ok := result["errors"]; ok {
-		fmt.Println("GraphQL Errors:", errors)
-	} else {
-		fmt.Println("Success:", result["data"])
-	}
-}
-```
-
-```java Java
-const credId = "123";
-const operation = "APPEND";
-const items = ["0x123"];
-
-// Nodejs using Axios lib
-let result = await axios.post("https://graphigo.prd.galaxy.eco/query", {
-  operationName: "credentialItems",
-  query: `
-    mutation credentialItems($credId: ID!, $operation: Operation!, $items: [String!]!) 
-      { 
-        credentialItems(input: { 
-          credId: $credId 
-          operation: $operation 
-          items: $items 
-        }) 
+  // Nodejs using Axios lib
+  let result = await axios.post("https://graphigo.prd.galaxy.eco/query", {
+    operationName: "credentialItems",
+    query: `
+      mutation credentialItems($credId: ID!, $operation: Operation!, $items: [String!]!) 
         { 
-          name 
-        } 
-      }
-    `,
-    variables: {
-      // Make sure this is string type as int might cause overflow
-      credId: credId,
-      operation: operation,
-      items: items
+          credentialItems(input: { 
+            credId: $credId 
+            operation: $operation 
+            items: $items 
+          }) 
+          { 
+            name 
+          } 
+        }
+      `,
+      variables: {
+        // Make sure this is string type as int might cause overflow
+        credId: credId,
+        operation: operation,
+        items: items
+      },
     },
-  },
-  {
-    headers: {
-      "access-token": "access-token-of-yours",
+    {
+      headers: {
+        "access-token": "access-token-of-yours",
+      }
     }
+  );
+  if (result.status != 200) {
+    throw new Error(result);
+  } else if (result.errors && result.errors.length > 0) {
+    // NOTE: GraphQL returns 200 even if there's an error,
+    // so must explicitly check result.errors.
+    console.log(result.errors);
+    throw new Error(result.errors);
   }
-);
-if (result.status != 200) {
-  throw new Error(result);
-} else if (result.errors && result.errors.length > 0) {
-  // NOTE: GraphQL returns 200 even if there's an error,
-  // so must explicitly check result.errors.
-  console.log(result.errors);
-  throw new Error(result.errors);
-}
 
-```
-
+  ```
 </CodeGroup>

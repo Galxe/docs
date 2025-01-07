@@ -5,44 +5,45 @@ description: "Learn how to configure GraphQL Single-Dimensional Credential"
 
 ## Overview
 
-GraphQL Single-Dimensional Credential allows you to fetch user data via GraphQL APIs and validate user eligibility based on a single condition. It is suitable for simple use cases such as whitelist checks or balance validations.
+GraphQL Single-Dimensional Credential allows you to fetch user data via GraphQL APIs and validate user eligibility based on a single condition. It is suitable for  when task verification is equivalent to answering the question, Did this particular user perform this task — yes or no?
 
----
+***
 
 ## Config process
 
 ### 1. Basic Config
 
-- **ID Type**
+* **ID Type**
 
 `ID Type` provides various identity options, including social accounts, blockchain addresses, and other unique identifiers.
 
-- **Title**
+* **Title**
 
 Give your credential an enticing title.
 
-- **Credential Source**
+* **Credential Source**
 
 Choose `GraphQL` type
 
-- **Type**:
+* **Type**:
 
 Choose `Single Dimension`
 
 ### 2. Configure API
 
-- Input Endpoint Example:
+* Input Endpoint Example:
+
 ```plaintext
 https://api.example.com/query
 ```
 
-- Add Headers (Optional)
+* Add Headers (Optional)
 
 ```json
 `access-token`: `YOUR_TOKEN`
 ```
 
-- Input Query:
+* Input Query:
 
 ```graphql
 query info($address: String!) {
@@ -54,9 +55,10 @@ query info($address: String!) {
 
 ### 3. Test API Response
 
-- Input a test address, send the request, and confirm whether the response is correct.
-- The response must be in JSON format. Example:
-  ```json
+* Input a test address, send the request, and confirm whether the response is correct.
+
+* The response must be in JSON format. Example:
+```json
     {
         "balance":100
     }
@@ -65,7 +67,7 @@ query info($address: String!) {
 ### 4. Write Expressions
 
 1. **Points balance validation**:
-   ```javascript
+```javascript
    function(resp) {
        return resp.balance >= 100 ? 1 : 0;
    }
@@ -81,57 +83,57 @@ Guide users to specific operation pages to complete interactive tasks.
 
 ### 7. Participation End Time && Update Frequency (Optional)
 
-- **Participation End Time**:
+* **Participation End Time**:
 
 Control the time range of the credential, prohibiting new validations after the deadline.
 
-- **Update Frequency**:
+* **Update Frequency**:
 
 Remind users of the frequency of API data source updates, such as once a day or once every two days.
 
----
+***
 
 ## Example
 
 ### Galxe MSU Space requires holding at least 100 points
 
-  - **Endpoint**
-  ```plaintext
-  https://graphigo.prd.galaxy.eco/query
+* **Endpoint**
+
+```plaintext
+https://graphigo.prd.galaxy.eco/query
+```
+
+* **Headers**
+
+`No header`
+
+* **Query**
+```graphql
+  query info($address: String!) {
+      space(id: 68267) {
+          addressLoyaltyPoints(address: $address) {
+          points
+          }
+      }
+  }
   ```
 
-  - **Headers**
+* **Response**
 
-  `No header`
+```json
+  {
+      "space": {
+      "addressLoyaltyPoints": {
+          "points": 100
+      }
+      }
+  }
+```
 
-  - **Query**
+* **Expression**
 
-    ```graphql
-    query info($address: String!) {
-        space(id: 68267) {
-            addressLoyaltyPoints(address: $address) {
-            points
-            }
-        }
-    }
-    ```
-
-  - **Response**
-
-  ```json
-    {
-        "space": {
-        "addressLoyaltyPoints": {
-            "points": 100
-        }
-        }
-    }
-  ```
-  - **Expression**
-
-   ```javascript
-   function(resp) {
-       return resp.space.addressLoyaltyPoints >= 100 ? 1 : 0;
-   }
-   ```
-
+```javascript
+function(resp) {
+    return resp.space.addressLoyaltyPoints >= 100 ? 1 : 0;
+}
+```

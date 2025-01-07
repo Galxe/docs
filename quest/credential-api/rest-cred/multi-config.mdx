@@ -94,7 +94,8 @@ https://api.example.com/check-user
 
 ### 5. Test API Response
 
-* **Input a test address and send the request to confirm the response**:```json
+* **Input a test address and send the request to confirm the response**:
+```json
   {
     "isWhitelisted": true,
     "balance": 1000
@@ -103,7 +104,8 @@ https://api.example.com/check-user
 
 ### 6. Write Expressions
 
-* **Token Balance Output**:```javascript
+* **Token Balance Output**:
+```javascript
   function(resp) {
       return {
         "mainnet_eth_balance": resp.balance

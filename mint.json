@@ -1,5 +1,6 @@
 {
   "name": "Galxe Docs",
+  "feedback.thumbsRating": true,
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"

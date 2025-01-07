@@ -3,43 +3,52 @@ title: "Introduction"
 description: ""
 ---
 
-Galxe API enables dynamic management of user credential data, including adding, removing, or replacing user lists in campaigns. It is designed for scenarios that require real-time updates, making it ideal for managing user access, eligibility, or participation in campaigns.
+Galxe API allows for dynamic management of who can verify tasks in your quest by adding, removing, or replacing user lists in credential data directly. It is designed for scenarios that require real-time updates, making it ideal for managing user access, eligibility, or participation in quests.
 
----
+***
 
 ## Requirements
 
-- **Access Token**: Obtain a `access-token` bound to your wallet address for authentication.
-- **Permissions**: Ensure your wallet address has admin or owner access to the space where the credential resides.
-- **Rate Limits**: For large request volumes, contact Galxe to whitelist your external IP and avoid rate-limit issues.
+* **Access Token**: Obtain an [access-token](https://help.galxe.com/en/articles/9733866-introducing-galxe-account#h_3b839618dd) bound to your wallet address for authentication.
 
----
+* **Permissions**: Ensure your wallet address has [admin or owner access](https://help.galxe.com/en/articles/8506982-getting-started-with-galxe-quest#h_a7571f6cb9) to the space where the credential resides.
+
+* **Rate Limits**: For large request volumes, contact Galxe to whitelist your external IP and avoid rate-limit issues.
+
+***
 
 ## Core Operations
 
-- **APPEND**: Add new items (e.g., addresses or emails) to an existing list.
-- **REMOVE**: Remove specific items from the list.
-- **REPLACE**: Replace the entire list (recommended only for small data sets, e.g., less than 500 entries).
+* **APPEND**: Add new items (e.g., addresses or emails) to an existing list.
 
----
+* **REMOVE**: Remove specific items from the list.
+
+* **REPLACE**: Replace the entire list (recommended only for small data sets, e.g., less than 500 entries).
+
+***
 
 ## Interaction Method
 
-- API operations are performed using **GraphQL mutations**, allowing flexible and efficient data updates.
-- Eligibility of users is evaluated through responses processed by JavaScript expressions, returning `1` (eligible) or `0` (not eligible).
+* API operations are performed using **GraphQL mutations**, allowing flexible and efficient data updates.
 
----
+* Eligibility of users is evaluated through responses processed by JavaScript expressions, returning `1` (eligible) or `0` (not eligible).
+
+***
 
 ## Use Cases
 
-- **Campaign Management**: Dynamically update user data for specific campaigns.
-- **Real-Time Validation**: Verify and update user credentials, such as wallet addresses or emails.
-- **Batch Updates**: Modify credential lists for rewards distribution, permissions, or event participation.
+* **Campaign Management**: Dynamically update user data for specific tasks in quests.
 
----
+* **Real-Time Validation**: Verify and update user credentials, such as wallet addresses or emails.
+
+* **Batch Updates**: Modify credential lists for rewards distribution, permissions, or event participation.
+
+***
 
 ## Notes
 
-- **REPLACE Usage**: Suitable for small-scale updates; for large lists, use REMOVE followed by APPEND.
-- **Retry Mechanism**: Always retry requests on errors. APPEND and REMOVE operations are idempotent and safe for repeated attempts.
-- **Rate Limits**: Monitor API usage to avoid `429` errors, and contact Galxe for whitelisting if necessary.
+* **REPLACE Usage**: Suitable for small-scale updates; for large lists, use REMOVE followed by APPEND.
+
+* **Retry Mechanism**: Always retry requests on errors. APPEND and REMOVE operations are idempotent and safe for repeated attempts.
+
+* **Rate Limits**: Monitor API usage to avoid `429` errors, and contact Galxe for whitelisting if necessary.

@@ -44,7 +44,7 @@ The `REST` Credential is a method used by Galxe to pull data from your `RESTful 
 
 * `$addressWithout0x`: Replaced with the user's wallet address as a hexadecimal string without the `0x` prefix, e.g., **`95ad73...`**, typically used for constructing **`eth_call`** requests.
 
-* `$value`: Used when user information is not an address (email or Telegram ID) and replaced with the respective information.
+* `$socialId`: Used when user information is not an address (email or Telegram ID) and replaced with the respective information.
 
 <Warning>For addresses encoded in case-insensitive formats (EVM or Aptos addresses starting with `0x`), Galxe converts them to lowercase before sending to your endpoint.</Warning>
 

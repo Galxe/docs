@@ -3,90 +3,154 @@ title: "Galxe Passport"
 description: "Galxe Passport is the most trusted Web3 identity service for proof of personhood"
 ---
 
-## What is Galxe Passport?[](#what-is-galxe-passport "Direct link to heading")
+## What is Galxe Passport?
 
 Galxe Passport is your universal identity for Web3 adventures. It stores your identity information securely and anonymously. You will be able to use this as your universal identity across different applications for compliance purposes. You will also get your unique Galxe Passport Soulbound Token in your wallet to be distinguished as a verified individual. Enabling our partners to prevent Sybil attacks.
 
 Galxe Passport was created to be a secure, private way for users to store data. Users’ private information will be encrypted with their password. These data are only accessible to the user, all others (including Galxe) can only access these data upon the user’s permission. Users who want to obtain a Soulbound Token can do so by going through the verification process on Galxe which will then allow them to mint and claim the Galxe Passport Token.
 
-## Technical documentation[](#technical-documentation "Direct link to heading")
+## Technical documentation
 
 Galxe Passport was designed on the principle that you have the right to your personal information — you should get to decide where, how, and with whom it’s shared. You should also be able to prove your personhood. We are committed to protecting your privacy and we have built Galxe Passport with control, security, and transparency in mind. In this section, we will describe in detail how we process and store encrypted user PII (Personal Identifiable Information).
 
-### Tenets[](#tenets "Direct link to heading")
+### Tenets
 
 1. Galxe Passport’s PII should be fully managed by their owners and kept private safely - your data is never stored in plain text and will not be accessible by anyone (including Galxe) without your explicit permission.
 2. Owners can share their Galxe Passport data with external parties under strict consent by the owners only - using valid, non-replayable signatures and client side decryption with user password.
 3. When external parties receive Galxe Passport data, they should be able to verify its data integrity.
 
-### Data Flow[](#data-flow "Direct link to heading")
+### Data Flow
 
-### 1 - Persona identity verification[](#1---persona-identity-verification "Direct link to heading")
+### 1 - Sumsub identity verification
 
-Persona is the third-party vendor that helps run algorithms and check whether your ID is valid. They collect the identity information directly from you because they need to provide identity verification.
+**Sumsub** is the third-party vendor that helps run algorithms and check whether your ID is valid. They collect the identity information directly from you because they need to provide identity verification.
 
-When a user is prompted with a Persona inquiry embedded on galxe.com, we generate an UUID for the user and pass it to Persona. Persona uses this UUID to uniquely identifies a person, and group all inquiries under the same UUID together. For now this UUID is stored in our database as user’s “Persona ID”, and will be subsequently deleted from our database as soon as the Persona inquiry is approved and user creates their passport.
+When a user is prompted with a **Sumsub** verification embedded on **galxe.com**, we generate an UUID for the user and pass it to **Sumsub**. **Sumsub** uses this UUID to uniquely identifies a person, and group all verifications under the same UUID together. For now this UUID is stored in our database as user’s “Vendor Reference ID”.
 
-When the inquiry is approved, Persona informs Galxe and user now proceeds to the next step: constructing the Galxe passport.
+When the verification is approved, **Sumsub** informs Galxe and user now proceeds to the next step: constructing the Galxe passport.
 
-### 2 - Constructing Galxe Passport[](#2---constructing-galxe-passport "Direct link to heading")
+### 2 - Constructing Galxe Passport
 
-User on Galxe is now guided to construct Galxe Passport from PII collected from their approved inquiry on Persona. There are 3 steps with two separate signatures needed:
+User on Galxe is now guided to construct Galxe Passport from PII collected from their approved verification on **Sumsub**. There are 3 steps with two separate signatures needed:
 
-1. (signing needed) Retrieve PII from Persona, signed by Galxe witness to ensure its integrity - let’s call this a signed credential
+1. (signing needed) Retrieve PII from **Sumsub**, signed by Galxe witness to ensure its integrity - let’s call this a signed credential
 2. Encrypt signed credential using user’s own strong password of choice
 3. (signing needed) Pass the encrypted data back to Galxe for storage, and create the Galxe Passport
 
-### 2.1 - Retrieving PII from Persona[](#21---retrieving-pii-from-persona "Direct link to heading")
+### 2.1 - Retrieving PII from Sumsub
 
-Using the UUID (Persona ID) generated for the user, we are able to retrieve the complete inquiry information from Persona. Example:
+Using the UUID (Vendor Reference ID) generated for the user, we are able to retrieve the complete verification result from **Sumsub**. Example:
 
 ```json
 {
-  "data": {
-    "type": "inquiry",
-    "id": "inq_12345",
-    "attributes": {
-      "status": "approved",
-      "reference-id": "12345678-1234-5678-1234-123456789012", // example UUID
-      "name-first": "John",
-      "name-last": "Doe",
-      "birthdate": "1977-07-17",
-      "identification-number": "I1234562",
-            ...
-    },
+  "id": "680123456789abcdef123456", // applicant id in Sumsub
+  "createdAt": "2020-06-24 05:05:14",
+  "clientId": "your_cool_id",
+  "inspectionId": "680123456789abcdef123456",
+  "externalUserId": "12345678-1234-5678-1234-123456789012", // vendor reference id in Galxe.com
+  "fixedInfo": {
+    "firstName": "John",
+    "lastName": "Doe"
   },
-  "included": [
+  "info": {
+    "firstName": "John",
+    "firstNameEn": "John",
+    "lastName": "Doe",
+    "lastNameEn": "Doe",
+    "dob": "1977-07-17",
+    "country": "US",
+    "idDocs": [
+      {
+        "idDocType": "ID_CARD",
+        "country": "US",
+        "firstName": "John",
+        "firstNameEn": "John",
+        "lastName": "Doe",
+        "lastNameEn": "Doe",
+        "validUntil": "2030-12-31",
+        "number": "I1234562",
+        "dob": "1977-07-17",
+        "gender": "M"
+      }
+    ]
+  },
+  "email": "johndoe@example.com",
+  "applicantPlatform": "Android",
+  "review": {
+    "elapsedSincePendingMs": 115879,
+    "elapsedSinceQueuedMs": 95785,
+    "reprocessing": true,
+    "levelName": "basic-kyc",
+    "createDate": "2020-06-24 05:11:02+0000",
+    "reviewDate": "2020-06-24 05:12:58+0000",
+    "reviewResult": {
+      "reviewAnswer": "GREEN"
+    },
+    "reviewStatus": "completed"
+  },
+  "lang": "en",
+  "type": "individual"
+}
+```
+
+Also, we can fetch user's document images, Example:
+
+```json
+{
+  "items": [
     {
-      "type": "verification/government-id",
-      "attributes": {
-        "status": "passed",
-        "country-code": "US",
-        "front-photo-url": "https://withpersona.com/api/v1/files/123.jpg",
-        "back-photo-url": "https://withpersona.com/api/v1/files/456.jpg",
-        "id-class": "dl",
-        "name-first": "John",
-          "name-last": "Doe",
-          "birthdate": "1977-07-17",
-          "identification-number": "I1234562",
-                ...
+      "id": "1583009672",
+      "addedDate": "2020-06-24 05:13:22",
+      "fileMetadata": {
+        "fileName": "example_id_doc_name1.jpg",
+        "fileType": "jpeg"
+      },
+      "idDocDef": {
+        "country": "US",
+        "idDocType": "DRIVERS",
+        "idDocSubType": "FRONT_SIDE"
+      },
+      "reviewResult": {
+        "reviewAnswer": "GREEN"
       }
     },
     {
-      "type": "verification/selfie",
-      "attributes": {
-        "status": "passed",
-        "left-photo-url": "https://withpersona.com/api/v1/files/123/left_photo_processed.jpg",
-        "center-photo-url": "https://withpersona.com/api/v1/files/456/center_photo_processed.jpg",
-        "right-photo-url": "https://withpersona.com/api/v1/files/789/right_photo_processed.jpg",
-                ...
-            }
+      "id": "1647256602",
+      "addedDate": "2020-06-24 05:13:26",
+      "fileMetadata": {
+        "fileName": "example_id_doc_name2.jpg",
+        "fileType": "jpeg"
+      },
+      "idDocDef": {
+        "country": "US",
+        "idDocType": "DRIVERS",
+        "idDocSubType": "BACK_SIDE"
+      },
+      "reviewResult": {
+        "reviewAnswer": "GREEN"
+      }
     },
-  ]
+    {
+      "id": "1779050422",
+      "addedDate": "2020-06-24 05:14:13",
+      "fileMetadata": {
+        "fileName": "liveness_photo_203016ec-3abe-4297-89b2-e42cc4432532.jpg",
+        "fileType": "jpeg"
+      },
+      "idDocDef": {
+        "country": "US",
+        "idDocType": "SELFIE"
+      },
+      "reviewResult": {
+        "reviewAnswer": "GREEN"
+      }
+    }
+  ],
+  "totalItems": 3
 }
-
 ```
 
+\
 Galxe proceeds to first clean up the data into our own Galxe Passport format. Example:
 
 ```cs
@@ -96,29 +160,24 @@ Galxe proceeds to first clean up the data into our own Galxe Passport format. Ex
     {
       'first-name': 'John',
       'last-name': 'Doe',
-      birthdate: '1977-07-17',
-      nationality: '',
-      'document-number': '',
-      sex: '',
+      'birthdate': '1977-07-17',
+      'nationality': '',
+      'document-number': 'I1234562',
+      'sex': 'M',
       'country-code': 'US',
-      'id-class': 'dl',
-      'front-photo-key': 'https://withpersona.com/api/v1/files/123.jpg',
-      'back-photo-key': 'https://withpersona.com/api/v1/files/456.jpg',
+      'id-doc-type': 'DRIVERS',
+      'front-photo-key': '1583009672', // sumsub id for front-side ID doc
+      'back-photo-key': '1647256602', // sumsub id for back-side ID doc
       'identification-number': 'I1234562'
     }
   ],
   selfie: {
-    'left-photo-key': 'https://withpersona.com/api/v1/files/123/left_photo_processed.jpg',
-    'center-photo-key': 'https://withpersona.com/api/v1/files/456/center_photo_processed.jpg',
-    'right-photo-key': 'https://withpersona.com/api/v1/files/789/right_photo_processed.jpg',
+    'center-photo-key': '1779050422' // sumsub id for selfie image
   },
-  'passport-version': 'v1.1',
-  'persona-id': '12345678-1234-5678-1234-123456789012'
+  'passport-version': 'v2.1',
+  'vendor_reference_id': '12345678-1234-5678-1234-123456789012'
 }
-
 ```
-
-Note that persona photo url is not publicly accessible.
 
 Galxe then runs the following steps:
 
@@ -128,7 +187,7 @@ Galxe then runs the following steps:
 4. Constructed signed credential `signed_cred = json.Marshal(SignedCred{Body: canon_json_str, Signature: signature})`
 5. Return `signed_cred` to frontend
 
-### 2.2 - User encryption on Galxe frontend[](#22---user-encryption-on-galxe-frontend "Direct link to heading")
+### 2.2 - User encryption on Galxe frontend
 
 On Galxe frontend, user now inputs their strong password of choice to encrypt the signed credential using `AES-256-GCM`. Example code:
 
@@ -141,22 +200,21 @@ const cipher = crypto.createCipheriv("aes-256-gcm", password, iv);
 const encrypted = cipher.update(signed_cred);
 cipher.final('base64');
 const data = "0x" + Buffer.concat([iv, encrypted, cipher.getAuthTag()]).toString("hex");
-
 ```
 
 Note that all user data is encrypted with your password. Galxe does not have access to and cannot view or share your information without your permission and password. Galxe does not have the password to decrypt the encrypted PII. At this point, the user is ready to proceed to the next step.
 
-### 2.3 - Create Galxe Passport using the user encrypted data[](#23---create-galxe-passport-using-the-user-encrypted-data "Direct link to heading")
+### 2.3 - Create Galxe Passport using the user encrypted data
 
-In this step, user signs another message with their wallet and pass the encrypted data back to Galxe for storage, and create the Galxe Passport. Once this is completed, Galxe deletes the UUID that links Persona’s identity information to your evm address. Now the only place that UUID exists outside Persona is inside your encrypted Galxe Passport.
+In this step, user signs another message with their wallet and pass the encrypted data back to Galxe for storage, and create the Galxe Passport. Once this is completed, Galxe deletes the UUID that links **Sumsub**’s identity information to your evm address. Now the only place that UUID exists outside **Sumsub** is inside your encrypted Galxe Passport.
 
-### 3 - Mint Galxe Passport Soulbound Token[](#3---mint-galxe-passport-soulbound-token "Direct link to heading")
+### 3 - Mint Galxe Passport Soulbound Token
 
-Once Galxe Passport is created and safely stored, the owner user can now mint the Galxe Passport SBT - a non-transferrable NFT that marks this user’s verification completion status through Galxe. SBT contract can be found under: [https://bscscan.com/address/0xe84050261cb0a35982ea0f6f3d9dff4b8ed3c012](https://bscscan.com/address/0xe84050261cb0a35982ea0f6f3d9dff4b8ed3c012)
+Once Galxe Passport is created and safely stored, the owner user can now mint the Galxe Passport SBT - a non-transferrable NFT that marks this user’s verification completion status through Galxe. SBT contract can be found under: https://bscscan.com/address/0xe84050261cb0a35982ea0f6f3d9dff4b8ed3c012
 
 Tokens in this contract do not contain any PII. Their main purposes is for other partners on Galxe to use as a proof-of-human mechanism for sybil attack prevention.
 
-## FAQ[](#faq "Direct link to heading")
+## FAQ
 
 Q: How will my identity information be stored?
 
@@ -178,13 +236,13 @@ Q: What happens if I lose my Galxe Passport password?
 
 A: Because Galxe does NOT store your password, there is no way to recover your password if you lose it. If you lose your password, you can still use your Galxe Passport as a proof-of-human NFT, however, you will NOT be able to decrypt your personal data to share with other third parties for compliance purposes.
 
-Q: What’s Persona’s role in the process?
+Q: What’s **Sumsub**’s role in the process?
 
-A: Persona is the third party vendor that helps run algorithm and check whether your ID is valid. They do have your identity information because they need to check duplicated IDs in the system. However, they do not know which identity belongs to which address.
+A: **Sumsub** is the third party vendor that helps run algorithm and check whether your ID is valid. They do have your identity information because they need to check duplicated IDs in the system. However, they do not know which identity belongs to which address.
 
 Q: Will I remain anonymous after I mint Galxe Passport?
 
-A: Neither Galxe nor Persona has the mapping relationship between wallet address and identity information. You will remain completely anonymous after the minting of Galxe Passport.
+A: Neither Galxe nor **Sumsub** has the mapping relationship between wallet address and identity information. You will remain completely anonymous after the minting of Galxe Passport.
 
 Q: Am I required to mint Galxe Passport in order to use Galxe?
 
@@ -195,4 +253,5 @@ Q: What happens if any government agencies request user information from Galxe?
 A: Galxe can never disclose your information to anyone, including government agencies, without your permission because Galxe does not store your information in plain text, nor does it have the password to decrypt the encrypted identity information.
 
 ## Integrate Galxe Passport with Your Application
+
 To learn more about how to integrate Galxe Passport, [visit this article](https://docs.galxe.com/galxe-id/galxe-id-integration/galxe-passport).

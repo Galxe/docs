@@ -1,0 +1,540 @@
+---
+title: "Quest Integration"
+description: "Build complete quest workflows with participant tracking, eligibility verification, and reward distribution"
+---
+
+## Overview
+
+Implement quest systems that handle:
+- Quest validation and status checking
+- User eligibility verification
+- Participant tracking and management
+- Reward and loyalty point distribution
+
+## Basic Quest Operations
+
+### Get Quest Details
+
+```graphql
+query GetQuest($id: ID!) {
+  quest(id: $id) {
+    id
+    name
+    status
+    description
+    startTime
+    endTime
+    claimEndTime
+    participantsCount
+    loyaltyPoints
+    space {
+      id
+      name
+    }
+  }
+}
+```
+
+**Variables**:
+```json
+{
+  "id": "GChdWUjXX3"
+}
+```
+
+**Response**:
+```json
+{
+  "data": {
+    "quest": {
+      "id": "GChdWUjXX3",
+      "name": "Introduction to Web3!",
+      "status": "Active",
+      "description": "Welcome to Module 1-Course 1 of Mission Web3!",
+      "startTime": 1699200000,
+      "endTime": 1699800000,
+      "claimEndTime": 1700000000,
+      "participantsCount": 234163,
+      "loyaltyPoints": 100,
+      "space": {
+        "id": "40",
+        "name": "BNB Chain"
+      }
+    }
+  }
+}
+```
+
+### List Space Quests
+
+```graphql
+query GetSpaceQuests($spaceId: ID!, $first: Int!, $statuses: [String!]) {
+  quests(input: {
+    spaceId: $spaceId
+    first: $first
+    statuses: $statuses
+  }) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    list {
+      id
+      name
+      status
+      participantsCount
+      loyaltyPoints
+      startTime
+      endTime
+    }
+  }
+}
+```
+
+## User Eligibility Verification
+
+### Check User Eligibility
+
+```graphql
+query CheckUserEligibility($questId: ID!, $address: String!) {
+  quest(id: $questId) {
+    id
+    name
+    status
+    credentialGroups(address: $address) {
+      conditions {
+        eligible
+      }
+      rewards {
+        eligible
+        rewardType
+      }
+    }
+  }
+}
+```
+
+**Variables**:
+```json
+{
+  "questId": "GChdWUjXX3",
+  "address": "0x1234567890123456789012345678901234567890"
+}
+```
+
+When `conditions.eligible` is `true`, the user meets quest requirements.
+
+## Quest Participants
+
+### Get Quest Participants
+
+```graphql
+query GetQuestParticipants($questId: ID!, $first: Int!, $after: String) {
+  quest(id: $questId) {
+    id
+    participants(first: $first, after: $after) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      list {
+        address {
+          id
+          username
+          avatar
+          address
+        }
+        status
+      }
+    }
+  }
+}
+```
+
+## JavaScript Implementation
+
+```javascript
+class QuestManager {
+  constructor(accessToken) {
+    this.accessToken = accessToken;
+    this.apiUrl = 'https://graphigo-business.prd.galaxy.eco/query';
+  }
+
+  async validateQuest(questId) {
+    const query = `
+      query ValidateQuest($id: ID!) {
+        quest(id: $id) {
+          id
+          name
+          status
+          startTime
+          endTime
+          claimEndTime
+          participantsCount
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, { id: questId });
+    const quest = response.quest;
+
+    if (!quest) throw new Error('Quest not found');
+    if (quest.status !== 'Active') throw new Error(`Quest is ${quest.status}`);
+
+    const now = Math.floor(Date.now() / 1000);
+    if (now < quest.startTime) throw new Error('Quest has not started');
+    if (now > quest.endTime) throw new Error('Quest has ended');
+
+    return quest;
+  }
+
+  async checkUserEligibility(questId, userAddress) {
+    const query = `
+      query CheckUserEligibility($questId: ID!, $address: String!) {
+        quest(id: $questId) {
+          id
+          name
+          status
+          credentialGroups(address: $address) {
+            conditions {
+              eligible
+            }
+            rewards {
+              eligible
+              rewardType
+            }
+          }
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, { 
+      questId, 
+      address: userAddress 
+    });
+
+    const quest = response.quest;
+    if (!quest) throw new Error('Quest not found');
+
+    const credentialGroups = quest.credentialGroups;
+    const isEligible = credentialGroups.some(group => 
+      group.conditions.some(condition => condition.eligible)
+    );
+
+    const availableRewards = credentialGroups.flatMap(group =>
+      group.rewards.filter(reward => reward.eligible)
+    );
+
+    return {
+      questId,
+      userAddress,
+      isEligible,
+      availableRewards,
+      questName: quest.name,
+      questStatus: quest.status
+    };
+  }
+
+  async getQuestParticipants(questId, options = {}) {
+    const { limit = 50, cursor = null } = options;
+
+    const query = `
+      query GetQuestParticipants($questId: ID!, $first: Int!, $after: String) {
+        quest(id: $questId) {
+          id
+          participants(first: $first, after: $after) {
+            totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+            list {
+              address {
+                id
+                username
+                avatar
+                address
+              }
+              status
+            }
+          }
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, {
+      questId,
+      first: limit,
+      after: cursor
+    });
+
+    return response.quest.participants;
+  }
+
+  async getSpaceQuests(spaceId, options = {}) {
+    const { 
+      limit = 20, 
+      cursor = null, 
+      statuses = ['Active'] 
+    } = options;
+
+    const query = `
+      query GetSpaceQuests($spaceId: ID!, $first: Int!, $after: String, $statuses: [String!]) {
+        quests(input: {
+          spaceId: $spaceId
+          first: $first
+          after: $after
+          statuses: $statuses
+        }) {
+          totalCount
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          list {
+            id
+            name
+            status
+            participantsCount
+            loyaltyPoints
+            startTime
+            endTime
+          }
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, {
+      spaceId,
+      first: limit,
+      after: cursor,
+      statuses
+    });
+
+    return response.quests;
+  }
+
+  async executeQuery(query, variables) {
+    const response = await fetch(this.apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'access-token': this.accessToken
+      },
+      body: JSON.stringify({ query, variables })
+    });
+
+    const data = await response.json();
+    if (data.errors) throw new Error(data.errors[0].message);
+    return data.data;
+  }
+}
+```
+
+## Quest Status Validation
+
+```javascript
+function isQuestActive(quest) {
+  const now = Math.floor(Date.now() / 1000);
+  return quest.status === 'Active' && 
+         now >= quest.startTime && 
+         now <= quest.endTime;
+}
+
+function isQuestClaimable(quest) {
+  const now = Math.floor(Date.now() / 1000);
+  return quest.status === 'Active' && 
+         now >= quest.endTime && 
+         now <= quest.claimEndTime;
+}
+
+function getQuestPhase(quest) {
+  const now = Math.floor(Date.now() / 1000);
+  
+  if (now < quest.startTime) return 'upcoming';
+  if (now >= quest.startTime && now <= quest.endTime) return 'active';
+  if (now > quest.endTime && now <= quest.claimEndTime) return 'claimable';
+  if (now > quest.claimEndTime) return 'ended';
+  
+  return 'unknown';
+}
+```
+
+## Batch Operations
+
+```javascript
+async function getAllParticipants(questManager, questId) {
+  let allParticipants = [];
+  let hasNextPage = true;
+  let cursor = null;
+  let pageCount = 0;
+  const maxPages = 100; // Safety limit
+
+  while (hasNextPage && pageCount < maxPages) {
+    const page = await questManager.getQuestParticipants(questId, {
+      limit: 100,
+      cursor
+    });
+
+    allParticipants.push(...page.list);
+    hasNextPage = page.pageInfo.hasNextPage;
+    cursor = page.pageInfo.endCursor;
+    pageCount++;
+
+    // Rate limiting
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
+  return {
+    questId,
+    totalFetched: allParticipants.length,
+    pagesFetched: pageCount,
+    participants: allParticipants,
+    isComplete: !hasNextPage
+  };
+}
+
+async function checkMultipleUserEligibility(questManager, questId, userAddresses) {
+  const eligibilityPromises = userAddresses.map(address => 
+    questManager.checkUserEligibility(questId, address).catch(error => ({
+      userAddress: address,
+      error: error.message,
+      isEligible: false
+    }))
+  );
+
+  const results = await Promise.all(eligibilityPromises);
+  
+  return {
+    questId,
+    totalChecked: userAddresses.length,
+    eligibleUsers: results.filter(r => r.isEligible),
+    ineligibleUsers: results.filter(r => !r.isEligible),
+    errors: results.filter(r => r.error)
+  };
+}
+```
+
+## Usage Examples
+
+### Basic Quest Validation
+
+```javascript
+// Initialize quest manager
+const questManager = new QuestManager(process.env.GALXE_ACCESS_TOKEN);
+
+// Validate quest before showing UI
+try {
+  const quest = await questManager.validateQuest('GChdWUjXX3');
+  console.log(`Quest "${quest.name}" is active with ${quest.participantsCount} participants`);
+  
+  // Check quest phase
+  const phase = getQuestPhase(quest);
+  console.log(`Quest phase: ${phase}`);
+} catch (error) {
+  console.error('Quest validation failed:', error.message);
+}
+```
+
+### User Eligibility Check
+
+```javascript
+// Check if user can participate
+const userAddress = '0x1234567890123456789012345678901234567890';
+const eligibility = await questManager.checkUserEligibility('GChdWUjXX3', userAddress);
+
+if (eligibility.isEligible) {
+  console.log('User is eligible for:', eligibility.availableRewards);
+} else {
+  console.log('User is not eligible for this quest');
+}
+```
+
+### Quest Dashboard
+
+```javascript
+async function createQuestDashboard(questManager, spaceId, userAddress) {
+  const [activeQuests, userEligibilities] = await Promise.all([
+    questManager.getSpaceQuests(spaceId, { statuses: ['Active'] }),
+    // Check eligibility for first 5 active quests
+    questManager.getSpaceQuests(spaceId, { limit: 5, statuses: ['Active'] })
+      .then(quests => Promise.all(
+        quests.list.map(quest => 
+          questManager.checkUserEligibility(quest.id, userAddress)
+            .catch(() => ({ questId: quest.id, isEligible: false }))
+        )
+      ))
+  ]);
+
+  return {
+    space: { id: spaceId },
+    activeQuests: activeQuests.list,
+    totalActiveQuests: activeQuests.totalCount,
+    userEligibilities,
+    eligibleQuestCount: userEligibilities.filter(e => e.isEligible).length
+  };
+}
+```
+
+### Participant Analysis
+
+```javascript
+async function analyzeQuestParticipation(questManager, questId) {
+  const [quest, participants] = await Promise.all([
+    questManager.validateQuest(questId),
+    getAllParticipants(questManager, questId)
+  ]);
+
+  return {
+    questInfo: {
+      id: quest.id,
+      name: quest.name,
+      status: quest.status,
+      phase: getQuestPhase(quest)
+    },
+    participation: {
+      totalParticipants: participants.totalFetched,
+      activeParticipants: participants.participants.filter(p => p.status === 'Active').length,
+      completedParticipants: participants.participants.filter(p => p.status === 'Completed').length
+    },
+    analysis: {
+      participationRate: (participants.totalFetched / (participants.totalFetched + 1000)) * 100, // Rough estimate
+      isPopular: participants.totalFetched > 1000,
+      hasRecentActivity: quest.participantsCount > 0
+    }
+  };
+}
+```
+
+## Best Practices
+
+1. **Quest Validation**: Always validate quest status and timing before showing participation UI
+2. **Error Handling**: Handle cases where quests are not found or users lack permissions
+3. **Rate Limiting**: Add delays when processing large participant lists
+4. **Caching**: Cache quest details for short periods (1-5 minutes) to reduce API calls
+5. **User Experience**: Show quest phases clearly (upcoming, active, claimable, ended)
+
+## Common Patterns
+
+- **Quest Filtering**: Filter by status, space, or time periods
+- **Eligibility Pre-check**: Check eligibility before allowing participation attempts
+- **Participant Monitoring**: Track participation for analytics and engagement
+- **Batch Processing**: Handle multiple quests or users efficiently
+- **Status Transitions**: Monitor quest phase changes for UI updates
+
+## Quest Workflow States
+
+| Status | Description | User Actions |
+|--------|-------------|--------------|
+| `Upcoming` | Quest hasn't started | View details, set reminders |
+| `Active` | Quest is running | Participate, check eligibility |
+| `Claimable` | Quest ended, rewards available | Claim rewards |
+| `Ended` | Quest and claim period finished | View results only |
+
+## Next Steps
+
+- **[Quest API Reference](/galxe-integration/api-reference/quest)** - Complete API documentation
+- **[Credential Integration](/galxe-integration/guides/user-verification)** - User verification workflows
+- **[Loyalty Program](/galxe-integration/guides/loyalty-program)** - Points and rewards integration

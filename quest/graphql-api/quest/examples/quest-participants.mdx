@@ -179,7 +179,7 @@ import (
 
 func main() {
 
-	url := "https://graphigo.prd.galaxy.eco/query"
+	url := "https://graphigo-business.prd.galaxy.eco/query"
 	method := "POST"
 
 	payload := strings.NewReader("{\"query\":\"query campaignParticipants($id: ID!, $pfirst: Int!, $pafter: String!) {\\n  campaign(id: $id) {\\n    id\\n    numberID\\n    numNFTMinted\\n    participants {\\n      participantsCount\\n      participants(first: $pfirst, after: $pafter) {\\n        list {\\n          points\\n          address {\\n            username\\n            avatar\\n            address\\n            email\\n            solanaAddress\\n            aptosAddress\\n            seiAddress\\n            discordUserID\\n          }\\n        }\\n      }\\n      participantsCount\\n    }\\n  }\\n}\\n\",\"variables\":{\"id\":\"GCn45UjHXE\",\"pfirst\":1,\"pafter\":\"-1\"}}")

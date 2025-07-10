@@ -1,0 +1,307 @@
+---
+title: "Starboard Integration Guide"
+description: "Create engaging Twitter influence tracking systems with real-time rankings, social metrics analysis, and comprehensive leaderboards"
+---
+
+## Overview
+
+Build Twitter influence tracking systems that provide:
+- Real-time Twitter influence rankings
+- Social metrics analysis and trends
+- User engagement tracking
+- Competitive leaderboards
+
+## Basic Starboard Integration
+
+### Get Starboard Information
+
+```graphql
+query GetStarboard($id: ID!) {
+  starboard(id: $id) {
+    basicInfo {
+      id
+      name
+      projectName
+      description
+      tags
+      type
+      reward {
+        name
+        description
+        startTime
+        endTime
+      }
+    }
+  }
+}
+```
+
+**Variables**:
+```json
+{
+  "id": "1"
+}
+```
+
+**Response**:
+```json
+{
+  "data": {
+    "starboard": {
+      "basicInfo": {
+        "id": "1",
+        "name": "Twitter Influence Tracker",
+        "projectName": "Galxe Community",
+        "description": "Track your Twitter influence and compete with others",
+        "tags": ["social", "twitter", "influence"],
+        "type": "TWITTER_INFLUENCE",
+        "reward": {
+          "name": "Influence Rewards",
+          "description": "Rewards for top Twitter influencers",
+          "startTime": 1699200000,
+          "endTime": 1700000000
+        }
+      }
+    }
+  }
+}
+```
+
+### Get Starboard Rankings
+
+```graphql
+query GetStarboardRankings($starboardId: ID!, $first: Int!, $after: String) {
+  starboard(id: $starboardId) {
+    basicInfo {
+      id
+      name
+    }
+    leaderboard(pagination: { forward: { first: $first, after: $after } }) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          xUserProfile {
+            id
+            name
+            username
+            profileImageUrl
+            followersCount
+          }
+          rank {
+            value
+          }
+          influenceScore {
+            value
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+### Search User in Starboard
+
+*Note: Direct user ranking lookup requires searching through the leaderboard or using the search functionality.*
+
+```graphql
+query SearchUserInStarboard($starboardId: ID!, $searchKey: String!) {
+  starboard(id: $starboardId) {
+    basicInfo {
+      id
+      name
+    }
+    leaderboard(
+      pagination: { forward: { first: 50 } }
+      twitterId: $searchKey
+    ) {
+      edges {
+        node {
+          xUserProfile {
+            username
+            followersCount
+          }
+          rank {
+            value
+          }
+          influenceScore {
+            value
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## JavaScript Implementation
+
+```javascript
+// Simple function-based approach for Starboard API
+async function getStarboardInfo(starboardId, accessToken) {
+  const query = `
+    query GetStarboard($id: ID!) {
+      starboard(id: $id) {
+        basicInfo {
+          id
+          name
+          projectName
+          description
+          tags
+          type
+        }
+      }
+    }
+  `;
+
+  const response = await fetch('https://graphigo-business.prd.galaxy.eco/query', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'access-token': accessToken
+    },
+    body: JSON.stringify({ query, variables: { id: starboardId } })
+  });
+
+  const data = await response.json();
+  if (data.errors) throw new Error(data.errors[0].message);
+  return data.data.starboard.basicInfo;
+}
+
+async function getStarboardLeaderboard(starboardId, accessToken, options = {}) {
+  const { limit = 20, cursor = null } = options;
+  
+  const query = `
+    query GetStarboardRankings($starboardId: ID!, $first: Int!, $after: String) {
+      starboard(id: $starboardId) {
+        basicInfo { id name }
+        leaderboard(pagination: { forward: { first: $first, after: $after } }) {
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          edges {
+            node {
+              xUserProfile {
+                id
+                name
+                username
+                profileImageUrl
+                followersCount
+              }
+              rank { value }
+              influenceScore { value }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const response = await fetch('https://graphigo-business.prd.galaxy.eco/query', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'access-token': accessToken
+    },
+    body: JSON.stringify({ 
+      query, 
+      variables: { starboardId, first: limit, after: cursor } 
+    })
+  });
+
+  const data = await response.json();
+  if (data.errors) throw new Error(data.errors[0].message);
+  
+  const starboard = data.data.starboard;
+  return {
+    starboardId,
+    name: starboard.basicInfo.name,
+    leaderboard: starboard.leaderboard.edges.map(edge => ({
+      rank: parseInt(edge.node.rank.value),
+      score: parseFloat(edge.node.influenceScore.value),
+      user: {
+        id: edge.node.xUserProfile.id,
+        name: edge.node.xUserProfile.name,
+        username: edge.node.xUserProfile.username,
+        avatar: edge.node.xUserProfile.profileImageUrl,
+        followers: edge.node.xUserProfile.followersCount
+      }
+    })),
+    pageInfo: starboard.leaderboard.pageInfo
+  };
+}
+```
+
+## Monitoring Starboard Updates
+
+```javascript
+// Simple periodic monitoring function
+async function monitorStarboardUpdates(starboardId, accessToken, interval = 60000) {
+  const monitor = setInterval(async () => {
+    try {
+      const leaderboard = await getStarboardLeaderboard(starboardId, accessToken, { limit: 10 });
+      console.log('Starboard updated:', new Date().toISOString());
+      console.log('Top influencer:', leaderboard.leaderboard[0]);
+    } catch (error) {
+      console.error('Monitor error:', error.message);
+    }
+  }, interval);
+
+  // Return function to stop monitoring
+  return () => clearInterval(monitor);
+}
+
+// Usage
+const stopMonitoring = await monitorStarboardUpdates('1', accessToken);
+// Later: stopMonitoring();
+```
+
+## Usage Examples
+
+### Basic Starboard Setup
+
+```javascript
+const accessToken = process.env.GALXE_ACCESS_TOKEN;
+
+// Get starboard information
+const starboardInfo = await getStarboardInfo('1', accessToken);
+console.log(`Starboard: ${starboardInfo.name} - ${starboardInfo.description}`);
+
+// Get top 10 rankings
+const leaderboard = await getStarboardLeaderboard('1', accessToken, { limit: 10 });
+console.log('Top 10 Twitter influencers:', leaderboard.leaderboard);
+```
+
+### Monitor Live Updates
+
+```javascript
+// Setup monitoring for starboard changes
+const stopMonitoring = await monitorStarboardUpdates('1', accessToken);
+
+// Stop monitoring after 10 minutes
+setTimeout(() => {
+  stopMonitoring();
+}, 600000);
+```
+
+## Best Practices
+
+1. **Rate Limiting**: Avoid excessive API calls, limit to once per minute
+2. **Error Handling**: Handle cases where starboard data is unavailable
+3. **Data Display**: Twitter follower counts may have delays
+
+## Common Patterns
+
+- **Influence Rankings**: Display users by follower count and influence score
+- **Real-time Updates**: Monitor leaderboard changes periodically
+- **Twitter Integration**: Show connected Twitter profiles in rankings
+
+## Next Steps
+
+- **[Starboard API Reference](/galxe-integration/api-reference/starboard)** - Complete API documentation
+- **[Leaderboard Guide](/galxe-integration/guides/leaderboards)** - General leaderboard patterns
+- **[User Verification](/galxe-integration/guides/user-verification)** - Account verification workflows

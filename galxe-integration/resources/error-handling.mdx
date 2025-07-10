@@ -1,0 +1,327 @@
+---
+title: "Error Handling Guide"
+description: "Comprehensive guide to handling Galxe API errors, including error codes, response formats, and troubleshooting strategies"
+---
+
+## Error Response Format
+
+All API errors follow a consistent GraphQL error format:
+
+```json
+{
+  "errors": [
+    {
+      "message": "Invalid access token: invalid token",
+      "extensions": {
+        "category": "AUTHENTICATION",
+        "code": "INVALID_TOKEN",
+        "details": [
+          "reason: invalid token"
+        ],
+        "http_status": 401,
+        "request_id": "3e79b5c7c12964230e21ad6548c1bfe9",
+        "timestamp": "2025-07-10T14:26:35.41989024Z"
+      }
+    }
+  ],
+  "data": null
+}
+```
+
+## HTTP Status Codes
+
+| Status Code | Description | Common Causes |
+|-------------|-------------|---------------|
+| `200` | Success | Request processed successfully |
+| `400` | Bad Request | Invalid query syntax, missing required fields |
+| `401` | Unauthorized | Missing or invalid access token |
+| `403` | Forbidden | Insufficient permissions for requested resource |
+| `429` | Too Many Requests | Rate limit exceeded |
+| `500` | Internal Server Error | Server-side error, usually temporary |
+| `502` | Bad Gateway | Service temporarily unavailable |
+| `503` | Service Unavailable | Maintenance or high load |
+
+## Error Categories
+
+### Authentication Errors (`AUTHENTICATION`)
+
+#### `INVALID_TOKEN` - Invalid Access Token
+**Cause**: Missing, expired, or invalid access token.
+
+```json
+{
+  "errors": [
+    {
+      "message": "Invalid access token: invalid token",
+      "extensions": {
+        "category": "AUTHENTICATION",
+        "code": "INVALID_TOKEN",
+        "details": ["reason: invalid token"],
+        "http_status": 401,
+        "request_id": "3e79b5c7c12964230e21ad6548c1bfe9",
+        "timestamp": "2025-07-10T14:26:35.41989024Z"
+      }
+    }
+  ]
+}
+```
+
+**Solution**: Check access token is correctly set in headers. Regenerate token from [Galxe Dashboard Settings](https://app.galxe.com/settings) if necessary.
+
+#### `TOKEN_REQUIRED` - Missing Access Token
+**Cause**: No access token provided in request headers.
+
+**Solution**: Include `access-token` header in all API requests.
+
+### Authorization Errors (`AUTHORIZATION`)
+
+#### `PERMISSION_DENIED` - Insufficient Permissions
+**Cause**: Token doesn't have permission to access the requested resource.
+
+```json
+{
+  "errors": [
+    {
+      "message": "Permission denied",
+      "extensions": {
+        "category": "AUTHORIZATION", 
+        "code": "PERMISSION_DENIED",
+        "http_status": 403
+      }
+    }
+  ]
+}
+```
+
+**Solution**: Ensure your access token has correct permissions for the space/credential you're accessing.
+
+### Rate Limiting Errors (`RATE_LIMIT`)
+
+#### `QUOTA_EXCEEDED` - API Quota Exceeded
+**Cause**: Exceeded monthly API quota or rate limits.
+
+```json
+{
+  "errors": [
+    {
+      "message": "API quota exceeded: monthly limit reached",
+      "extensions": {
+        "category": "RATE_LIMIT",
+        "code": "QUOTA_EXCEEDED",
+        "http_status": 429,
+        "details": ["monthly limit reached"]
+      }
+    }
+  ]
+}
+```
+
+**Solution**: Implement exponential backoff retry logic. Monitor usage and consider upgrading to higher rate limits if needed.
+
+### Validation Errors (`VALIDATION`)
+
+#### `INVALID_ARGUMENT` - Invalid Input Parameters
+**Cause**: Invalid parameters, wrong data types, or missing required fields.
+
+```json
+{
+  "errors": [
+    {
+      "message": "Invalid argument provided",
+      "extensions": {
+        "category": "VALIDATION",
+        "code": "INVALID_ARGUMENT",
+        "http_status": 400
+      }
+    }
+  ]
+}
+```
+
+**Solution**: Validate input parameters and ensure correct data types before sending requests.
+
+#### `INVALID_ADDRESS` - Invalid Address Format
+**Cause**: Malformed wallet address.
+
+**Solution**: Validate address format (e.g., 42-character hex string for Ethereum addresses starting with `0x`).
+
+#### `COMPLEXITY_LIMIT_EXCEEDED` - Query Too Complex
+**Cause**: GraphQL query exceeds complexity limits.
+
+```json
+{
+  "errors": [
+    {
+      "message": "Query complexity limit exceeded: 1500 > 1000",
+      "extensions": {
+        "category": "VALIDATION",
+        "code": "COMPLEXITY_LIMIT_EXCEEDED",
+        "http_status": 400,
+        "details": ["limit: 1000", "actual: 1500"]
+      }
+    }
+  ]
+}
+```
+
+**Solution**: Break complex queries into smaller parts or use pagination to reduce query complexity.
+
+#### `DEPTH_LIMIT_EXCEEDED` - Query Too Deep
+**Cause**: GraphQL query exceeds maximum depth limit.
+
+**Solution**: Reduce query nesting depth and use flatter query structures.
+
+### Not Found Errors (`NOT_FOUND`)
+
+#### `NOT_FOUND` - Resource Not Found
+**Cause**: Querying non-existent quests, credentials, or spaces.
+
+```json
+{
+  "errors": [
+    {
+      "message": "Quest not found: invalid_id",
+      "extensions": {
+        "category": "NOT_FOUND", 
+        "code": "NOT_FOUND",
+        "http_status": 404
+      }
+    }
+  ]
+}
+```
+
+**Solution**: Verify resource IDs are correct and the resource exists. Check permissions to access the resource.
+
+#### Specific Resource Errors
+- `SPACE_NOT_FOUND` - Space does not exist or is not accessible
+- `QUEST_NOT_FOUND` - Quest does not exist or is not accessible  
+- `CREDENTIAL_NOT_FOUND` - Credential does not exist or is not accessible
+- `USER_NOT_FOUND` - User does not exist or is not accessible
+
+### Server Errors (`INTERNAL`)
+
+#### `INTERNAL_ERROR` - Server Issues
+**Cause**: Temporary server problems, database issues, or service outages.
+
+```json
+{
+  "errors": [
+    {
+      "message": "Internal server error",
+      "extensions": {
+        "category": "INTERNAL",
+        "code": "INTERNAL_ERROR",
+        "http_status": 500
+      }
+    }
+  ]
+}
+```
+
+**Solution**: Retry after short delay. Contact support if error persists.
+
+### Service Availability (`UNAVAILABLE`)
+
+#### `UNAVAILABLE` - Service Unavailable
+**Cause**: Service temporarily unavailable due to maintenance or high load.
+
+**Solution**: Retry with exponential backoff. Check [API Status](https://status.galxe.com) for maintenance windows.
+
+## Error Handling Best Practices
+
+### 1. Check Error Categories
+Always check the `extensions.category` field to understand the type of error:
+
+- **`AUTHENTICATION`/`AUTHORIZATION`** - Fix token/permissions, don't retry
+- **`VALIDATION`** - Fix request parameters, don't retry  
+- **`RATE_LIMIT`** - Implement backoff and retry
+- **`NOT_FOUND`** - Verify resource exists, don't retry
+- **`INTERNAL`/`UNAVAILABLE`** - Retry with backoff
+
+### 2. Use Request IDs for Support
+Include the `request_id` from error responses when contacting support for faster troubleshooting.
+
+### 3. Implement Retry Logic
+For `RATE_LIMIT`, `INTERNAL`, and `UNAVAILABLE` errors, implement exponential backoff:
+
+```javascript
+// Basic retry example
+async function retryRequest(operation, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      const shouldRetry = ['QUOTA_EXCEEDED', 'INTERNAL_ERROR', 'UNAVAILABLE']
+        .includes(error.extensions?.code);
+      
+      if (shouldRetry && attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 1000; // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+```
+
+### 4. Monitor Error Patterns
+Log and monitor error frequencies to identify:
+- Repeated authentication failures (token issues)
+- High rate limiting (need for optimization)
+- Validation errors (client-side bugs)
+- Service availability issues
+
+## Troubleshooting Guide
+
+### Quick Fixes
+
+| Error Type | First Steps |
+|------------|-------------|
+| **Authentication** | Verify access token is valid and properly set in headers |
+| **Rate Limiting** | Reduce request frequency, implement backoff logic |
+| **Validation** | Check parameter formats, data types, and required fields |
+| **Not Found** | Verify resource IDs and check permissions |
+| **Server Errors** | Retry after delay, check API status page |
+
+### Debug Checklist
+
+1. **Verify Request Format**
+   - Correct GraphQL syntax
+   - Valid JSON structure
+   - Required headers present
+
+2. **Check Authentication**
+   - Access token valid and not expired
+   - Token has permissions for requested resources
+   - Headers properly formatted
+
+3. **Validate Parameters**
+   - Correct data types (Int, String, Boolean)
+   - Required fields provided
+   - Address formats valid
+
+4. **Monitor Limits**
+   - Stay within rate limits (10 QPS for free tier)
+   - Keep query complexity reasonable
+   - Use pagination for large datasets
+
+## API Status and Support
+
+- **Status Page**: [https://status.galxe.com](https://status.galxe.com)
+- **Support Email**: support@galxe.com
+- **Response Times**: 12-24 hours for technical issues
+
+When reporting issues, include:
+- Error message and request_id
+- Query that caused the error
+- Expected vs actual behavior
+- Environment details
+
+## Next Steps
+
+- **[Rate Limits](/galxe-integration/resources/rate-limits)** - Understanding API limits
+- **[Support & Community](/galxe-integration/resources/support)** - Getting help
+- **[Quick Start](/galxe-integration/getting-started/quick-start)** - Basic implementation
+- **[Authentication](/galxe-integration/getting-started/authentication)** - Token setup

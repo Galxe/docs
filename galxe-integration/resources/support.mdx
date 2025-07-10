@@ -1,0 +1,402 @@
+---
+title: "Support & Community"
+description: "Get the help you need and connect with the Galxe developer community"
+---
+
+## 🚀 Getting Started
+
+### First Time Here?
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/galxe-integration/getting-started/quick-start">
+    Get up and running in 5 minutes with our comprehensive quick start guide
+  </Card>
+  <Card title="Authentication" icon="key" href="/galxe-integration/getting-started/authentication">
+    Set up your access tokens and authentication
+  </Card>
+  <Card title="Common Patterns" icon="puzzle-piece" href="/galxe-integration/getting-started/common-patterns">
+    Learn the most common integration patterns
+  </Card>
+  <Card title="API Reference" icon="book" href="/galxe-integration/api-reference/quest">
+    Complete API documentation and examples
+  </Card>
+</CardGroup>
+
+## 💬 Community Channels
+
+### Discord Community
+
+Join our active developer community on Discord for real-time help and discussions.
+
+**Galxe Developer Discord**
+- **General Discussion**: Ask questions and share experiences
+- **Technical Help**: Get assistance with implementation challenges
+- **Announcements**: Stay updated on new features and changes
+- **Community Projects**: Showcase your integrations
+
+<Card title="Join Discord" icon="discord" href="https://discord.gg/galxe">
+  Connect with fellow developers and the Galxe team
+</Card>
+
+### Developer Forums
+
+**GitHub Discussions**
+- In-depth technical discussions
+- Feature requests and feedback
+- Community-driven solutions
+- Best practices sharing
+
+### Social Media
+
+<CardGroup cols={3}>
+  <Card title="Twitter" icon="twitter" href="https://twitter.com/GalxeEcosystem">
+    Follow for updates and announcements
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com/galxe">
+    Access code repositories and examples
+  </Card>
+  <Card title="Medium" icon="medium" href="https://blog.galxe.com">
+    Read technical articles and tutorials
+  </Card>
+</CardGroup>
+
+## 🆘 Getting Help
+
+### Self-Service Resources
+
+Before reaching out for support, check these resources:
+
+<AccordionGroup>
+  <Accordion title="📚 Documentation">
+    - **[Quick Start Guide](/galxe-integration/getting-started/quick-start)** - Basic setup and first API call
+    - **[API Reference](/galxe-integration/api-reference/quest)** - Complete API documentation
+    - **[Integration Guides](/galxe-integration/guides/quests)** - Scenario-based tutorials
+    - **[Error Handling](/galxe-integration/resources/error-handling)** - Troubleshooting common issues
+  </Accordion>
+  
+  <Accordion title="🔧 Troubleshooting">
+    - **[Error Codes](/galxe-integration/resources/error-handling)** - Complete error reference
+    - **[Rate Limits](/galxe-integration/resources/rate-limits)** - Understanding API limits
+    - **[Common Issues](#common-issues)** - Frequently encountered problems
+    - **[Debug Checklist](#debug-checklist)** - Step-by-step debugging guide
+  </Accordion>
+  
+  <Accordion title="💡 Examples">
+    - **Code Examples** - Working code in multiple languages
+    - **Integration Patterns** - Common implementation approaches
+    - **Best Practices** - Recommended development practices
+    - **Sample Projects** - Complete example applications
+  </Accordion>
+</AccordionGroup>
+
+### Direct Support
+
+For complex issues or when you need direct assistance:
+
+<Warning>
+Before contacting support, please review our documentation and try the troubleshooting steps. This helps us provide faster, more targeted assistance.
+</Warning>
+
+#### Developer Support Email
+**support@galxe.com**
+
+**What to Include:**
+- Clear description of the issue
+- Steps to reproduce the problem
+- Expected vs. actual behavior
+- Code snippets (if applicable)
+- Error messages and stack traces
+- Your environment details
+
+#### Response Times
+- **General Inquiries**: 24-48 hours
+- **Technical Issues**: 12-24 hours
+- **Critical Issues**: 2-4 hours
+
+## 🐛 Reporting Issues
+
+### Bug Reports
+
+Found a bug? Help us improve by reporting it properly.
+
+**Where to Report:**
+- **Critical Issues**: Email support@galxe.com immediately
+- **General Bugs**: Create a GitHub issue
+- **Documentation Issues**: Discord or GitHub
+
+**Bug Report Template:**
+```markdown
+## Bug Description
+Brief description of the issue
+
+## Steps to Reproduce
+1. Step one
+2. Step two
+3. Step three
+
+## Expected Behavior
+What should happen
+
+## Actual Behavior
+What actually happens
+
+## Environment
+- Platform: [Web/Mobile/Server]
+- Language: [JavaScript/Python/etc.]
+- SDK Version: [if applicable]
+- Browser: [if applicable]
+
+## Additional Context
+Any other relevant information
+```
+
+### Feature Requests
+
+Have an idea for a new feature? We'd love to hear it!
+
+**How to Submit:**
+1. Check existing feature requests first
+2. Create a detailed proposal
+3. Explain the use case and benefits
+4. Discuss with the community
+
+## 🏆 Community Guidelines
+
+### Code of Conduct
+
+We're committed to providing a welcoming and inclusive environment:
+
+- **Be Respectful**: Treat everyone with respect and kindness
+- **Be Constructive**: Provide helpful feedback and suggestions
+- **Be Patient**: Remember that everyone has different skill levels
+- **Be Professional**: Keep discussions focused and on-topic
+
+### Best Practices for Getting Help
+
+<Steps>
+  <Step title="Search First">
+    Check documentation, existing issues, and community discussions
+  </Step>
+  <Step title="Be Specific">
+    Provide clear, detailed descriptions of your issue
+  </Step>
+  <Step title="Include Context">
+    Share relevant code, error messages, and environment details
+  </Step>
+  <Step title="Follow Up">
+    Respond to clarifying questions and update on resolution
+  </Step>
+</Steps>
+
+## 🔍 Common Issues
+
+### Authentication Problems
+
+<AccordionGroup>
+  <Accordion title="Invalid Access Token">
+    **Symptoms**: 401 Unauthorized errors
+    
+    **Solutions**:
+    - Verify token is correctly set in headers
+    - Check token hasn't expired
+    - Ensure token has correct permissions
+    - Regenerate token if necessary
+  </Accordion>
+  
+  <Accordion title="Insufficient Permissions">
+    **Symptoms**: 403 Forbidden errors
+    
+    **Solutions**:
+    - Verify token has access to the specific space/credential
+    - Check if you're an admin of the space
+    - Ensure the resource exists and is accessible
+  </Accordion>
+</AccordionGroup>
+
+### API Request Issues
+
+<AccordionGroup>
+  <Accordion title="Rate Limiting">
+    **Symptoms**: 429 Too Many Requests
+    
+    **Solutions**:
+    - Implement exponential backoff
+    - Reduce request frequency
+    - Use batch operations where possible
+    - Cache responses to reduce redundant calls
+  </Accordion>
+  
+  <Accordion title="Query Complexity">
+    **Symptoms**: Timeout or complexity errors
+    
+    **Solutions**:
+    - Break large queries into smaller ones
+    - Use pagination for large datasets
+    - Reduce query depth and complexity
+    - Consider using multiple simpler queries
+  </Accordion>
+</AccordionGroup>
+
+### Data Issues
+
+<AccordionGroup>
+  <Accordion title="Resource Not Found">
+    **Symptoms**: Empty responses or null data
+    
+    **Solutions**:
+    - Verify resource IDs are correct
+    - Check if resource exists and is accessible
+    - Ensure proper permissions
+    - Try with known working IDs
+  </Accordion>
+  
+  <Accordion title="Invalid Data Format">
+    **Symptoms**: Validation errors
+    
+    **Solutions**:
+    - Check data types and formats
+    - Validate addresses and IDs
+    - Review required vs optional fields
+    - Test with minimal valid data first
+  </Accordion>
+</AccordionGroup>
+
+## 🛠️ Debug Checklist
+
+When troubleshooting issues, follow this systematic approach:
+
+### Pre-flight Checks
+
+<Steps>
+  <Step title="Environment">
+    - [ ] Access token is set correctly
+    - [ ] Network connectivity is working
+    - [ ] Required dependencies are installed
+    - [ ] Environment variables are configured
+  </Step>
+  
+  <Step title="Authentication">
+    - [ ] Token is valid and not expired
+    - [ ] Token has correct permissions
+    - [ ] Headers are properly formatted
+    - [ ] Using correct endpoint URL
+  </Step>
+  
+  <Step title="Request Format">
+    - [ ] GraphQL query syntax is valid
+    - [ ] Required parameters are provided
+    - [ ] Data types match schema requirements
+    - [ ] Variable names match query definitions
+  </Step>
+</Steps>
+
+### Testing Steps
+
+<Steps>
+  <Step title="Minimal Test">
+    Start with the simplest possible query to verify basic connectivity
+  </Step>
+  
+  <Step title="Incremental Complexity">
+    Gradually add complexity to isolate the problematic component
+  </Step>
+  
+  <Step title="Known Working Examples">
+    Test with examples from documentation to verify your setup
+  </Step>
+  
+  <Step title="Error Analysis">
+    Carefully review error messages and status codes for clues
+  </Step>
+</Steps>
+
+## 📈 API Status
+
+### Real-time Status
+
+Check our API status page for current system health:
+
+<Card title="API Status Dashboard" icon="chart-line" href="https://status.galxe.com">
+  Real-time status, uptime statistics, and incident reports
+</Card>
+
+### Maintenance Windows
+
+We perform regular maintenance to ensure optimal performance:
+
+- **Scheduled Maintenance**: Announced 24-48 hours in advance
+- **Emergency Maintenance**: Minimal disruption, usually under 15 minutes
+- **Status Notifications**: Subscribe for real-time updates
+
+## 🎓 Learning Resources
+
+### Educational Content
+
+<CardGroup cols={2}>
+  <Card title="Video Tutorials" icon="play">
+    Step-by-step video guides for common integrations
+  </Card>
+  <Card title="Webinars" icon="presentation">
+    Live sessions with the development team
+  </Card>
+  <Card title="Case Studies" icon="chart-bar">
+    Real-world implementation examples
+  </Card>
+  <Card title="Best Practices" icon="star">
+    Recommended patterns and approaches
+  </Card>
+</CardGroup>
+
+### Developer Tools
+
+- **GraphQL Playground**: Interactive query testing
+- **Postman Collection**: Pre-configured API requests
+- **SDK Libraries**: Official client libraries
+- **Code Examples**: GitHub repository with samples
+
+## 🤝 Contributing
+
+### How to Contribute
+
+We welcome contributions from the community:
+
+<Steps>
+  <Step title="Documentation">
+    Help improve our documentation with corrections, clarifications, and examples
+  </Step>
+  
+  <Step title="Code Examples">
+    Share your integration examples and use cases
+  </Step>
+  
+  <Step title="Bug Reports">
+    Report issues you encounter to help us improve
+  </Step>
+  
+  <Step title="Feature Feedback">
+    Share your ideas for new features and improvements
+  </Step>
+</Steps>
+
+### Recognition
+
+Contributors are recognized through:
+- **Community Spotlight**: Featured contributions
+- **Developer Credits**: Attribution in documentation
+- **Early Access**: Preview access to new features
+- **Exclusive Events**: Invitations to developer meetups
+
+---
+
+## Need Immediate Help?
+
+<CardGroup cols={2}>
+  <Card title="Discord Community" icon="discord" href="https://discord.gg/galxe">
+    Get real-time help from the community and team
+  </Card>
+  <Card title="Email Support" icon="envelope" href="mailto:support@galxe.com">
+    Direct support for complex technical issues
+  </Card>
+</CardGroup>
+
+We're here to help you succeed with your Galxe integration! 🚀 

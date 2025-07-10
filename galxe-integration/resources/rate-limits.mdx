@@ -1,10 +1,9 @@
 ---
-title: "Rate Limit"
+title: "Rate Limits & Usage Quotas"
+description: "Understanding API rate limits, usage quotas, and best practices for the Galxe Integration API"
 ---
 
 To help manage the sheer volume of requests we receive on our API, we have implemented both rate limits and usage quotas. These limits help us provide the reliable and scalable API that our developer community relies on.
-
-<Note>If you wish to increase your rate limits or quotas, please contact Galxe support.</Note>
 
 ## Rate Limits & Quotas
 
@@ -27,11 +26,11 @@ When your application exceeds the rate limit (10 QPS), the API will return a `HT
 #### Monthly Quota Exceeded
 When you reach your monthly quota (100k requests), the API will return a `HTTP 429 Too Many Requests` response code until the next billing cycle begins.
 
-## Best Practices
+## Enterprise Plans
 
-- **Implement Retry Logic**: Use exponential backoff when receiving 429 responses
-- **Cache Responses**: Store frequently accessed data to reduce API calls
-- **Batch Requests**: Combine multiple queries when possible
-- **Monitor Usage**: Track your API usage to avoid hitting quotas unexpectedly
+Need higher limits? Contact our team for enterprise pricing that includes:
 
-<Info>Rate limits and quotas may vary based on your account type and are subject to change. Contact our support team for enterprise pricing and higher limits.</Info>
+- **Higher Rate Limits**: Up to 1000+ QPS
+- **Increased Quotas**: 10 Millions of requests per month
+- **Priority Support**: Dedicated technical support
+- **SLA Guarantees**: Uptime and response time guarantees

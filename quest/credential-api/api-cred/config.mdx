@@ -82,7 +82,7 @@ mutation {
 <CodeGroup>
   ```curl cURL
 
-  curl 'https://graphigo.prd.galaxy.eco/query' \
+  curl 'https://graphigo-business.prd.galaxy.eco/query' \
     -H 'access-token: YOUR-ACCESS-TOKEN' \
     -H 'content-type: application/json' \
     --data-raw '{"query":"mutation {\n  credentialItems(\n    input: {\n      credId: \"312\"\n      operation: APPEND\n      items: [\n        \"0x111fd6240381af2c5f1a9e27f282bae8b92b257\"\n        \"0x222dde76Cf5752f2bc1DC798BA1369dcA49d7c79\"\n        \"0x333eC1a5d0BC3C4291aeb962CBda49677E9a9FcB\"\n        \"0x444022af64bfc0f59ce1069e4ab51aa15148e60b\"\n        \"0x55526ef96b12fba7a507afba39bdfc78e0039742\"\n        \"0x6662c6b59e87b302b43400303427acd50f8071e6\"\n        \"0x777742ee649ee36edcf5ac9a97df34333a97fd24\"\n        \"0x8886b92fda46b8d9d33ca28d8837e1661edf8b97\"\n        \"0x999886e265cf2ec39f8868d7b6c67ab78e027736\"\n      ]\n    }\n  ) {\n    eligible(address:\"0x999886e265cf2ec39f8868d7b6c67ab78e027736\")\n  }\n}\n\n"}'
@@ -100,7 +100,7 @@ mutation {
   (async () => {
     try {
       let result = await axios.post(
-        "https://graphigo.prd.galaxy.eco/query",
+        "https://graphigo-business.prd.galaxy.eco/query",
         {
           operationName: "credentialItems",
           query: `
@@ -149,7 +149,7 @@ mutation {
   )
 
   func main() {
-  	url := "https://graphigo.prd.galaxy.eco/query"
+  	url := "https://graphigo-business.prd.galaxy.eco/query"
   	accessToken := "access-token-of-yours"
 
   	// Request payload
@@ -226,7 +226,7 @@ mutation {
   const items = ["0x123"];
 
   // Nodejs using Axios lib
-  let result = await axios.post("https://graphigo.prd.galaxy.eco/query", {
+  let result = await axios.post("https://graphigo-business.prd.galaxy.eco/query", {
     operationName: "credentialItems",
     query: `
       mutation credentialItems($credId: ID!, $operation: Operation!, $items: [String!]!) 

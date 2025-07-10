@@ -2,18 +2,36 @@
 title: "Rate Limit"
 ---
 
-To help manage the sheer volume of the requests we receive on our api, limits are placed on the number of requests that can be made. These limits help us provide the reliable and scalable API that our developer community relies on.
+To help manage the sheer volume of requests we receive on our API, we have implemented both rate limits and usage quotas. These limits help us provide the reliable and scalable API that our developer community relies on.
 
-<Note>If you wish to increase the rate limit, please contact Galxe support.</Note>
+<Note>If you wish to increase your rate limits or quotas, please contact Galxe support.</Note>
 
-The maximum number of requests that are allowed are:
+## Rate Limits & Quotas
 
+Our API has two types of limits:
 
-| Endpoints                             | 5 minutes | 60 minutes 
-|---------------------------------------|-----------|------------
-| https://graphigo.prd.galaxy.eco/query | 1500      | 10000      
+- **Rate Limits**: Maximum queries per second (QPS) you can send
+- **Usage Quotas**: Total number of requests allowed per month
 
+### Free Tier Limits
 
-When an application exceeds the rate limit for a given API endpoint, the API will return a `HTTP 429` `Too Many Requests` response code.
+| Endpoint | Rate Limit | Monthly Quota |
+|----------|------------|---------------|
+| https://graphigo-business.prd.galaxy.eco/query | 10 QPS | 100,000 requests |
 
-<Info>Note that this page is not an exhaustive listing of all Galxe rate limits or rate-limited endpoints, that some users may experience different rate limit thresholds from those shown, and that rate limits are subject to change at any time.</Info>
+### What Happens When Limits Are Exceeded
+
+#### Rate Limit Exceeded
+When your application exceeds the rate limit (10 QPS), the API will return a `HTTP 429 Too Many Requests` response code. You should implement exponential backoff and retry logic to handle these responses.
+
+#### Monthly Quota Exceeded
+When you reach your monthly quota (100k requests), the API will return a `HTTP 429 Too Many Requests` response code until the next billing cycle begins.
+
+## Best Practices
+
+- **Implement Retry Logic**: Use exponential backoff when receiving 429 responses
+- **Cache Responses**: Store frequently accessed data to reduce API calls
+- **Batch Requests**: Combine multiple queries when possible
+- **Monitor Usage**: Track your API usage to avoid hitting quotas unexpectedly
+
+<Info>Rate limits and quotas may vary based on your account type and are subject to change. Contact our support team for enterprise pricing and higher limits.</Info>

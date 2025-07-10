@@ -1,0 +1,52 @@
+---
+title: "Quick Start"
+description: "Get your first API call working in under 3 minutes"
+---
+
+## Step 1: Get Access Token
+
+Visit [Galxe Dashboard Settings](https://dashboard.galxe.com) → Generate access token → Copy token
+
+## Step 2: Test API Connection
+
+```bash
+curl -X POST https://graphigo-business.prd.galaxy.eco/query \
+  -H "Content-Type: application/json" \
+  -H "access-token: YOUR_ACCESS_TOKEN" \
+  -d '{"query": "query { __typename }"}'
+```
+
+**Expected Response:**
+```json
+{"data": {"__typename": "Query"}}
+```
+
+## Step 3: Try Core Queries
+
+### Get Quest Details
+```bash
+curl -X POST https://graphigo-business.prd.galaxy.eco/query \
+  -H "Content-Type: application/json" \
+  -H "access-token: YOUR_ACCESS_TOKEN" \
+  -d '{
+    "query": "query GetQuest($id: ID!) { quest(id: $id) { name status participantsCount } }",
+    "variables": { "id": "GChdWUjXX3" }
+  }'
+```
+
+### Get Space Leaderboard
+```bash
+curl -X POST https://graphigo-business.prd.galaxy.eco/query \
+  -H "Content-Type: application/json" \
+  -H "access-token: YOUR_ACCESS_TOKEN" \
+  -d '{
+    "query": "query GetLeaderboard($spaceId: Int!) { space(id: $spaceId) { loyaltyPointsRanks(first: 5) { edges { node { rank points address { username } } } } } }",
+    "variables": { "spaceId": 40 }
+  }'
+```
+
+## Next Steps
+
+- **[Authentication](/galxe-integration/getting-started/authentication)** - Setup and security
+- **[Quest API](/galxe-integration/api-reference/quest)** - Quest management
+- **[Space API](/galxe-integration/api-reference/space)** - Leaderboards and points 

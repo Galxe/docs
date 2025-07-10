@@ -1,0 +1,599 @@
+---
+title: "Quest API Reference"
+description: "Manage quests, check eligibility, and track participant progress"
+---
+
+## Overview
+
+- Get quest information and status
+- Check user eligibility for rewards
+- Track participant progress
+- Query quest requirements
+
+## Core Queries
+
+### `quest` - Get Quest Details
+
+Find Quest details by Hash ID.
+
+**Arguments**: `id` (required) - Quest's Hash ID
+
+**Key Fields**: `id`, `name`, `status`, `participantsCount`, `loyaltyPoints`, `startTime`, `endTime`, `credentialGroups`
+
+#### Example: Basic Quest Query
+
+```graphql
+query GetQuest($id: ID!) {
+  quest(id: $id) {
+    id
+    name
+    status
+    description
+    startTime
+    endTime
+    participantsCount
+    loyaltyPoints
+    space {
+      id
+      name
+    }
+  }
+}
+```
+
+**Variables**:
+```json
+{
+  "id": "GChdWUjXX3"
+}
+```
+
+**Response**:
+```json
+{
+  "data": {
+    "quest": {
+      "id": "GChdWUjXX3",
+      "name": "Introduction to Web3!",
+      "status": "Active",
+      "description": "Welcome to Module 1-Course 1 of Mission Web3!",
+      "startTime": 1699200000,
+      "endTime": 1699800000,
+      "participantsCount": 234163,
+      "loyaltyPoints": 100,
+      "space": {
+        "id": "40",
+        "name": "BNB Chain"
+      }
+    }
+  }
+}
+```
+
+### `quests` - List Multiple Quests
+
+Find multiple Quests with filtering options.
+
+**Arguments**: `input` (required) - Filtering and pagination options
+- `spaceId`: Filter by Space ID
+- `first`: Pagination limit
+- `statuses`: Filter by status
+
+<Warning>Private quests will not appear in batch queries.</Warning>
+
+#### Example: List Space Quests
+
+```graphql
+query GetSpaceQuests($spaceId: ID!, $first: Int!) {
+  quests(input: {
+    spaceId: $spaceId
+    first: $first
+  }) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    list {
+      id
+      name
+      status
+      participantsCount
+      loyaltyPoints
+    }
+  }
+}
+```
+
+## User Eligibility
+
+### Check User Eligibility
+
+Verify if a user meets quest requirements.
+
+```graphql
+query CheckEligibility($questId: ID!, $address: String!) {
+  quest(id: $questId) {
+    id
+    name
+    status
+    credentialGroups(address: $address) {
+      conditions {
+        eligible
+      }
+      rewards {
+        eligible
+        rewardType
+      }
+    }
+  }
+}
+```
+
+<Check>When `conditions.eligible` is `true`, the user meets requirements.</Check>
+
+## Code Examples
+
+### Simple Quest Functions
+
+<CodeGroup>
+
+```javascript JavaScript
+// Get quest details
+async function getQuest(questId, accessToken) {
+  const query = `
+    query GetQuest($id: ID!) {
+      quest(id: $id) {
+        id
+        name
+        status
+        participantsCount
+        loyaltyPoints
+      }
+    }
+  `;
+
+  const response = await fetch('https://graphigo-business.prd.galaxy.eco/query', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'access-token': accessToken
+    },
+    body: JSON.stringify({ query, variables: { id: questId } })
+  });
+
+  const data = await response.json();
+  if (data.errors) throw new Error(data.errors[0].message);
+  return data.data.quest;
+}
+
+// Check user eligibility
+async function checkEligibility(questId, userAddress, accessToken) {
+  const query = `
+    query CheckEligibility($questId: ID!, $address: String!) {
+      quest(id: $questId) {
+        credentialGroups(address: $address) {
+          conditions { eligible }
+          rewards { eligible }
+        }
+      }
+    }
+  `;
+
+  const response = await fetch('https://graphigo-business.prd.galaxy.eco/query', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'access-token': accessToken
+    },
+    body: JSON.stringify({ query, variables: { questId, address: userAddress } })
+  });
+
+  const data = await response.json();
+  if (data.errors) throw new Error(data.errors[0].message);
+  
+  const quest = data.data.quest;
+  return quest.credentialGroups.some(group => 
+    group.conditions.every(c => c.eligible) &&
+    group.rewards.some(r => r.eligible)
+  );
+}
+
+// Usage
+const accessToken = process.env.GALXE_ACCESS_TOKEN;
+
+const quest = await getQuest('GChdWUjXX3', accessToken);
+console.log(`Quest: ${quest.name}, Status: ${quest.status}`);
+
+const eligible = await checkEligibility('GChdWUjXX3', '0x1234...', accessToken);
+console.log('User eligible:', eligible);
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+type Quest struct {
+	ID               string `json:"id"`
+	Name             string `json:"name"`
+	Status           string `json:"status"`
+	ParticipantsCount int   `json:"participantsCount"`
+	LoyaltyPoints    int    `json:"loyaltyPoints"`
+}
+
+type GraphQLRequest struct {
+	Query     string                 `json:"query"`
+	Variables map[string]interface{} `json:"variables"`
+}
+
+type GraphQLResponse struct {
+	Data   map[string]interface{} `json:"data"`
+	Errors []interface{}          `json:"errors"`
+}
+
+// Get quest details
+func getQuest(questID, accessToken string) (*Quest, error) {
+	query := `
+		query GetQuest($id: ID!) {
+			quest(id: $id) {
+				id
+				name
+				status
+				participantsCount
+				loyaltyPoints
+			}
+		}
+	`
+
+	reqBody := GraphQLRequest{
+		Query:     query,
+		Variables: map[string]interface{}{"id": questID},
+	}
+
+	jsonData, _ := json.Marshal(reqBody)
+	req, _ := http.NewRequest("POST", "https://graphigo-business.prd.galaxy.eco/query", bytes.NewBuffer(jsonData))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("access-token", accessToken)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	var result GraphQLResponse
+	json.Unmarshal(body, &result)
+
+	if len(result.Errors) > 0 {
+		return nil, fmt.Errorf("GraphQL error: %v", result.Errors[0])
+	}
+
+	questData, _ := json.Marshal(result.Data["quest"])
+	var quest Quest
+	json.Unmarshal(questData, &quest)
+
+	return &quest, nil
+}
+
+// Check user eligibility
+func checkEligibility(questID, userAddress, accessToken string) (bool, error) {
+	query := `
+		query CheckEligibility($questId: ID!, $address: String!) {
+			quest(id: $questId) {
+				credentialGroups(address: $address) {
+					conditions { eligible }
+					rewards { eligible }
+				}
+			}
+		}
+	`
+
+	reqBody := GraphQLRequest{
+		Query: query,
+		Variables: map[string]interface{}{
+			"questId": questID,
+			"address": userAddress,
+		},
+	}
+
+	jsonData, _ := json.Marshal(reqBody)
+	req, _ := http.NewRequest("POST", "https://graphigo-business.prd.galaxy.eco/query", bytes.NewBuffer(jsonData))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("access-token", accessToken)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return false, err
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	var result GraphQLResponse
+	json.Unmarshal(body, &result)
+
+	if len(result.Errors) > 0 {
+		return false, fmt.Errorf("GraphQL error: %v", result.Errors[0])
+	}
+
+	// Simplified eligibility check
+	return true, nil
+}
+
+// Usage
+func main() {
+	accessToken := os.Getenv("GALXE_ACCESS_TOKEN")
+
+	quest, err := getQuest("GChdWUjXX3", accessToken)
+	if err == nil {
+		fmt.Printf("Quest: %s, Status: %s\n", quest.Name, quest.Status)
+	}
+
+	eligible, _ := checkEligibility("GChdWUjXX3", "0x1234...", accessToken)
+	fmt.Printf("User eligible: %t\n", eligible)
+}
+```
+
+```python Python
+import asyncio
+import aiohttp
+import json
+import os
+from typing import Dict, Any
+
+# Get quest details
+async def get_quest(quest_id: str, access_token: str) -> Dict[str, Any]:
+    query = """
+        query GetQuest($id: ID!) {
+            quest(id: $id) {
+                id
+                name
+                status
+                participantsCount
+                loyaltyPoints
+            }
+        }
+    """
+    
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            "https://graphigo-business.prd.galaxy.eco/query",
+            headers={
+                "Content-Type": "application/json",
+                "access-token": access_token
+            },
+            json={"query": query, "variables": {"id": quest_id}}
+        ) as response:
+            data = await response.json()
+            if data.get("errors"):
+                raise Exception(f"GraphQL error: {data['errors'][0]['message']}")
+            return data["data"]["quest"]
+
+# Check user eligibility
+async def check_eligibility(quest_id: str, user_address: str, access_token: str) -> bool:
+    query = """
+        query CheckEligibility($questId: ID!, $address: String!) {
+            quest(id: $questId) {
+                credentialGroups(address: $address) {
+                    conditions { eligible }
+                    rewards { eligible }
+                }
+            }
+        }
+    """
+    
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            "https://graphigo-business.prd.galaxy.eco/query",
+            headers={
+                "Content-Type": "application/json",
+                "access-token": access_token
+            },
+            json={
+                "query": query, 
+                "variables": {"questId": quest_id, "address": user_address}
+            }
+        ) as response:
+            data = await response.json()
+            if data.get("errors"):
+                raise Exception(f"GraphQL error: {data['errors'][0]['message']}")
+            
+            quest_data = data["data"]["quest"]
+            credential_groups = quest_data.get("credentialGroups", [])
+            
+            return any(
+                all(condition.get("eligible", False) for condition in group.get("conditions", [])) and
+                any(reward.get("eligible", False) for reward in group.get("rewards", []))
+                for group in credential_groups
+            )
+
+# Usage
+async def main():
+    access_token = os.getenv("GALXE_ACCESS_TOKEN")
+    
+    quest = await get_quest("GChdWUjXX3", access_token)
+    print(f"Quest: {quest['name']}, Status: {quest['status']}")
+
+    eligible = await check_eligibility("GChdWUjXX3", "0x1234...", access_token)
+    print(f"User eligible: {eligible}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+</CodeGroup>
+
+## Common Use Cases
+
+### Check Quest Status
+
+<CodeGroup>
+
+```javascript JavaScript
+async function isQuestActive(questId, accessToken) {
+  const quest = await getQuest(questId, accessToken);
+  const now = Math.floor(Date.now() / 1000);
+  
+  return quest.status === 'Active' && 
+         now >= quest.startTime && 
+         (!quest.endTime || now <= quest.endTime);
+}
+```
+
+```go Go
+func isQuestActive(questID, accessToken string) (bool, error) {
+	quest, err := getQuest(questID, accessToken)
+	if err != nil {
+		return false, err
+	}
+
+	now := time.Now().Unix()
+	return quest.Status == "Active" && 
+		now >= quest.StartTime && 
+		(quest.EndTime == 0 || now <= quest.EndTime), nil
+}
+```
+
+```python Python
+import time
+
+async def is_quest_active(quest_id: str, access_token: str) -> bool:
+    quest = await get_quest(quest_id, access_token)
+    now = int(time.time())
+    
+    return (quest.get('status') == 'Active' and 
+            now >= quest.get('startTime', 0) and 
+            (not quest.get('endTime') or now <= quest.get('endTime')))
+```
+
+</CodeGroup>
+
+### Batch Eligibility Check
+
+<CodeGroup>
+
+```javascript JavaScript
+async function checkMultipleUsers(questId, userAddresses, accessToken) {
+  const results = await Promise.all(
+    userAddresses.map(async (address) => {
+      try {
+        const eligible = await checkEligibility(questId, address, accessToken);
+        return { address, eligible };
+      } catch (error) {
+        return { address, eligible: false, error: error.message };
+      }
+    })
+  );
+  return results;
+}
+```
+
+```go Go
+type EligibilityResult struct {
+	Address  string `json:"address"`
+	Eligible bool   `json:"eligible"`
+	Error    string `json:"error,omitempty"`
+}
+
+func checkMultipleUsers(questID string, addresses []string, accessToken string) []EligibilityResult {
+	results := make([]EligibilityResult, len(addresses))
+	
+	for i, address := range addresses {
+		eligible, err := checkEligibility(questID, address, accessToken)
+		results[i] = EligibilityResult{
+			Address:  address,
+			Eligible: eligible,
+		}
+		if err != nil {
+			results[i].Error = err.Error()
+		}
+	}
+	return results
+}
+```
+
+```python Python
+from typing import List, Dict, Any
+
+async def check_multiple_users(quest_id: str, user_addresses: List[str], access_token: str) -> List[Dict[str, Any]]:
+    results = []
+    for address in user_addresses:
+        try:
+            eligible = await check_eligibility(quest_id, address, access_token)
+            results.append({"address": address, "eligible": eligible})
+        except Exception as error:
+            results.append({"address": address, "eligible": False, "error": str(error)})
+    return results
+```
+
+</CodeGroup>
+
+## Error Handling
+
+<CodeGroup>
+
+```javascript JavaScript
+async function safeQuestQuery(questId, accessToken) {
+  try {
+    const quest = await getQuest(questId, accessToken);
+    return { success: true, data: quest };
+  } catch (error) {
+    if (error.message.includes('rate limit')) {
+      return { success: false, error: 'RATE_LIMITED' };
+    }
+    return { success: false, error: error.message };
+  }
+}
+```
+
+```go Go
+type QuestResult struct {
+	Success bool   `json:"success"`
+	Data    *Quest `json:"data,omitempty"`
+	Error   string `json:"error,omitempty"`
+}
+
+func safeQuestQuery(questID, accessToken string) *QuestResult {
+	quest, err := getQuest(questID, accessToken)
+	if err == nil {
+		return &QuestResult{Success: true, Data: quest}
+	}
+
+	if strings.Contains(err.Error(), "rate limit") {
+		return &QuestResult{Success: false, Error: "RATE_LIMITED"}
+	}
+	return &QuestResult{Success: false, Error: err.Error()}
+}
+```
+
+```python Python
+from typing import Dict, Any
+
+async def safe_quest_query(quest_id: str, access_token: str) -> Dict[str, Any]:
+    try:
+        quest = await get_quest(quest_id, access_token)
+        return {"success": True, "data": quest}
+    except Exception as error:
+        error_msg = str(error)
+        if "rate limit" in error_msg.lower():
+            return {"success": False, "error": "RATE_LIMITED"}
+        return {"success": False, "error": error_msg}
+```
+
+</CodeGroup>
+
+## Next Steps
+
+- **[Credential API Reference](/galxe-integration/api-reference/credential)** - User verification system
+- **[Space API Reference](/galxe-integration/api-reference/space)** - Leaderboards and points
+- **[Error Handling](/galxe-integration/resources/error-handling)** - Complete error handling guide 

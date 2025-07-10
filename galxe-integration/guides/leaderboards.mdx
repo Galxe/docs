@@ -1,0 +1,517 @@
+---
+title: "Leaderboard Integration"
+description: "Create engaging leaderboard systems with real-time rankings, seasonal competitions, and user analytics"
+---
+
+## Overview
+
+Build leaderboard systems that drive engagement through:
+- Real-time user rankings
+- Seasonal competitions (sprints)
+- Paginated leaderboard data
+- User position tracking
+
+## Basic Leaderboard Implementation
+
+### Get Leaderboard Rankings
+
+```graphql
+query GetLeaderboard($spaceId: Int!, $first: Int!, $after: String) {
+  space(id: $spaceId) {
+    id
+    name
+    loyaltyPointsRanks(
+      first: $first
+      after: $after
+    ) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+        startCursor
+      }
+      edges {
+        node {
+          id
+          rank
+          points
+          address {
+            id
+            username
+            avatar
+            address
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+**Variables**:
+```json
+{
+  "spaceId": 40,
+  "first": 10,
+  "after": null
+}
+```
+
+### Get User's Specific Rank
+
+```graphql
+query GetUserRank($spaceId: Int!, $userAddress: String!, $sprintId: Int) {
+  space(id: $spaceId) {
+    addressLoyaltyPoints(address: $userAddress, sprintId: $sprintId) {
+      id
+      points
+      rank
+    }
+  }
+}
+```
+
+## Seasonal Leaderboards (Sprints)
+
+### Get Available Sprints
+
+```graphql
+query GetSprints($spaceId: Int!) {
+  space(id: $spaceId) {
+    id
+    name
+    sprints(first: 20) {
+      edges {
+        node {
+          id
+          name
+          startTime
+          endTime
+          isVisible
+        }
+      }
+    }
+  }
+}
+```
+
+### Sprint Leaderboard Query
+
+Add `sprintId` parameter to get sprint-specific rankings:
+
+```graphql
+query GetSprintLeaderboard($spaceId: Int!, $sprintId: Int, $first: Int!) {
+  space(id: $spaceId) {
+    loyaltyPointsRanks(
+      first: $first
+      sprintId: $sprintId
+    ) {
+      totalCount
+      edges {
+        node {
+          rank
+          points
+          address {
+            username
+            avatar
+            address
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## JavaScript Implementation
+
+```javascript
+class LeaderboardManager {
+  constructor(accessToken) {
+    this.accessToken = accessToken;
+    this.apiUrl = 'https://graphigo-business.prd.galaxy.eco/query';
+    this.cache = new Map();
+    this.cacheTimeout = 30000; // 30 seconds
+  }
+
+  async getLeaderboard(spaceId, options = {}) {
+    const {
+      limit = 10,
+      cursor = null,
+      sprintId = null,
+      useCache = true
+    } = options;
+
+    const cacheKey = `leaderboard_${spaceId}_${limit}_${cursor}_${sprintId}`;
+    
+    if (useCache && this.cache.has(cacheKey)) {
+      const cached = this.cache.get(cacheKey);
+      if (Date.now() - cached.timestamp < this.cacheTimeout) {
+        return cached.data;
+      }
+    }
+
+    const query = `
+      query GetLeaderboard($spaceId: Int!, $first: Int!, $after: String, $sprintId: Int) {
+        space(id: $spaceId) {
+          id
+          name
+          loyaltyPointsRanks(
+            first: $first
+            after: $after
+            sprintId: $sprintId
+          ) {
+            totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+              startCursor
+            }
+            edges {
+              node {
+                id
+                rank
+                points
+                address {
+                  id
+                  username
+                  avatar
+                  address
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, {
+      spaceId,
+      first: limit,
+      after: cursor,
+      sprintId
+    });
+
+    const rankData = response.space.loyaltyPointsRanks;
+    const result = {
+      spaceId,
+      spaceName: response.space.name,
+      totalCount: rankData.totalCount,
+      rankings: rankData.edges.map(edge => ({
+        id: edge.node.id,
+        rank: edge.node.rank,
+        points: edge.node.points,
+        user: {
+          id: edge.node.address.id,
+          username: edge.node.address.username,
+          avatar: edge.node.address.avatar,
+          address: edge.node.address.address
+        }
+      })),
+      pageInfo: rankData.pageInfo,
+      isSprintLeaderboard: !!sprintId,
+      sprintId
+    };
+
+    if (useCache) {
+      this.cache.set(cacheKey, {
+        data: result,
+        timestamp: Date.now()
+      });
+    }
+
+    return result;
+  }
+
+  async getUserRank(spaceId, userAddress, sprintId = null) {
+    const query = `
+      query GetUserRank($spaceId: Int!, $userAddress: String!, $sprintId: Int) {
+        space(id: $spaceId) {
+          addressLoyaltyPoints(address: $userAddress, sprintId: $sprintId) {
+            id
+            points
+            rank
+          }
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, {
+      spaceId,
+      userAddress,
+      sprintId
+    });
+
+    const userRank = response.space.addressLoyaltyPoints;
+
+    if (!userRank) {
+      return {
+        userAddress,
+        rank: null,
+        points: 0,
+        isRanked: false,
+        sprintId
+      };
+    }
+
+    return {
+      userAddress,
+      rank: userRank.rank,
+      points: userRank.points,
+      isRanked: true,
+      sprintId,
+      id: userRank.id
+    };
+  }
+
+  async executeQuery(query, variables) {
+    const response = await fetch(this.apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'access-token': this.accessToken
+      },
+      body: JSON.stringify({ query, variables })
+    });
+
+    const data = await response.json();
+    if (data.errors) throw new Error(data.errors[0].message);
+    return data.data;
+  }
+}
+```
+
+## Sprint Management
+
+```javascript
+class SprintManager extends LeaderboardManager {
+  async getActiveSprints(spaceId) {
+    const query = `
+      query GetSprints($spaceId: Int!) {
+        space(id: $spaceId) {
+          id
+          name
+          sprints(first: 20) {
+            edges {
+              node {
+                id
+                name
+                startTime
+                endTime
+                isVisible
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, { spaceId });
+    const sprints = response.space.sprints.edges.map(edge => edge.node);
+    const now = Math.floor(Date.now() / 1000);
+
+    return {
+      spaceId,
+      spaceName: response.space.name,
+      allSprints: sprints.filter(sprint => sprint.isVisible),
+      activeSprint: sprints.find(sprint => 
+        sprint.startTime <= now && 
+        (!sprint.endTime || sprint.endTime >= now) &&
+        sprint.isVisible
+      ),
+      upcomingSprints: sprints.filter(sprint => 
+        sprint.startTime > now && sprint.isVisible
+      ),
+      pastSprints: sprints.filter(sprint => 
+        sprint.endTime && sprint.endTime < now && sprint.isVisible
+      )
+    };
+  }
+
+  async getSprintLeaderboard(spaceId, sprintId, options = {}) {
+    return this.getLeaderboard(spaceId, {
+      ...options,
+      sprintId
+    });
+  }
+}
+```
+
+## Paginated Data Fetching
+
+```javascript
+async function getAllRankings(leaderboardManager, spaceId, sprintId = null) {
+  let allRankings = [];
+  let hasNextPage = true;
+  let cursor = null;
+  let pageCount = 0;
+  const maxPages = 100; // Prevent infinite loops
+
+  while (hasNextPage && pageCount < maxPages) {
+    const page = await leaderboardManager.getLeaderboard(spaceId, {
+      limit: 100,
+      cursor,
+      sprintId,
+      useCache: false
+    });
+
+    allRankings.push(...page.rankings);
+    hasNextPage = page.pageInfo.hasNextPage;
+    cursor = page.pageInfo.endCursor;
+    pageCount++;
+
+    // Rate limiting
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
+  return {
+    spaceId,
+    totalFetched: allRankings.length,
+    pagesFetched: pageCount,
+    rankings: allRankings,
+    isComplete: !hasNextPage,
+    sprintId
+  };
+}
+```
+
+## Real-time Updates
+
+```javascript
+class LiveLeaderboard {
+  constructor(leaderboardManager) {
+    this.leaderboardManager = leaderboardManager;
+    this.subscriptions = new Map();
+    this.updateInterval = 30000; // 30 seconds
+  }
+
+  subscribe(spaceId, callback, options = {}) {
+    const subscriptionId = `${spaceId}_${Date.now()}`;
+    const { sprintId = null, trackUsers = [] } = options;
+
+    const intervalId = setInterval(async () => {
+      try {
+        const [leaderboard, ...userRanks] = await Promise.all([
+          this.leaderboardManager.getLeaderboard(spaceId, { 
+            limit: 20, 
+            sprintId, 
+            useCache: false 
+          }),
+          ...trackUsers.map(address => 
+            this.leaderboardManager.getUserRank(spaceId, address, sprintId)
+          )
+        ]);
+
+        callback({
+          type: 'update',
+          timestamp: new Date().toISOString(),
+          leaderboard,
+          userUpdates: userRanks,
+          spaceId,
+          sprintId
+        });
+      } catch (error) {
+        callback({ type: 'error', error: error.message });
+      }
+    }, this.updateInterval);
+
+    this.subscriptions.set(subscriptionId, intervalId);
+    return subscriptionId;
+  }
+
+  unsubscribe(subscriptionId) {
+    const intervalId = this.subscriptions.get(subscriptionId);
+    if (intervalId) {
+      clearInterval(intervalId);
+      this.subscriptions.delete(subscriptionId);
+    }
+  }
+}
+```
+
+## Usage Examples
+
+### Basic Leaderboard
+
+```javascript
+// Initialize leaderboard manager
+const leaderboardManager = new LeaderboardManager(process.env.GALXE_ACCESS_TOKEN);
+
+// Get top 10 leaderboard
+const leaderboard = await leaderboardManager.getLeaderboard(40, { limit: 10 });
+console.log('Top 10:', leaderboard.rankings);
+
+// Get user's rank
+const userRank = await leaderboardManager.getUserRank(40, '0x1234...');
+console.log('User rank:', userRank.rank, 'Points:', userRank.points);
+```
+
+### Sprint Competition
+
+```javascript
+// Initialize sprint manager
+const sprintManager = new SprintManager(process.env.GALXE_ACCESS_TOKEN);
+
+// Get active sprints
+const sprintInfo = await sprintManager.getActiveSprints(40);
+console.log('Active sprint:', sprintInfo.activeSprint);
+
+// Get sprint leaderboard
+if (sprintInfo.activeSprint) {
+  const sprintLeaderboard = await sprintManager.getSprintLeaderboard(
+    40, 
+    sprintInfo.activeSprint.id, 
+    { limit: 10 }
+  );
+  console.log('Sprint rankings:', sprintLeaderboard.rankings);
+}
+```
+
+### Live Updates
+
+```javascript
+// Setup live leaderboard
+const liveLeaderboard = new LiveLeaderboard(leaderboardManager);
+
+const subscriptionId = liveLeaderboard.subscribe(
+  40, // Space ID
+  (update) => {
+    if (update.type === 'update') {
+      console.log('Leaderboard updated:', update.timestamp);
+      console.log('Top user:', update.leaderboard.rankings[0]);
+    } else if (update.type === 'error') {
+      console.error('Update error:', update.error);
+    }
+  },
+  { 
+    sprintId: null, // null for overall, or sprint ID for sprint leaderboard
+    trackUsers: ['0x1234...'] // Track specific users
+  }
+);
+
+// Stop monitoring after 10 minutes
+setTimeout(() => {
+  liveLeaderboard.unsubscribe(subscriptionId);
+}, 600000);
+```
+
+## Best Practices
+
+1. **Caching**: Cache leaderboard data for 30-60 seconds to reduce API calls
+2. **Rate Limiting**: Add delays between requests when fetching multiple pages
+3. **User Context**: Always show user's current position relative to the leaderboard
+4. **Real-time Balance**: Update every 30-60 seconds, not more frequently
+5. **Error Handling**: Handle cases where users aren't ranked yet
+
+## Common Patterns
+
+- **User Position**: Show user's rank even if not in top 10
+- **Rank Movement**: Compare with previous positions to show changes
+- **Achievement Thresholds**: Highlight top 10, top 100, etc.
+- **Sprint Transitions**: Handle active/expired sprint switching
+
+## Next Steps
+
+- **[Space API Reference](/galxe-integration/api-reference/space)** - Complete API documentation
+- **[Loyalty Program Guide](/galxe-integration/guides/loyalty-program)** - Points and rewards
+- **[Rate Limits](/galxe-integration/resources/rate-limits)** - Understanding API limits

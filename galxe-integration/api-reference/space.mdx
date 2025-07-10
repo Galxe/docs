@@ -1,0 +1,1014 @@
+---
+title: "Space API Reference"
+description: "Manage spaces, leaderboards, loyalty points, and user rankings"
+---
+
+## Overview
+
+- Query space information and metadata
+- Retrieve leaderboard rankings and user positions
+- Manage loyalty points and sprints
+- Track space analytics
+
+## Core Queries
+
+### `space` - Get Space Details
+
+Find Space details by Space ID.
+
+**Arguments**: `id` (required) - Space's unique numeric ID
+
+**Key Fields**: `id`, `name`, `description`, `loyaltyPointsRanks`, `addressLoyaltyPoints`
+
+#### Example: Basic Space Query
+
+```graphql
+query GetSpace($spaceId: Int!) {
+  space(id: $spaceId) {
+    id
+    name
+    description
+    isVerified
+    followersCount
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "data": {
+    "space": {
+      "id": 40,
+      "name": "BNB Chain",
+      "description": "BNB Chain blockchain ecosystem",
+      "isVerified": true,
+      "followersCount": 125000
+    }
+  }
+}
+```
+
+## Leaderboard System
+
+### Get Leaderboard Rankings
+
+Get paginated leaderboard rankings for a space.
+
+```graphql
+query GetLeaderboard($spaceId: Int!, $first: Int!, $after: String) {
+  space(id: $spaceId) {
+    loyaltyPointsRanks(first: $first, after: $after) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          rank
+          points
+          address {
+            username
+            address
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+### Get User Position
+
+Query specific user's loyalty points and ranking.
+
+```graphql
+query GetUserPosition($spaceId: Int!, $userAddress: String!) {
+  space(id: $spaceId) {
+    addressLoyaltyPoints(address: $userAddress) {
+      points
+      rank
+    }
+  }
+}
+```
+
+## Starboard Integration
+
+Query starboard information and Twitter influence rankings.
+
+```graphql
+query GetStarboard($id: ID!) {
+  starboard(id: $id) {
+    basicInfo {
+      id
+      name
+      projectName
+      description
+    }
+    leaderboard(pagination: { forward: { first: 10 } }) {
+      edges {
+        node {
+          xUserProfile {
+            username
+            followersCount
+          }
+          rank {
+            value
+          }
+          influenceScore {
+            value
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## Code Examples
+
+### SpaceManager Implementation
+
+<CodeGroup>
+
+```javascript JavaScript
+class SpaceManager {
+  constructor(accessToken) {
+    this.accessToken = accessToken;
+    this.apiUrl = 'https://graphigo-business.prd.galaxy.eco/query';
+  }
+
+  async getSpace(spaceId) {
+    const query = `
+      query GetSpace($spaceId: Int!) {
+        space(id: $spaceId) {
+          id
+          name
+          description
+          isVerified
+          followersCount
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, { spaceId });
+    return response.space;
+  }
+
+  async getLeaderboard(spaceId, options = {}) {
+    const { limit = 10, cursor = null } = options;
+
+    const query = `
+      query GetLeaderboard($spaceId: Int!, $first: Int!, $after: String) {
+        space(id: $spaceId) {
+          loyaltyPointsRanks(first: $first, after: $after) {
+            totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+            edges {
+              node {
+                rank
+                points
+                address {
+                  username
+                  address
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, {
+      spaceId,
+      first: limit,
+      after: cursor
+    });
+
+    return response.space.loyaltyPointsRanks;
+  }
+
+  async getUserPosition(spaceId, userAddress) {
+    const query = `
+      query GetUserPosition($spaceId: Int!, $userAddress: String!) {
+        space(id: $spaceId) {
+          addressLoyaltyPoints(address: $userAddress) {
+            points
+            rank
+          }
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, {
+      spaceId,
+      userAddress
+    });
+
+    const loyaltyPoints = response.space.addressLoyaltyPoints;
+    
+    if (!loyaltyPoints) {
+      return { points: 0, rank: null, hasPoints: false };
+    }
+
+    return {
+      points: loyaltyPoints.points,
+      rank: loyaltyPoints.rank,
+      hasPoints: true
+    };
+  }
+
+  async getStarboard(starboardId) {
+    const query = `
+      query GetStarboard($id: ID!) {
+        starboard(id: $id) {
+          basicInfo {
+            id
+            name
+            projectName
+          }
+          leaderboard(pagination: { forward: { first: 20 } }) {
+            edges {
+              node {
+                xUserProfile {
+                  username
+                  followersCount
+                }
+                rank {
+                  value
+                }
+                influenceScore {
+                  value
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, { id: starboardId });
+    return response.starboard;
+  }
+
+  async executeQuery(query, variables) {
+    const response = await fetch(this.apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'access-token': this.accessToken
+      },
+      body: JSON.stringify({ query, variables })
+    });
+
+    const data = await response.json();
+
+    if (data.errors) {
+      throw new Error(data.errors[0].message);
+    }
+
+    return data.data;
+  }
+}
+
+// Usage Examples
+const spaceManager = new SpaceManager(process.env.GALXE_ACCESS_TOKEN);
+
+// Get space information
+const space = await spaceManager.getSpace(40);
+console.log(`Space: ${space.name}`);
+
+// Get leaderboard
+const leaderboard = await spaceManager.getLeaderboard(40, { limit: 20 });
+console.log(`Total users: ${leaderboard.totalCount}`);
+
+// Get user position
+const userPosition = await spaceManager.getUserPosition(40, '0x1234...');
+console.log(`User rank: #${userPosition.rank}, Points: ${userPosition.points}`);
+
+// Get starboard data
+const starboard = await spaceManager.getStarboard('1');
+console.log(`Starboard: ${starboard.basicInfo.name}`);
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+type SpaceManager struct {
+	AccessToken string
+	APIURL      string
+	Client      *http.Client
+}
+
+type Space struct {
+	ID             int    `json:"id"`
+	Name           string `json:"name"`
+	Description    string `json:"description"`
+	IsVerified     bool   `json:"isVerified"`
+	FollowersCount int    `json:"followersCount"`
+}
+
+type LeaderboardOptions struct {
+	Limit  int
+	Cursor *string
+}
+
+type UserPosition struct {
+	Points    int  `json:"points"`
+	Rank      *int `json:"rank"`
+	HasPoints bool `json:"hasPoints"`
+}
+
+type GraphQLRequest struct {
+	Query     string                 `json:"query"`
+	Variables map[string]interface{} `json:"variables"`
+}
+
+type GraphQLResponse struct {
+	Data   map[string]interface{} `json:"data"`
+	Errors []interface{}          `json:"errors"`
+}
+
+func NewSpaceManager(accessToken string) *SpaceManager {
+	return &SpaceManager{
+		AccessToken: accessToken,
+		APIURL:      "https://graphigo-business.prd.galaxy.eco/query",
+		Client:      &http.Client{},
+	}
+}
+
+func (sm *SpaceManager) GetSpace(spaceID int) (*Space, error) {
+	query := `
+		query GetSpace($spaceId: Int!) {
+			space(id: $spaceId) {
+				id
+				name
+				description
+				isVerified
+				followersCount
+			}
+		}
+	`
+
+	response, err := sm.executeQuery(query, map[string]interface{}{
+		"spaceId": spaceID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	spaceData, _ := json.Marshal(response["space"])
+	var space Space
+	json.Unmarshal(spaceData, &space)
+
+	return &space, nil
+}
+
+func (sm *SpaceManager) GetLeaderboard(spaceID int, options LeaderboardOptions) (map[string]interface{}, error) {
+	if options.Limit == 0 {
+		options.Limit = 10
+	}
+
+	query := `
+		query GetLeaderboard($spaceId: Int!, $first: Int!, $after: String) {
+			space(id: $spaceId) {
+				loyaltyPointsRanks(first: $first, after: $after) {
+					totalCount
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+					edges {
+						node {
+							rank
+							points
+							address {
+								username
+								address
+							}
+						}
+					}
+				}
+			}
+		}
+	`
+
+	variables := map[string]interface{}{
+		"spaceId": spaceID,
+		"first":   options.Limit,
+	}
+	if options.Cursor != nil {
+		variables["after"] = *options.Cursor
+	}
+
+	response, err := sm.executeQuery(query, variables)
+	if err != nil {
+		return nil, err
+	}
+
+	space := response["space"].(map[string]interface{})
+	return space["loyaltyPointsRanks"].(map[string]interface{}), nil
+}
+
+func (sm *SpaceManager) GetUserPosition(spaceID int, userAddress string) (*UserPosition, error) {
+	query := `
+		query GetUserPosition($spaceId: Int!, $userAddress: String!) {
+			space(id: $spaceId) {
+				addressLoyaltyPoints(address: $userAddress) {
+					points
+					rank
+				}
+			}
+		}
+	`
+
+	response, err := sm.executeQuery(query, map[string]interface{}{
+		"spaceId":     spaceID,
+		"userAddress": userAddress,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	space := response["space"].(map[string]interface{})
+	loyaltyPoints := space["addressLoyaltyPoints"]
+
+	if loyaltyPoints == nil {
+		return &UserPosition{
+			Points:    0,
+			Rank:      nil,
+			HasPoints: false,
+		}, nil
+	}
+
+	lpData, _ := json.Marshal(loyaltyPoints)
+	var position UserPosition
+	json.Unmarshal(lpData, &position)
+	position.HasPoints = true
+
+	return &position, nil
+}
+
+func (sm *SpaceManager) executeQuery(query string, variables map[string]interface{}) (map[string]interface{}, error) {
+	reqBody := GraphQLRequest{
+		Query:     query,
+		Variables: variables,
+	}
+
+	jsonData, _ := json.Marshal(reqBody)
+	req, _ := http.NewRequest("POST", sm.APIURL, bytes.NewBuffer(jsonData))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("access-token", sm.AccessToken)
+
+	resp, err := sm.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	var result GraphQLResponse
+	json.Unmarshal(body, &result)
+
+	if len(result.Errors) > 0 {
+		return nil, fmt.Errorf("GraphQL error: %v", result.Errors[0])
+	}
+
+	return result.Data, nil
+}
+
+// Usage Examples
+func main() {
+	spaceManager := NewSpaceManager(os.Getenv("GALXE_ACCESS_TOKEN"))
+
+	// Get space information
+	space, err := spaceManager.GetSpace(40)
+	if err == nil {
+		fmt.Printf("Space: %s\n", space.Name)
+	}
+
+	// Get leaderboard
+	leaderboard, err := spaceManager.GetLeaderboard(40, LeaderboardOptions{Limit: 20})
+	if err == nil {
+		fmt.Printf("Total users: %v\n", leaderboard["totalCount"])
+	}
+
+	// Get user position
+	userPosition, err := spaceManager.GetUserPosition(40, "0x1234...")
+	if err == nil {
+		fmt.Printf("User rank: #%v, Points: %d\n", userPosition.Rank, userPosition.Points)
+	}
+}
+```
+
+```python Python
+import asyncio
+import aiohttp
+import json
+import os
+from typing import Optional, Dict, Any, List
+
+class SpaceManager:
+    def __init__(self, access_token: str):
+        self.access_token = access_token
+        self.api_url = "https://graphigo-business.prd.galaxy.eco/query"
+        self.session: Optional[aiohttp.ClientSession] = None
+
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.session:
+            await self.session.close()
+
+    async def get_space(self, space_id: int) -> Optional[Dict[str, Any]]:
+        query = """
+            query GetSpace($spaceId: Int!) {
+                space(id: $spaceId) {
+                    id
+                    name
+                    description
+                    isVerified
+                    followersCount
+                }
+            }
+        """
+
+        response = await self._execute_query(query, {"spaceId": space_id})
+        return response.get("space")
+
+    async def get_leaderboard(
+        self, 
+        space_id: int, 
+        limit: int = 10, 
+        cursor: Optional[str] = None
+    ) -> Optional[Dict[str, Any]]:
+        query = """
+            query GetLeaderboard($spaceId: Int!, $first: Int!, $after: String) {
+                space(id: $spaceId) {
+                    loyaltyPointsRanks(first: $first, after: $after) {
+                        totalCount
+                        pageInfo {
+                            hasNextPage
+                            endCursor
+                        }
+                        edges {
+                            node {
+                                rank
+                                points
+                                address {
+                                    username
+                                    address
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        """
+
+        variables = {
+            "spaceId": space_id,
+            "first": limit,
+        }
+        if cursor:
+            variables["after"] = cursor
+
+        response = await self._execute_query(query, variables)
+        space = response.get("space", {})
+        return space.get("loyaltyPointsRanks")
+
+    async def get_user_position(
+        self, 
+        space_id: int, 
+        user_address: str
+    ) -> Dict[str, Any]:
+        query = """
+            query GetUserPosition($spaceId: Int!, $userAddress: String!) {
+                space(id: $spaceId) {
+                    addressLoyaltyPoints(address: $userAddress) {
+                        points
+                        rank
+                    }
+                }
+            }
+        """
+
+        response = await self._execute_query(query, {
+            "spaceId": space_id,
+            "userAddress": user_address
+        })
+        
+        space = response.get("space", {})
+        loyalty_points = space.get("addressLoyaltyPoints")
+        
+        if not loyalty_points:
+            return {
+                "points": 0,
+                "rank": None,
+                "hasPoints": False
+            }
+
+        return {
+            "points": loyalty_points.get("points", 0),
+            "rank": loyalty_points.get("rank"),
+            "hasPoints": True
+        }
+
+    async def get_starboard(self, starboard_id: str) -> Optional[Dict[str, Any]]:
+        query = """
+            query GetStarboard($id: ID!) {
+                starboard(id: $id) {
+                    basicInfo {
+                        id
+                        name
+                        projectName
+                    }
+                    leaderboard(pagination: { forward: { first: 20 } }) {
+                        edges {
+                            node {
+                                xUserProfile {
+                                    username
+                                    followersCount
+                                }
+                                rank {
+                                    value
+                                }
+                                influenceScore {
+                                    value
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        """
+
+        response = await self._execute_query(query, {"id": starboard_id})
+        return response.get("starboard")
+
+    async def _execute_query(
+        self, 
+        query: str, 
+        variables: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        headers = {
+            "Content-Type": "application/json",
+            "access-token": self.access_token
+        }
+        
+        payload = {
+            "query": query,
+            "variables": variables
+        }
+
+        async with self.session.post(
+            self.api_url,
+            headers=headers,
+            json=payload
+        ) as response:
+            data = await response.json()
+            
+            if data.get("errors"):
+                raise Exception(f"GraphQL error: {data['errors'][0]['message']}")
+            
+            return data.get("data", {})
+
+# Usage Examples
+async def main():
+    async with SpaceManager(os.getenv("GALXE_ACCESS_TOKEN")) as space_manager:
+        # Get space information
+        space = await space_manager.get_space(40)
+        if space:
+            print(f"Space: {space['name']}")
+
+        # Get leaderboard
+        leaderboard = await space_manager.get_leaderboard(40, limit=20)
+        if leaderboard:
+            print(f"Total users: {leaderboard['totalCount']}")
+
+        # Get user position
+        user_position = await space_manager.get_user_position(40, "0x1234...")
+        print(f"User rank: #{user_position['rank']}, Points: {user_position['points']}")
+
+        # Get starboard data
+        starboard = await space_manager.get_starboard("1")
+        if starboard:
+            print(f"Starboard: {starboard['basicInfo']['name']}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+</CodeGroup>
+
+## Common Use Cases
+
+### Paginated Leaderboard Fetching
+
+<CodeGroup>
+
+```javascript JavaScript
+async function getAllRankings(spaceId) {
+  let allRankings = [];
+  let hasNextPage = true;
+  let cursor = null;
+
+  while (hasNextPage) {
+    const page = await spaceManager.getLeaderboard(spaceId, {
+      limit: 100,
+      cursor
+    });
+
+    allRankings.push(...page.edges.map(edge => edge.node));
+    hasNextPage = page.pageInfo.hasNextPage;
+    cursor = page.pageInfo.endCursor;
+
+    // Rate limiting
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
+  return allRankings;
+}
+```
+
+```go Go
+func (sm *SpaceManager) GetAllRankings(spaceID int) ([]interface{}, error) {
+	var allRankings []interface{}
+	hasNextPage := true
+	var cursor *string
+
+	for hasNextPage {
+		page, err := sm.GetLeaderboard(spaceID, LeaderboardOptions{
+			Limit:  100,
+			Cursor: cursor,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		edges := page["edges"].([]interface{})
+		for _, edge := range edges {
+			edgeMap := edge.(map[string]interface{})
+			allRankings = append(allRankings, edgeMap["node"])
+		}
+
+		pageInfo := page["pageInfo"].(map[string]interface{})
+		hasNextPage = pageInfo["hasNextPage"].(bool)
+		if endCursor, ok := pageInfo["endCursor"].(string); ok {
+			cursor = &endCursor
+		}
+
+		// Rate limiting
+		time.Sleep(100 * time.Millisecond)
+	}
+
+	return allRankings, nil
+}
+```
+
+```python Python
+async def get_all_rankings(
+    space_manager: SpaceManager, 
+    space_id: int
+) -> List[Dict[str, Any]]:
+    all_rankings = []
+    has_next_page = True
+    cursor = None
+
+    while has_next_page:
+        page = await space_manager.get_leaderboard(
+            space_id, 
+            limit=100, 
+            cursor=cursor
+        )
+        
+        if not page:
+            break
+
+        edges = page.get("edges", [])
+        all_rankings.extend([edge["node"] for edge in edges])
+        
+        page_info = page.get("pageInfo", {})
+        has_next_page = page_info.get("hasNextPage", False)
+        cursor = page_info.get("endCursor")
+
+        # Rate limiting
+        await asyncio.sleep(0.1)
+
+    return all_rankings
+```
+
+</CodeGroup>
+
+### User Rank Comparison
+
+<CodeGroup>
+
+```javascript JavaScript
+async function compareUsers(spaceId, addresses) {
+  const results = await Promise.all(
+    addresses.map(async (address) => {
+      const position = await spaceManager.getUserPosition(spaceId, address);
+      return { address, ...position };
+    })
+  );
+
+  return results.sort((a, b) => a.rank - b.rank);
+}
+```
+
+```go Go
+type UserComparison struct {
+	Address string `json:"address"`
+	UserPosition
+}
+
+func (sm *SpaceManager) CompareUsers(spaceID int, addresses []string) ([]UserComparison, error) {
+	var results []UserComparison
+
+	for _, address := range addresses {
+		position, err := sm.GetUserPosition(spaceID, address)
+		if err != nil {
+			return nil, err
+		}
+
+		results = append(results, UserComparison{
+			Address:      address,
+			UserPosition: *position,
+		})
+	}
+
+	// Sort by rank
+	sort.Slice(results, func(i, j int) bool {
+		if results[i].Rank == nil {
+			return false
+		}
+		if results[j].Rank == nil {
+			return true
+		}
+		return *results[i].Rank < *results[j].Rank
+	})
+
+	return results, nil
+}
+```
+
+```python Python
+from typing import List, Dict, Any
+
+async def compare_users(
+    space_manager: SpaceManager, 
+    space_id: int, 
+    addresses: List[str]
+) -> List[Dict[str, Any]]:
+    tasks = []
+    for address in addresses:
+        task = _get_user_with_address(space_manager, space_id, address)
+        tasks.append(task)
+    
+    results = await asyncio.gather(*tasks)
+    
+    # Sort by rank (handle None values)
+    return sorted(results, key=lambda x: x.get('rank') or float('inf'))
+
+async def _get_user_with_address(
+    space_manager: SpaceManager, 
+    space_id: int, 
+    address: str
+) -> Dict[str, Any]:
+    position = await space_manager.get_user_position(space_id, address)
+    return {"address": address, **position}
+```
+
+</CodeGroup>
+
+## Error Handling
+
+<CodeGroup>
+
+```javascript JavaScript
+async function safeSpaceQuery(spaceId) {
+  try {
+    const space = await spaceManager.getSpace(spaceId);
+    return { success: true, data: space };
+  } catch (error) {
+    if (error.message.includes('rate limit')) {
+      return { success: false, error: 'RATE_LIMITED', retry: true };
+    }
+    
+    if (error.message.includes('not found')) {
+      return { success: false, error: 'SPACE_NOT_FOUND', retry: false };
+    }
+
+    return { success: false, error: 'UNKNOWN', message: error.message };
+  }
+}
+```
+
+```go Go
+type SpaceResult struct {
+	Success bool   `json:"success"`
+	Data    *Space `json:"data,omitempty"`
+	Error   string `json:"error,omitempty"`
+	Retry   bool   `json:"retry,omitempty"`
+	Message string `json:"message,omitempty"`
+}
+
+func (sm *SpaceManager) SafeSpaceQuery(spaceID int) *SpaceResult {
+	space, err := sm.GetSpace(spaceID)
+	if err == nil {
+		return &SpaceResult{
+			Success: true,
+			Data:    space,
+		}
+	}
+
+	errorMsg := err.Error()
+	if strings.Contains(errorMsg, "rate limit") {
+		return &SpaceResult{
+			Success: false,
+			Error:   "RATE_LIMITED",
+			Retry:   true,
+		}
+	}
+
+	if strings.Contains(errorMsg, "not found") {
+		return &SpaceResult{
+			Success: false,
+			Error:   "SPACE_NOT_FOUND",
+			Retry:   false,
+		}
+	}
+
+	return &SpaceResult{
+		Success: false,
+		Error:   "UNKNOWN",
+		Message: errorMsg,
+	}
+}
+```
+
+```python Python
+from typing import Dict, Any
+
+async def safe_space_query(
+    space_manager: SpaceManager, 
+    space_id: int
+) -> Dict[str, Any]:
+    try:
+        space = await space_manager.get_space(space_id)
+        return {"success": True, "data": space}
+    except Exception as error:
+        error_msg = str(error).lower()
+        
+        if "rate limit" in error_msg:
+            return {
+                "success": False,
+                "error": "RATE_LIMITED",
+                "retry": True
+            }
+        
+        if "not found" in error_msg:
+            return {
+                "success": False,
+                "error": "SPACE_NOT_FOUND",
+                "retry": False
+            }
+
+        return {
+            "success": False,
+            "error": "UNKNOWN",
+            "message": str(error)
+        }
+```
+
+</CodeGroup>
+
+## Best Practices
+
+1. **Pagination**: Use cursors for efficient pagination through large leaderboards
+2. **Rate Limiting**: Implement delays between requests to respect API limits
+3. **Caching**: Cache leaderboard data for frequently accessed rankings
+4. **Error Handling**: Implement retry logic for transient failures
+
+## Next Steps
+
+- **[Starboard API Reference](/galxe-integration/api-reference/starboard)** - Twitter influence tracking
+- **[Quest API Reference](/galxe-integration/api-reference/quest)** - Quest management
+- **[Leaderboard Guide](/galxe-integration/guides/leaderboards)** - Implementation patterns

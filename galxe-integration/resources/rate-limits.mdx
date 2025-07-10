@@ -1,0 +1,36 @@
+---
+title: "Rate Limits & Usage Quotas"
+description: "Understanding API rate limits, usage quotas, and best practices for the Galxe Integration API"
+---
+
+To help manage the sheer volume of requests we receive on our API, we have implemented both rate limits and usage quotas. These limits help us provide the reliable and scalable API that our developer community relies on.
+
+## Rate Limits & Quotas
+
+Our API has two types of limits:
+
+- **Rate Limits**: Maximum queries per second (QPS) you can send
+- **Usage Quotas**: Total number of requests allowed per month
+
+### Free Tier Limits
+
+| Endpoint | Rate Limit | Monthly Quota |
+|----------|------------|---------------|
+| https://graphigo-business.prd.galaxy.eco/query | 10 QPS | 100,000 requests |
+
+### What Happens When Limits Are Exceeded
+
+#### Rate Limit Exceeded
+When your application exceeds the rate limit (10 QPS), the API will return a `HTTP 429 Too Many Requests` response code. You should implement exponential backoff and retry logic to handle these responses.
+
+#### Monthly Quota Exceeded
+When you reach your monthly quota (100k requests), the API will return a `HTTP 429 Too Many Requests` response code until the next billing cycle begins.
+
+## Enterprise Plans
+
+Need higher limits? Contact our team for enterprise pricing that includes:
+
+- **Higher Rate Limits**: Up to 1000+ QPS
+- **Increased Quotas**: 10 Millions of requests per month
+- **Priority Support**: Dedicated technical support
+- **SLA Guarantees**: Uptime and response time guarantees

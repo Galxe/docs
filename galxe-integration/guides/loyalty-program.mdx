@@ -1,0 +1,316 @@
+---
+title: "Loyalty Program Integration"
+description: "Create engaging loyalty programs with point systems, leaderboards, and quest-based rewards"
+---
+
+## Overview
+
+Build loyalty programs that reward user engagement through:
+- Point accumulation and tracking
+- Leaderboard rankings
+- Quest-based reward systems
+- User progress monitoring
+
+## Basic User Points Management
+
+### Get User Points and Rank
+
+```graphql
+query GetUserPoints($spaceId: Int!, $userAddress: String!) {
+  space(id: $spaceId) {
+    addressLoyaltyPoints(address: $userAddress) {
+      points
+      rank
+    }
+  }
+}
+```
+
+**Variables**:
+```json
+{
+  "spaceId": 40,
+  "userAddress": "0x1234567890123456789012345678901234567890"
+}
+```
+
+**Response**:
+```json
+{
+  "data": {
+    "space": {
+      "addressLoyaltyPoints": {
+        "points": 150,
+        "rank": 42
+      }
+    }
+  }
+}
+```
+
+### Get Leaderboard Rankings
+
+```graphql
+query GetLeaderboard($spaceId: Int!, $first: Int!, $after: String) {
+  space(id: $spaceId) {
+    loyaltyPointsRanks(first: $first, after: $after) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          rank
+          points
+          address {
+            username
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## Quest Points Integration
+
+### Track Quest Completion Points
+
+```graphql
+query GetQuestPoints($questId: ID!) {
+  quest(id: $questId) {
+    loyaltyPoints
+    space {
+      id
+    }
+  }
+}
+```
+
+Use this to show users potential point rewards before quest completion.
+
+## JavaScript Implementation Example
+
+```javascript
+class LoyaltyManager {
+  constructor(accessToken) {
+    this.accessToken = accessToken;
+    this.apiUrl = 'https://graphigo-business.prd.galaxy.eco/query';
+  }
+
+  async getUserPoints(spaceId, userAddress) {
+    const query = `
+      query GetUserPoints($spaceId: Int!, $userAddress: String!) {
+        space(id: $spaceId) {
+          addressLoyaltyPoints(address: $userAddress) {
+            points
+            rank
+          }
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, { spaceId, userAddress });
+    const loyaltyPoints = response.space?.addressLoyaltyPoints;
+    
+    return loyaltyPoints || { points: 0, rank: null };
+  }
+
+  async getLeaderboard(spaceId, limit = 10, cursor = null) {
+    const query = `
+      query GetLeaderboard($spaceId: Int!, $first: Int!, $after: String) {
+        space(id: $spaceId) {
+          loyaltyPointsRanks(first: $first, after: $after) {
+            totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+            edges {
+              node {
+                rank
+                points
+                address {
+                  username
+                  address
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const response = await this.executeQuery(query, {
+      spaceId,
+      first: limit,
+      after: cursor
+    });
+
+    return response.space.loyaltyPointsRanks;
+  }
+
+  async executeQuery(query, variables) {
+    const response = await fetch(this.apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'access-token': this.accessToken
+      },
+      body: JSON.stringify({ query, variables })
+    });
+
+    const data = await response.json();
+    if (data.errors) throw new Error(data.errors[0].message);
+    return data.data;
+  }
+}
+```
+
+## User Dashboard Implementation
+
+```javascript
+async function createUserDashboard(loyaltyManager, spaceId, userAddress) {
+  const [userPoints, leaderboard] = await Promise.all([
+    loyaltyManager.getUserPoints(spaceId, userAddress),
+    loyaltyManager.getLeaderboard(spaceId, 10)
+  ]);
+
+  // Calculate user's percentile
+  const userPercentile = userPoints.rank 
+    ? ((leaderboard.totalCount - userPoints.rank) / leaderboard.totalCount) * 100 
+    : 0;
+
+  return {
+    user: {
+      address: userAddress,
+      points: userPoints.points,
+      rank: userPoints.rank,
+      percentile: Math.round(userPercentile)
+    },
+    leaderboard: {
+      totalParticipants: leaderboard.totalCount,
+      topUsers: leaderboard.edges.map(edge => edge.node)
+    }
+  };
+}
+```
+
+## Sprint-Based Competitions
+
+### Get Active Sprints
+
+```graphql
+query GetSprints($spaceId: Int!) {
+  space(id: $spaceId) {
+    sprints(first: 20) {
+      edges {
+        node {
+          id
+          name
+          startTime
+          endTime
+          isVisible
+        }
+      }
+    }
+  }
+}
+```
+
+### Get Sprint Leaderboard
+
+Add `sprintId` parameter to the leaderboard query:
+
+```graphql
+query GetSprintLeaderboard($spaceId: Int!, $sprintId: Int, $first: Int!) {
+  space(id: $spaceId) {
+    loyaltyPointsRanks(first: $first, sprintId: $sprintId) {
+      totalCount
+      edges {
+        node {
+          rank
+          points
+          address {
+            username
+            address
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## Usage Examples
+
+### Basic Setup
+
+```javascript
+// Initialize loyalty manager
+const loyaltyManager = new LoyaltyManager(process.env.GALXE_ACCESS_TOKEN);
+
+// Get user dashboard
+const dashboard = await createUserDashboard(
+  loyaltyManager,
+  40, // BNB Chain space
+  '0x1234567890123456789012345678901234567890'
+);
+
+console.log('User Points:', dashboard.user.points);
+console.log('User Rank:', dashboard.user.rank);
+console.log('Top 10:', dashboard.leaderboard.topUsers);
+```
+
+### Quest Completion Tracking
+
+```javascript
+async function trackQuestCompletion(questId, userAddress) {
+  // Get quest points
+  const questQuery = `
+    query GetQuestPoints($questId: ID!) {
+      quest(id: $questId) {
+        loyaltyPoints
+        space { id }
+      }
+    }
+  `;
+
+  const response = await loyaltyManager.executeQuery(questQuery, { questId });
+  const quest = response.quest;
+
+  if (!quest) throw new Error('Quest not found');
+
+  // Get user's current points
+  const userPoints = await loyaltyManager.getUserPoints(quest.space.id, userAddress);
+  
+  return {
+    questPoints: quest.loyaltyPoints,
+    currentPoints: userPoints.points,
+    currentRank: userPoints.rank,
+    projectedTotal: userPoints.points + quest.loyaltyPoints
+  };
+}
+```
+
+## Best Practices
+
+1. **Caching**: Cache leaderboard data for frequently accessed rankings (5-30 seconds)
+2. **Rate Limiting**: Implement delays between rapid API requests  
+3. **User Experience**: Show relative progress and achievements, not just raw numbers
+4. **Real-time Updates**: Use periodic updates for live leaderboards (30-60 seconds)
+5. **Error Handling**: Handle cases where users have no points yet
+
+## Common Patterns
+
+- **New User Experience**: Show onboarding when `addressLoyaltyPoints` returns `null`
+- **Rank Changes**: Compare previous vs current rank to show movement
+- **Achievement Thresholds**: Define point milestones (100, 500, 1000, etc.)
+- **Seasonal Competition**: Use sprint IDs for time-limited competitions
+
+## Next Steps
+
+- **[Space API Reference](/galxe-integration/api-reference/space)** - Complete API documentation
+- **[Quest API Reference](/galxe-integration/api-reference/quest)** - Quest integration
+- **[Leaderboard Guide](/galxe-integration/guides/leaderboards)** - Advanced leaderboard features

@@ -1,0 +1,74 @@
+---
+title: "Authentication"
+description: "All Galxe API requests require a valid access token for authentication"
+---
+
+## Get Your Access Token
+
+1. **Login to Galxe** - Visit [dashboard.galxe.com](https://dashboard.galxe.com/)
+2. **Open Settings** - Click your Account → Settings
+3. **API Access** - Navigate to "Server API" section
+4. **Generate Token** - Click "Generate New API Tokens"
+5. **Copy Token** - Save the token securely (you can't view it again)
+
+## Using the Token
+
+Include your token in the `access-token` header:
+
+```bash
+curl -X POST https://graphigo-business.prd.galaxy.eco/query \
+  -H "Content-Type: application/json" \
+  -H "access-token: YOUR_ACCESS_TOKEN" \
+  -d '{"query": "query { __typename }"}'
+```
+
+## Security Best Practices
+
+### Environment Variables
+```bash
+# .env file
+GALXE_ACCESS_TOKEN=your_token_here
+```
+
+```javascript
+// JavaScript
+const accessToken = process.env.GALXE_ACCESS_TOKEN;
+```
+
+```python
+# Python
+import os
+access_token = os.getenv('GALXE_ACCESS_TOKEN')
+```
+
+### Production Deployment
+- Use secret management systems (AWS Secrets Manager, HashiCorp Vault)
+- Never commit tokens to version control
+- Rotate tokens regularly
+- Use environment-specific tokens
+
+## Common Issues
+
+### Invalid Token
+```json
+{"errors": [{"message": "invalid access token"}]}
+```
+**Solution**: Regenerate token in dashboard settings
+
+### Missing Header
+```json
+{"errors": [{"message": "access token required"}]}
+```
+**Solution**: Add `access-token` header to request
+
+### Rate Limiting
+```json
+{"errors": [{"message": "rate limit exceeded"}]}
+```
+**Solution**: Implement exponential backoff retry logic
+
+## Next Steps
+
+- **[Quick Start](/galxe-integration/getting-started/quick-start)** - Test your token
+- **[Common Patterns](/galxe-integration/getting-started/common-patterns)** - Integration patterns
+- **[Rate Limits](/galxe-integration/resources/rate-limits)** - API limits and optimization

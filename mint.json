@@ -36,6 +36,10 @@
       "url": "quest"
     },
     {
+      "name": "Galxe Integration",
+      "url": "galxe-integration"
+    },
+    {
       "name": "Galxe ID",
       "url": "galxe-id"
     },
@@ -176,91 +180,7 @@
         }
       ]
     },
-    {
-      "group": "GraphQL API",
-      "pages": [
-        {
-          "group": "Overview",
-          "pages": [
-            "quest/graphql-api/overview/authentication",
-            "quest/graphql-api/overview/endpoint-and-queries",
-            "quest/graphql-api/overview/rate-limit",
-            "quest/graphql-api/overview/status-and-error-codes"
-          ]
-        },
-        {
-          "group": "Quest",
-          "pages": [
-            {
-              "group": "Queries",
-              "pages": [
-                "quest/graphql-api/quest/queries/quest",
-                "quest/graphql-api/quest/queries/quests"
-              ]
-            },
-            {
-              "group": "Examples",
-              "pages": [
-                "quest/graphql-api/quest/examples/quest-participants",
-                "quest/graphql-api/quest/examples/quest-participant-by-user"
-              ]
-            }
-          ]
-        },
-        {
-          "group": "Credential",
-          "pages": [
-            {
-              "group": "Queries",
-              "pages": [
-                "quest/graphql-api/credential/queries/credential"
-              ]
-            },
-            {
-              "group": "Examples",
-              "pages": [
-                "quest/graphql-api/credential/examples/cred-info",
-                "quest/graphql-api/credential/examples/cred-holders",
-                "quest/graphql-api/credential/examples/cred-holder-by-user",
-                "quest/graphql-api/credential/examples/cred-holder-update",
-                "quest/graphql-api/credential/examples/cred-holder-verify"
-              ]
-            },
-            {
-              "group": "Mutaions",
-              "pages": [
-                "quest/graphql-api/credential/mutations/credential-holder-update",
-                "quest/graphql-api/credential/mutations/credential-holder-verify"
-              ]
-            }
-          ]
-        },
-        {
-          "group":"Space",
-          "pages":[
-            {
-              "group":"Queries",
-              "pages":[
-                "quest/graphql-api/space/queries/space"
-              ]
-            },
-            {
-              "group":"Examples",
-              "pages":[
-                "quest/graphql-api/space/examples/leaderboard-data",
-                "quest/graphql-api/space/examples/leaderboard-data-by-user"
-              ]
-            },
-            {
-              "group":"Mutaions",
-              "pages":[
-                "quest/graphql-api/space/mutations/upload-leaderboard-points"
-              ]
-            }
-          ]
-        }
-      ]
-    },
+
     {
       "group": "Smart Contract",
       "pages": [
@@ -274,6 +194,43 @@
         },
         "quest/smart-contract/audit",
         "quest/smart-contract/subgraph"
+      ]
+    },
+    {
+      "group": "Getting Started",
+      "pages": [
+        "galxe-integration/introduction",
+        "galxe-integration/getting-started/quick-start",
+        "galxe-integration/getting-started/authentication",
+        "galxe-integration/getting-started/common-patterns"
+      ]
+    },
+    {
+      "group": "Integration Guides",
+      "pages": [
+        "galxe-integration/guides/quests",
+        "galxe-integration/guides/loyalty-program",
+        "galxe-integration/guides/user-verification",
+        "galxe-integration/guides/leaderboards",
+        "galxe-integration/guides/starboards"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "galxe-integration/api-reference/quest",
+        "galxe-integration/api-reference/credential",
+        "galxe-integration/api-reference/space",
+        "galxe-integration/api-reference/starboard"
+      ]
+    },
+    {
+      "group": "Resources",
+      "pages": [
+        "galxe-integration/resources/rate-limits",
+        "galxe-integration/resources/error-handling",
+        "galxe-integration/resources/changelog",
+        "galxe-integration/resources/support"
       ]
     },
     {

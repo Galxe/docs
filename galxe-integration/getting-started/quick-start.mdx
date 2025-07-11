@@ -5,9 +5,12 @@ description: "Get your first API call working in under 3 minutes"
 
 ## Step 1: Get Access Token
 
-Visit [Galxe Dashboard Settings](https://dashboard.galxe.com) → Generate access token → Copy token
+1. Visit [Galxe Dashboard Settings](https://dashboard.galxe.com) 
+2. Navigate to "Server API" section
+3. Click "Generate New API Tokens"
+4. Copy the token (save it securely - you can't view it again)
 
-## Step 2: Test API Connection
+## Step 2: Test Basic Connection
 
 ```bash
 curl -X POST https://graphigo-business.prd.galaxy.eco/query \
@@ -21,9 +24,11 @@ curl -X POST https://graphigo-business.prd.galaxy.eco/query \
 {"data": {"__typename": "Query"}}
 ```
 
-## Step 3: Try Core Queries
+<Check>If you see this response, your token is working correctly!</Check>
 
-### Get Quest Details
+## Step 3: Try Your First Real Query
+
+### Get Quest Information
 ```bash
 curl -X POST https://graphigo-business.prd.galaxy.eco/query \
   -H "Content-Type: application/json" \
@@ -34,19 +39,38 @@ curl -X POST https://graphigo-business.prd.galaxy.eco/query \
   }'
 ```
 
-### Get Space Leaderboard
-```bash
-curl -X POST https://graphigo-business.prd.galaxy.eco/query \
-  -H "Content-Type: application/json" \
-  -H "access-token: YOUR_ACCESS_TOKEN" \
-  -d '{
-    "query": "query GetLeaderboard($spaceId: Int!) { space(id: $spaceId) { loyaltyPointsRanks(first: 5) { edges { node { rank points address { username } } } } } }",
-    "variables": { "spaceId": 40 }
-  }'
+**Expected Response:**
+```json
+{
+  "data": {
+    "quest": {
+      "name": "Introduction to Web3!",
+      "status": "Active", 
+      "participantsCount": 234163
+    }
+  }
+}
 ```
 
-## Next Steps
+## What's Next?
 
-- **[Authentication](/galxe-integration/getting-started/authentication)** - Setup and security
-- **[Quest API](/galxe-integration/api-reference/quest)** - Quest management
-- **[Space API](/galxe-integration/api-reference/space)** - Leaderboards and points 
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="key" href="/galxe-integration/getting-started/authentication">
+    Secure token setup and best practices
+  </Card>
+  <Card title="Common Patterns" icon="code" href="/galxe-integration/getting-started/common-patterns">
+    Ready-to-use code snippets
+  </Card>
+  <Card title="Quest Guide" icon="map" href="/galxe-integration/guides/quests">
+    Complete quest implementation
+  </Card>
+  <Card title="API Reference" icon="book" href="/galxe-integration/api-reference/quest">
+    Detailed API documentation
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+- **Discord**: [Join our community](https://discord.gg/galxe)
+- **Support**: support@galxe.com
+- **Documentation**: Continue with [Authentication Setup](/galxe-integration/getting-started/authentication) 

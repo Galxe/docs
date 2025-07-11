@@ -1,12 +1,51 @@
 ---
 title: "Common Integration Patterns"
-description: "Understanding these patterns will help you implement Galxe integration efficiently and correctly"
+description: "Reusable code patterns and GraphQL queries for efficient Galxe integration"
 ---
 
-## 1. Quest Status Checking
+## Authentication & Setup
 
-**Use Case**: Check if a quest is active before allowing participation.
+### Basic GraphQL Client
+```javascript
+const executeQuery = async (query, variables = {}) => {
+  const response = await fetch('https://graphigo-business.prd.galaxy.eco/query', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'access-token': process.env.GALXE_ACCESS_TOKEN
+    },
+    body: JSON.stringify({ query, variables })
+  });
 
+  const data = await response.json();
+  if (data.errors) throw new Error(data.errors[0].message);
+  return data.data;
+};
+```
+
+### Error Handling with Retry
+```javascript
+const retryQuery = async (query, variables, maxRetries = 3) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await executeQuery(query, variables);
+    } catch (error) {
+      const isRetryable = error.message.includes('rate limit') || 
+                         error.message.includes('timeout');
+      
+      if (isRetryable && attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+        continue;
+      }
+      throw error;
+    }
+  }
+};
+```
+
+## Quest Patterns
+
+### Quest Status Validation
 ```graphql
 query QuestStatus($id: ID!) {
   quest(id: $id) {
@@ -17,602 +56,388 @@ query QuestStatus($id: ID!) {
 }
 ```
 
-**Implementation Pattern**:
-
-<CodeGroup>
-```javascript JavaScript
+```javascript
 const isQuestActive = (quest) => {
   const now = Date.now() / 1000;
   return quest.status === 'Active' && 
          now >= quest.startTime && 
          now <= quest.endTime;
 };
+
+const getQuestPhase = (quest) => {
+  const now = Date.now() / 1000;
+  if (now < quest.startTime) return 'upcoming';
+  if (now <= quest.endTime) return 'active';
+  return 'ended';
+};
 ```
 
-```go Go
-package main
-
-import "time"
-
-type Quest struct {
-    Status    string `json:"status"`
-    StartTime int64  `json:"startTime"`
-    EndTime   int64  `json:"endTime"`
-}
-
-func isQuestActive(quest Quest) bool {
-    now := time.Now().Unix()
-    return quest.Status == "Active" && 
-           now >= quest.StartTime && 
-           now <= quest.EndTime
-}
-```
-
-```python Python
-import time
-
-def is_quest_active(quest):
-    now = int(time.time())
-    return (quest['status'] == 'Active' and 
-            now >= quest['startTime'] and 
-            now <= quest['endTime'])
-```
-</CodeGroup>
-
-## 2. User Eligibility Verification
-
-**Use Case**: Verify if a user meets quest requirements before showing participation UI.
-
+### User Eligibility Check
 ```graphql
-query CheckUserEligibility($questId: ID!, $address: String!) {
+query CheckEligibility($questId: ID!, $address: String!) {
   quest(id: $questId) {
     credentialGroups(address: $address) {
-      conditions {
-        eligible
-      }
-      rewards {
-        eligible
-        rewardType
-      }
+      conditions { eligible }
+      rewards { eligible rewardType }
     }
   }
 }
 ```
 
-## 3. Paginated Data Fetching
+```javascript
+const checkEligibility = async (questId, address) => {
+  const data = await executeQuery(`
+    query CheckEligibility($questId: ID!, $address: String!) {
+      quest(id: $questId) {
+        credentialGroups(address: $address) {
+          conditions { eligible }
+          rewards { eligible }
+        }
+      }
+    }
+  `, { questId, address });
 
-**Use Case**: Load large datasets efficiently (participants, leaderboards).
+  return data.quest.credentialGroups.some(group => 
+    group.conditions.some(c => c.eligible) && 
+    group.rewards.some(r => r.eligible)
+  );
+};
+```
 
+## Pagination Patterns
+
+### Standard Pagination Query
 ```graphql
-query GetQuests($spaceId: ID!, $first: Int!, $after: String) {
-  quests(input: {
-    spaceId: $spaceId
-    first: $first
-    after: $after
-  }) {
+query PaginatedQuery($first: Int!, $after: String) {
+  items(first: $first, after: $after) {
     pageInfo {
       hasNextPage
       endCursor
     }
-    list {
-      id
-      name
-      participantsCount
-      status
+    edges {
+      node {
+        # your fields here
+      }
     }
   }
 }
 ```
 
-**Implementation Pattern**:
-
-<CodeGroup>
-```javascript JavaScript
-const fetchAllQuests = async (spaceId) => {
-  let allQuests = [];
+### Fetch All Pages
+```javascript
+const fetchAllPages = async (query, variables = {}, extractPath) => {
+  let allItems = [];
   let hasNextPage = true;
   let cursor = null;
 
   while (hasNextPage) {
-    const response = await fetchQuests(spaceId, 100, cursor);
-    allQuests.push(...response.data.quests.list);
+    const data = await executeQuery(query, { 
+      ...variables, 
+      first: 100, 
+      after: cursor 
+    });
     
-    hasNextPage = response.data.quests.pageInfo.hasNextPage;
-    cursor = response.data.quests.pageInfo.endCursor;
+    const result = extractPath(data);
+    allItems.push(...result.edges.map(edge => edge.node));
+    
+    hasNextPage = result.pageInfo.hasNextPage;
+    cursor = result.pageInfo.endCursor;
+
+    // Rate limiting
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
 
-  return allQuests;
+  return allItems;
 };
-```
 
-```go Go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-)
-
-type Quest struct {
-    ID               string `json:"id"`
-    Name             string `json:"name"`
-    ParticipantsCount int   `json:"participantsCount"`
-    Status           string `json:"status"`
-}
-
-type PageInfo struct {
-    HasNextPage bool   `json:"hasNextPage"`
-    EndCursor   string `json:"endCursor"`
-}
-
-func fetchAllQuests(spaceId string) ([]Quest, error) {
-    var allQuests []Quest
-    hasNextPage := true
-    cursor := ""
-
-    for hasNextPage {
-        response, err := fetchQuests(spaceId, 100, cursor)
-        if err != nil {
-            return nil, fmt.Errorf("failed to fetch quests: %w", err)
-        }
-
-        quests := response.Data.Quests.List
-        allQuests = append(allQuests, quests...)
-
-        hasNextPage = response.Data.Quests.PageInfo.HasNextPage
-        cursor = response.Data.Quests.PageInfo.EndCursor
+// Usage example
+const allQuests = await fetchAllPages(
+  `query GetQuests($spaceId: ID!, $first: Int!, $after: String) {
+    quests(input: {spaceId: $spaceId, first: $first, after: $after}) {
+      pageInfo { hasNextPage endCursor }
+      list { id name status }
     }
-
-    return allQuests, nil
-}
+  }`,
+  { spaceId: "40" },
+  data => data.quests
+);
 ```
 
-```python Python
-async def fetch_all_quests(space_id):
-    all_quests = []
-    has_next_page = True
-    cursor = None
+## Leaderboard Patterns
 
-    while has_next_page:
-        response = await fetch_quests(space_id, 100, cursor)
-        quests = response['data']['quests']['list']
-        all_quests.extend(quests)
-        
-        page_info = response['data']['quests']['pageInfo']
-        has_next_page = page_info['hasNextPage']
-        cursor = page_info['endCursor']
+### User Position Search
+<Warning>
+**No Direct User Lookup**: The B2B API does not provide direct user position lookup. You must search through leaderboard pages to find a specific user.
+</Warning>
 
-    return all_quests
-```
-</CodeGroup>
-
-## 4. Real-time Leaderboard Updates
-
-**Use Case**: Display live leaderboard with user rankings.
-
-```graphql
-query LiveLeaderboard($spaceId: Int!, $userAddress: String!) {
-  space(id: $spaceId) {
-    # Top 10 leaderboard
-    loyaltyPointsRanks(first: 10) {
-      edges {
-        node {
-          rank
-          points
-          address {
-            username
-            avatar
+```javascript
+const findUserPosition = async (spaceId, userAddress) => {
+  let cursorAfter = null;
+  let pageCount = 0;
+  const maxPages = 20; // Reasonable search limit
+  
+  while (pageCount < maxPages) {
+    const data = await executeQuery(`
+      query SearchUser($spaceId: Int!, $cursorAfter: String) {
+        space(id: $spaceId) {
+          loyaltyPointsRanks(cursorAfter: $cursorAfter) {
+            pageInfo { hasNextPage endCursor }
+            list {
+              rank
+              points
+              address { address username }
+            }
           }
         }
       }
+    `, { spaceId, cursorAfter });
+
+    const userRank = data.space.loyaltyPointsRanks.list.find(item => 
+      item.address.address.toLowerCase() === userAddress.toLowerCase()
+    );
+    
+    if (userRank) {
+      return { found: true, rank: userRank.rank, points: userRank.points };
     }
     
-    # Current user position
-    addressLoyaltyPoints(address: $userAddress) {
-      rank
-      points
+    if (!data.space.loyaltyPointsRanks.pageInfo.hasNextPage) break;
+    cursorAfter = data.space.loyaltyPointsRanks.pageInfo.endCursor;
+    pageCount++;
+    
+    await new Promise(resolve => setTimeout(resolve, 100)); // Rate limiting
+  }
+  
+  return { found: false, rank: null, points: 0 };
+};
+
+const getLeaderboardWithUser = async (spaceId, userAddress) => {
+  const [leaderboardData, userPosition] = await Promise.all([
+    executeQuery(`
+      query GetLeaderboard($spaceId: Int!) {
+        space(id: $spaceId) {
+          loyaltyPointsRanks(first: 10) {
+            list {
+              rank
+              points
+              address { username }
+            }
+          }
+        }
+      }
+    `, { spaceId }),
+    findUserPosition(spaceId, userAddress)
+  ]);
+
+  return {
+    leaderboard: leaderboardData.space.loyaltyPointsRanks.list,
+    userPosition
+  };
+};
+```
+
+## Credential Patterns
+
+### Batch Eligibility Check
+```javascript
+const checkBatchEligibility = async (credId, addresses) => {
+  const promises = addresses.map(address => 
+    executeQuery(`
+      query CheckEligibility($credId: ID!, $address: String!) {
+        credential(id: $credId) { eligible(address: $address) }
+      }
+    `, { credId, address })
+      .then(data => ({ address, eligible: data.credential.eligible === 1 }))
+      .catch(() => ({ address, eligible: false }))
+  );
+
+  return Promise.all(promises);
+};
+```
+
+### Credential Validation
+```javascript
+const validateCredential = async (credId) => {
+  const data = await executeQuery(`
+    query ValidateCredential($credId: ID!) {
+      credential(id: $credId) {
+        syncStatus
+        itemCount
+        lastUpdate
+      }
     }
-  }
-}
+  `, { credId });
+
+  const cred = data.credential;
+  return {
+    isValid: cred.syncStatus === 'SYNCED',
+    hasHolders: cred.itemCount > 0,
+    lastSynced: new Date(cred.lastUpdate * 1000)
+  };
+};
 ```
 
-## 5. Credential Management
+## Real-time Monitoring
 
-**Use Case**: Manage credential holders for custom verification systems.
+### Simple Polling Monitor
+```javascript
+const createMonitor = (queryFn, interval = 30000) => {
+  let intervalId = null;
+  
+  const start = (callback) => {
+    intervalId = setInterval(async () => {
+      try {
+        const data = await queryFn();
+        callback({ type: 'update', data });
+      } catch (error) {
+        callback({ type: 'error', error: error.message });
+      }
+    }, interval);
+  };
 
-### Add Users to Credential
-```graphql
-mutation AddCredentialHolders($credId: ID!, $addresses: [String!]!) {
-  credentialItems(input: {
-    credId: $credId
-    operation: APPEND
-    items: $addresses
-  }) {
-    eligible(address: $addresses[0])
+  const stop = () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  };
+
+  return { start, stop };
+};
+
+// Usage
+const leaderboardMonitor = createMonitor(
+  () => getLeaderboardWithUser(40, userAddress),
+  60000 // 1 minute
+);
+
+leaderboardMonitor.start((update) => {
+  if (update.type === 'update') {
+    console.log('Leaderboard updated:', update.data);
   }
-}
+});
 ```
 
-### Verify User Credential
-```graphql
-query VerifyUserCredential($credId: ID!, $address: String!) {
-  credential(id: $credId) {
-    eligible(address: $address)
+## Rate Limiting
+
+### Simple Rate Limiter
+```javascript
+class RateLimiter {
+  constructor(requestsPerSecond = 10) {
+    this.requests = [];
+    this.maxRequests = requestsPerSecond;
   }
-}
-```
 
-## 6. Error Handling Pattern
+  async execute(fn) {
+    const now = Date.now();
+    this.requests = this.requests.filter(time => now - time < 1000);
 
-<CodeGroup>
-```javascript JavaScript
-const executeGraphQLQuery = async (query, variables) => {
-  try {
-    const response = await fetch('https://graphigo-business.prd.galaxy.eco/query', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'access-token': process.env.GALXE_ACCESS_TOKEN
-      },
-      body: JSON.stringify({ query, variables })
-    });
-
-    const data = await response.json();
-
-    if (data.errors) {
-      console.error('GraphQL Errors:', data.errors);
-      throw new Error(data.errors[0].message);
+    if (this.requests.length >= this.maxRequests) {
+      const waitTime = 1000 - (now - this.requests[0]);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
     }
 
-    return data.data;
-  } catch (error) {
-    console.error('Network Error:', error);
-    throw error;
+    this.requests.push(now);
+    return fn();
+  }
+}
+
+// Usage
+const limiter = new RateLimiter(5); // 5 requests per second
+
+const data = await limiter.execute(() => 
+  executeQuery(query, variables)
+);
+```
+
+## Data Transformation
+
+### Standardize User Objects
+```javascript
+const standardizeUser = (userObject) => {
+  // Handle different user object formats
+  if (userObject.address) {
+    return {
+      id: userObject.address.id || userObject.address.address,
+      username: userObject.address.username,
+      address: userObject.address.address
+    };
+  }
+  
+  return {
+    id: userObject.id,
+    username: userObject.username,
+    address: userObject.address
+  };
+};
+```
+
+### Format Points and Rankings
+```javascript
+const formatRanking = (rankingData) => ({
+  rank: parseInt(rankingData.rank),
+  points: parseInt(rankingData.points),
+  user: standardizeUser(rankingData),
+  rankMovement: rankingData.delta || 0
+});
+
+const formatLeaderboard = (leaderboardData) => ({
+  totalCount: leaderboardData.totalCount,
+  rankings: leaderboardData.edges.map(edge => formatRanking(edge.node)),
+  hasNextPage: leaderboardData.pageInfo.hasNextPage
+});
+```
+
+## Utility Functions
+
+### Time Helpers
+```javascript
+const timeHelpers = {
+  toUnix: (date) => Math.floor(date.getTime() / 1000),
+  fromUnix: (timestamp) => new Date(timestamp * 1000),
+  isAfter: (timestamp) => Date.now() / 1000 > timestamp,
+  formatDuration: (seconds) => {
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${days}d ${hours}h ${minutes}m`;
   }
 };
 ```
 
-```go Go
-package main
-
-import (
-    "bytes"
-    "encoding/json"
-    "fmt"
-    "io"
-    "net/http"
-    "os"
-)
-
-type GraphQLRequest struct {
-    Query     string                 `json:"query"`
-    Variables map[string]interface{} `json:"variables,omitempty"`
-}
-
-type GraphQLResponse struct {
-    Data   interface{}   `json:"data"`
-    Errors []GraphQLError `json:"errors,omitempty"`
-}
-
-type GraphQLError struct {
-    Message    string                 `json:"message"`
-    Extensions map[string]interface{} `json:"extensions,omitempty"`
-}
-
-func executeGraphQLQuery(query string, variables map[string]interface{}) (interface{}, error) {
-    requestBody := GraphQLRequest{
-        Query:     query,
-        Variables: variables,
-    }
-
-    jsonBody, err := json.Marshal(requestBody)
-    if err != nil {
-        return nil, fmt.Errorf("failed to marshal request: %w", err)
-    }
-
-    req, err := http.NewRequest("POST", "https://graphigo-business.prd.galaxy.eco/query", bytes.NewBuffer(jsonBody))
-    if err != nil {
-        return nil, fmt.Errorf("failed to create request: %w", err)
-    }
-
-    req.Header.Set("Content-Type", "application/json")
-    req.Header.Set("access-token", os.Getenv("GALXE_ACCESS_TOKEN"))
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    if err != nil {
-        return nil, fmt.Errorf("network error: %w", err)
-    }
-    defer resp.Body.Close()
-
-    body, err := io.ReadAll(resp.Body)
-    if err != nil {
-        return nil, fmt.Errorf("failed to read response: %w", err)
-    }
-
-    var response GraphQLResponse
-    if err := json.Unmarshal(body, &response); err != nil {
-        return nil, fmt.Errorf("failed to unmarshal response: %w", err)
-    }
-
-    if len(response.Errors) > 0 {
-        return nil, fmt.Errorf("GraphQL error: %s", response.Errors[0].Message)
-    }
-
-    return response.Data, nil
-}
+### Validation Helpers
+```javascript
+const validators = {
+  isValidAddress: (address) => /^0x[a-fA-F0-9]{40}$/.test(address),
+  isValidQuestId: (id) => typeof id === 'string' && id.length > 0,
+  isValidSpaceId: (id) => Number.isInteger(id) && id > 0
+};
 ```
 
-```python Python
-import os
-import json
-import aiohttp
-import asyncio
+## Best Practices Summary
 
-class GraphQLError(Exception):
-    def __init__(self, message, extensions=None):
-        self.message = message
-        self.extensions = extensions
-        super().__init__(self.message)
+1. **Always validate inputs** before API calls
+2. **Implement retry logic** for network failures  
+3. **Use pagination** for large datasets
+4. **Cache frequently accessed data** (30-60 seconds)
+5. **Handle rate limits** with exponential backoff
+6. **Monitor for errors** and log appropriately
+7. **Use environment variables** for sensitive data
 
-async def execute_graphql_query(query, variables=None):
-    headers = {
-        'Content-Type': 'application/json',
-        'access-token': os.getenv('GALXE_ACCESS_TOKEN')
-    }
-    
-    payload = {
-        'query': query,
-        'variables': variables or {}
-    }
-    
-    try:
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                'https://graphigo-business.prd.galaxy.eco/query',
-                headers=headers,
-                json=payload
-            ) as response:
-                data = await response.json()
-                
-                if 'errors' in data and data['errors']:
-                    error = data['errors'][0]
-                    raise GraphQLError(
-                        error['message'],
-                        error.get('extensions')
-                    )
-                
-                return data['data']
-                
-    except aiohttp.ClientError as e:
-        raise Exception(f"Network error: {str(e)}")
-    except json.JSONDecodeError as e:
-        raise Exception(f"Failed to parse response: {str(e)}")
-```
-</CodeGroup>
+## Quick Reference
 
-## 7. Rate Limit Handling
+### Essential Queries
+- Quest status: `quest(id) { status startTime endTime }`
+- User eligibility: `quest(id) { credentialGroups(address) { conditions { eligible } } }`
+- Leaderboard: `space(id) { loyaltyPointsRanks(cursorAfter) { list { rank points address { username } } } }`
+- User search: Must paginate through leaderboard to find specific users
 
-<CodeGroup>
-```javascript JavaScript
-class GalxeClient {
-  constructor(accessToken) {
-    this.accessToken = accessToken;
-    this.requestQueue = [];
-    this.isProcessing = false;
-  }
-
-  async query(query, variables) {
-    return new Promise((resolve, reject) => {
-      this.requestQueue.push({ query, variables, resolve, reject });
-      this.processQueue();
-    });
-  }
-
-  async processQueue() {
-    if (this.isProcessing || this.requestQueue.length === 0) return;
-    
-    this.isProcessing = true;
-    
-    while (this.requestQueue.length > 0) {
-      const { query, variables, resolve, reject } = this.requestQueue.shift();
-      
-      try {
-        const result = await this.executeQuery(query, variables);
-        resolve(result);
-      } catch (error) {
-        if (error.status === 429) {
-          // Rate limited, wait and retry
-          await this.sleep(60000); // Wait 1 minute
-          this.requestQueue.unshift({ query, variables, resolve, reject });
-        } else {
-          reject(error);
-        }
-      }
-      
-      // Add delay between requests
-      await this.sleep(100);
-    }
-    
-    this.isProcessing = false;
-  }
-
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-}
-```
-
-```go Go
-package main
-
-import (
-    "context"
-    "fmt"
-    "net/http"
-    "sync"
-    "time"
-)
-
-type GalxeClient struct {
-    accessToken    string
-    requestQueue   chan *Request
-    isProcessing   bool
-    processingMutex sync.Mutex
-}
-
-type Request struct {
-    Query     string
-    Variables map[string]interface{}
-    Response  chan Response
-}
-
-type Response struct {
-    Data  interface{}
-    Error error
-}
-
-func NewGalxeClient(accessToken string) *GalxeClient {
-    client := &GalxeClient{
-        accessToken:  accessToken,
-        requestQueue: make(chan *Request, 100),
-        isProcessing: false,
-    }
-    go client.processQueue()
-    return client
-}
-
-func (c *GalxeClient) Query(query string, variables map[string]interface{}) (interface{}, error) {
-    req := &Request{
-        Query:     query,
-        Variables: variables,
-        Response:  make(chan Response, 1),
-    }
-    
-    c.requestQueue <- req
-    response := <-req.Response
-    
-    return response.Data, response.Error
-}
-
-func (c *GalxeClient) processQueue() {
-    for req := range c.requestQueue {
-        c.processingMutex.Lock()
-        if c.isProcessing {
-            c.processingMutex.Unlock()
-            continue
-        }
-        c.isProcessing = true
-        c.processingMutex.Unlock()
-        
-        result, err := c.executeQuery(req.Query, req.Variables)
-        if err != nil {
-            // Check if rate limited (HTTP 429)
-            if httpErr, ok := err.(*HTTPError); ok && httpErr.StatusCode == 429 {
-                // Wait and retry
-                time.Sleep(60 * time.Second)
-                c.requestQueue <- req // Re-queue the request
-                continue
-            }
-            req.Response <- Response{Error: err}
-        } else {
-            req.Response <- Response{Data: result}
-        }
-        
-        // Add delay between requests
-        time.Sleep(100 * time.Millisecond)
-        
-        c.processingMutex.Lock()
-        c.isProcessing = false
-        c.processingMutex.Unlock()
-    }
-}
-
-type HTTPError struct {
-    StatusCode int
-    Message    string
-}
-
-func (e *HTTPError) Error() string {
-    return fmt.Sprintf("HTTP %d: %s", e.StatusCode, e.Message)
-}
-```
-
-```python Python
-import asyncio
-import aiohttp
-import time
-from typing import Dict, Any, Optional
-
-class GalxeClient:
-    def __init__(self, access_token: str):
-        self.access_token = access_token
-        self.request_queue = asyncio.Queue()
-        self.is_processing = False
-        self.processing_lock = asyncio.Lock()
-        
-    async def query(self, query: str, variables: Optional[Dict[str, Any]] = None) -> Any:
-        future = asyncio.Future()
-        await self.request_queue.put({
-            'query': query,
-            'variables': variables or {},
-            'future': future
-        })
-        
-        if not self.is_processing:
-            asyncio.create_task(self.process_queue())
-        
-        return await future
-    
-    async def process_queue(self):
-        async with self.processing_lock:
-            if self.is_processing:
-                return
-            self.is_processing = True
-        
-        try:
-            while not self.request_queue.empty():
-                request = await self.request_queue.get()
-                
-                try:
-                    result = await self.execute_query(
-                        request['query'], 
-                        request['variables']
-                    )
-                    request['future'].set_result(result)
-                except Exception as error:
-                    if hasattr(error, 'status') and error.status == 429:
-                        # Rate limited, wait and retry
-                        await asyncio.sleep(60)  # Wait 1 minute
-                        await self.request_queue.put(request)  # Re-queue
-                        continue
-                    else:
-                        request['future'].set_exception(error)
-                
-                # Add delay between requests
-                await asyncio.sleep(0.1)
-        finally:
-            async with self.processing_lock:
-                self.is_processing = False
-    
-    async def execute_query(self, query: str, variables: Dict[str, Any]) -> Any:
-        # Implementation from the error handling pattern above
-        return await execute_graphql_query(query, variables)
-```
-</CodeGroup>
-
-## Best Practices
-
-1. **Always check quest status** before showing participation UI
-2. **Implement proper pagination** for large datasets
-3. **Handle rate limits gracefully** with exponential backoff
-4. **Cache frequent queries** to reduce API calls
-5. **Validate user inputs** before sending to API
-6. **Use environment variables** for access tokens
-7. **Implement retry logic** for network failures
+### Common Response Patterns
+- Paginated: `{ pageInfo { hasNextPage endCursor } edges { node { ... } } }`
+- User objects: `{ address { username address } }` or `{ username address }`
+- Error format: `{ errors [{ message extensions { code category } }] }`
 
 ## Next Steps
 
-- **[Quests](/galxe-integration/guides/quests)** - Complete quest workflow
-- **[Loyalty Programs](/galxe-integration/guides/loyalty-program)** - Points and rewards integration
+- **[Quest Guide](/galxe-integration/guides/quests)** - Complete quest implementation
+- **[Leaderboard Guide](/galxe-integration/guides/leaderboards)** - Advanced ranking features  
 - **[API Reference](/galxe-integration/api-reference/quest)** - Detailed API documentation 

@@ -1,29 +1,41 @@
 ---
-title: "User Verification & Credential Management"
-description: "Build robust user verification systems using Galxe's credential infrastructure for identity verification, eligibility checks, and access control"
+title: "User Verification & Credential Validation"
+description: "Implement user eligibility verification using Galxe's credential system for access control"
 ---
 
 ## Overview
 
-This guide covers:
-1. Credential system fundamentals
-2. User eligibility verification
-3. Dynamic credential management
-4. Multi-step verification workflows
-5. Custom verification logic
+Galxe's B2B Credential API provides **read-only** access for:
+- User eligibility verification
+- Credential information retrieval
+- Access control validation
+- Requirement checking
 
-## 1. Credential System Basics
+<Info>
+**Important**: The B2B API is designed for verification and querying only. Credential management is handled through the [Galxe Dashboard](https://galxe.com).
+</Info>
 
-### Understanding Credentials
+## Understanding Credentials
 
-Credentials in Galxe are verification proofs that users can earn through various activities:
-- **Address-based**: Wallet ownership verification
-- **Social**: Twitter follows, Discord membership
-- **On-chain**: Token holdings, NFT ownership
-- **Off-chain**: Quiz completion, survey responses
-- **Custom**: API-based verification systems
+Credentials are verification proofs that users earn through various activities:
 
-### Query Credential Information
+### Popular Credential Types
+- **`EVM_ADDRESS`**: Ethereum-compatible wallet verification
+- **`SOLANA_ADDRESS`**: Solana wallet verification  
+- **`TWITTER`**: Twitter-based verification
+- **`DISCORD`**: Discord membership verification
+- **`GITHUB`**: GitHub contribution verification
+- **`EMAIL`**: Email verification
+
+### Common Verification Methods
+- **Social Media**: `TWITTER_FOLLOW`, `DISCORD_MEMBER`, `GITHUB_CONTRIBUTOR`
+- **Blockchain**: `CONTRACT_NFT_HOLDER`, `WALLET_BALANCE`, `SNAPSHOT_ORG`
+- **Interactive**: `QUIZ`, `SURVEY`, `VISIT_LINK`
+- **Custom**: `API`, `REST`, `GRAPHQL`
+
+## Basic Credential Queries
+
+### Get Credential Information
 
 ```graphql
 query GetCredentialInfo($credId: ID!) {
@@ -33,592 +45,428 @@ query GetCredentialInfo($credId: ID!) {
     description
     credType
     credSource
+    referenceLink
     itemCount
     lastUpdate
     syncStatus
-    dimensionConfig
-    curatorSpaceID
+    curatorSpace {
+      id
+      name
+    }
+    chain
   }
 }
 ```
 
-## 2. User Verification System
+**Response**:
+```json
+{
+  "data": {
+    "credential": {
+      "id": "312969464",
+      "name": "Twitter Follower Verification",
+      "description": "Users who follow @galxe on Twitter",
+      "credType": "TWITTER",
+      "credSource": "TWITTER_FOLLOW",
+      "referenceLink": "https://twitter.com/galxe",
+      "itemCount": 150000,
+      "lastUpdate": 1699200000,
+      "syncStatus": "SYNCED",
+      "curatorSpace": {
+        "id": "40",
+        "name": "BNB Chain"
+      },
+      "chain": "BSC"
+    }
+  }
+}
+```
 
-### Basic Eligibility Check
+### Check User Eligibility
 
 ```graphql
 query CheckUserEligibility($credId: ID!, $address: String!) {
   credential(id: $credId) {
-    eligible(address: $address)
-    name
-    description
-  }
-}
-```
-
-### Implementation Example
-
-```javascript
-class UserVerificationManager {
-  constructor(accessToken) {
-    this.accessToken = accessToken;
-    this.apiUrl = 'https://graphigo-business.prd.galaxy.eco/query';
-  }
-
-  async verifyUserCredential(credId, userAddress) {
-    const query = `
-      query CheckUserEligibility($credId: ID!, $address: String!) {
-        credential(id: $credId) {
-          id
-          name
-          eligible(address: $address)
-          credType
-          itemCount
-          syncStatus
-        }
-      }
-    `;
-
-    const response = await this.executeQuery(query, { credId, address: userAddress });
-    const credential = response.credential;
-
-    if (!credential) {
-      throw new Error('Credential not found');
-    }
-
-    return {
-      credentialId: credential.id,
-      credentialName: credential.name,
-      isEligible: credential.eligible === 1,
-      credentialType: credential.credType,
-      totalHolders: credential.itemCount,
-      isActive: credential.syncStatus === 'SYNCED'
-    };
-  }
-
-  async verifyMultipleCredentials(credentialIds, userAddress) {
-    const verificationPromises = credentialIds.map(credId => 
-      this.verifyUserCredential(credId, userAddress).catch(error => ({
-        credentialId: credId,
-        error: error.message,
-        isEligible: false
-      }))
-    );
-
-    const results = await Promise.all(verificationPromises);
-    
-    const passed = results.filter(result => result.isEligible && !result.error);
-    const failed = results.filter(result => !result.isEligible || result.error);
-
-    return {
-      totalChecked: credentialIds.length,
-      passed: passed.length,
-      failed: failed.length,
-      results,
-      allPassed: passed.length === credentialIds.length
-    };
-  }
-}
-```
-
-## 3. Credential Information Retrieval
-
-### Get Credential Details
-
-```graphql
-query GetCredentialDetails($credId: ID!) {
-  credential(id: $credId) {
     id
     name
-    description
+    eligible(address: $address)
     credType
     credSource
-    itemCount
-    lastUpdate
     syncStatus
-    curatorSpaceID
   }
 }
 ```
 
-<Info>
-**Note**: Credential management operations (adding/removing users) are typically handled through the Galxe dashboard interface. The B2B API focuses on querying credential eligibility and status for read-only verification workflows.
-</Info>
+**Response**:
+```json
+{
+  "data": {
+    "credential": {
+      "id": "312969464",
+      "name": "Twitter Follower Verification",
+      "eligible": 1,
+      "credType": "TWITTER",
+      "credSource": "TWITTER_FOLLOW",
+      "syncStatus": "SYNCED"
+    }
+  }
+}
+```
 
-### Credential Management Implementation
+**Eligibility Values**:
+- `1`: User is eligible
+- `0`: User is not eligible
 
-<Warning>
-**Important**: The B2B API is designed for read-only verification workflows. Credential management operations (adding/removing users) are handled through the Galxe dashboard interface. The examples below show the conceptual implementation but are not available in the B2B API.
-</Warning>
+### Quest-Specific Eligibility
+
+```graphql
+query CheckQuestEligibility($credId: ID!, $address: String!, $campaignId: ID!) {
+  credential(id: $credId) {
+    eligible(address: $address, campaignId: $campaignId)
+    name
+    syncStatus
+  }
+}
+```
+
+## Basic Implementation
+
+### Get Credential Information
 
 ```javascript
-class CredentialManager extends UserVerificationManager {
-  // Note: These methods are conceptual examples
-  // Actual credential management is done through the dashboard
-  
-  async getCredentialInfo(credId) {
-    const query = `
-      query GetCredentialInfo($credId: ID!) {
+async function getCredentialInfo(credId, accessToken) {
+  const response = await fetch('https://graphigo-business.prd.galaxy.eco/query', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'access-token': accessToken
+    },
+    body: JSON.stringify({
+      query: `query GetCredentialInfo($credId: ID!) {
         credential(id: $credId) {
           id
           name
           description
           credType
           credSource
+          referenceLink
           itemCount
           lastUpdate
           syncStatus
-        }
-      }
-    `;
-
-    try {
-      const response = await this.executeQuery(query, { credId });
-      return {
-        success: true,
-        credential: response.credential
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error.message,
-        credentialId: credId
-      };
-    }
-  }
-
-  async verifyBatchCredentials(credId, userAddresses) {
-    const verificationPromises = userAddresses.map(address => 
-      this.verifyUserCredential(credId, address).catch(error => ({
-        address: address,
-        error: error.message,
-        isEligible: false
-      }))
-    );
-
-    const results = await Promise.all(verificationPromises);
-    
-    return {
-      success: true,
-      credentialId: credId,
-      totalChecked: userAddresses.length,
-      results: results
-    };
-  }
-}
-```
-
-## 4. Advanced Verification Workflows
-
-### Tiered Verification System
-
-```javascript
-class TieredVerificationSystem {
-  constructor(accessToken) {
-    this.credentialManager = new CredentialManager(accessToken);
-    
-    // Define verification tiers
-    this.verificationTiers = {
-      basic: {
-        name: 'Basic Verification',
-        requirements: ['wallet_connected'],
-        credentialIds: ['basic_user_cred_id']
-      },
-      social: {
-        name: 'Social Verification',
-        requirements: ['basic', 'twitter_follow', 'discord_member'],
-        credentialIds: ['twitter_follower_cred_id', 'discord_member_cred_id']
-      },
-      premium: {
-        name: 'Premium Verification',
-        requirements: ['social', 'token_holder', 'nft_owner'],
-        credentialIds: ['token_holder_cred_id', 'nft_owner_cred_id']
-      }
-    };
-  }
-
-  async getUserVerificationLevel(userAddress) {
-    const verificationResults = {};
-    
-    // Check each tier
-    for (const [tierName, tierConfig] of Object.entries(this.verificationTiers)) {
-      const tierResult = await this.credentialManager.verifyMultipleCredentials(
-        tierConfig.credentialIds,
-        userAddress
-      );
-
-      verificationResults[tierName] = {
-        name: tierConfig.name,
-        passed: tierResult.allPassed,
-        details: tierResult
-      };
-    }
-
-    // Determine highest achieved tier
-    const achievedTiers = Object.entries(verificationResults)
-      .filter(([_, result]) => result.passed)
-      .map(([tierName, _]) => tierName);
-
-    const highestTier = achievedTiers.length > 0 
-      ? achievedTiers[achievedTiers.length - 1] 
-      : null;
-
-    return {
-      userAddress,
-      highestTier,
-      achievedTiers,
-      allResults: verificationResults
-    };
-  }
-
-  async upgradeUserTier(userAddress, targetTier) {
-    const currentLevel = await this.getUserVerificationLevel(userAddress);
-    const tierConfig = this.verificationTiers[targetTier];
-
-    if (!tierConfig) {
-      throw new Error(`Invalid tier: ${targetTier}`);
-    }
-
-    if (currentLevel.achievedTiers.includes(targetTier)) {
-      return {
-        success: true,
-        message: 'User already has this tier',
-        currentTier: targetTier
-      };
-    }
-
-    // Add user to all credentials for this tier
-    const addResults = await Promise.all(
-      tierConfig.credentialIds.map(credId =>
-        this.credentialManager.addUsersToCredential(credId, [userAddress])
-      )
-    );
-
-    const allSuccessful = addResults.every(result => result.success);
-
-    return {
-      success: allSuccessful,
-      tier: targetTier,
-      results: addResults,
-      message: allSuccessful 
-        ? `Successfully upgraded to ${tierConfig.name}` 
-        : 'Some credential updates failed'
-    };
-  }
-}
-```
-
-## 5. Real-time Verification Refresh
-
-<Info>
-**Note**: Real-time credential synchronization is handled automatically by the Galxe infrastructure. The B2B API provides current verification status through standard queries.
-</Info>
-
-### Credential Status Monitoring
-
-```javascript
-class RealtimeVerificationMonitor {
-  constructor(accessToken) {
-    this.credentialManager = new CredentialManager(accessToken);
-    this.monitoringIntervals = new Map();
-  }
-
-  async getCurrentCredentialStatus(credId, userAddress) {
-    const query = `
-      query GetCredentialStatus($credId: ID!, $address: String!) {
-        credential(id: $credId) {
-          id
-          name
-          eligible(address: $address)
-          syncStatus
-          lastUpdate
-        }
-      }
-    `;
-
-    try {
-      const response = await this.credentialManager.executeQuery(query, {
-        credId,
-        address: userAddress
-      });
-
-      return {
-        success: true,
-        credId,
-        userAddress,
-        credential: response.credential,
-        timestamp: new Date().toISOString()
-      };
-    } catch (error) {
-      return {
-        success: false,
-        credId,
-        userAddress,
-        error: error.message,
-        timestamp: new Date().toISOString()
-      };
-    }
-  }
-
-  startMonitoring(credId, userAddress, callback, intervalMs = 30000) {
-    const key = `${credId}:${userAddress}`;
-    
-    if (this.monitoringIntervals.has(key)) {
-      this.stopMonitoring(credId, userAddress);
-    }
-
-    const interval = setInterval(async () => {
-      const status = await this.getCurrentCredentialStatus(credId, userAddress);
-      callback(status);
-    }, intervalMs);
-
-    this.monitoringIntervals.set(key, interval);
-  }
-
-  stopMonitoring(credId, userAddress) {
-    const key = `${credId}:${userAddress}`;
-    const interval = this.monitoringIntervals.get(key);
-    
-    if (interval) {
-      clearInterval(interval);
-      this.monitoringIntervals.delete(key);
-    }
-  }
-
-  stopAllMonitoring() {
-    this.monitoringIntervals.forEach(interval => clearInterval(interval));
-    this.monitoringIntervals.clear();
-  }
-}
-```
-
-## 6. Batch Verification Operations
-
-### Batch User Processing
-
-```javascript
-class BatchVerificationProcessor {
-  constructor(accessToken) {
-    this.credentialManager = new CredentialManager(accessToken);
-    this.batchSize = 100; // Process in batches
-  }
-
-  async batchVerifyUsers(credId, userAddresses) {
-    const batches = this.chunkArray(userAddresses, this.batchSize);
-    const results = [];
-
-    for (const batch of batches) {
-      const batchResults = await Promise.all(
-        batch.map(address => 
-          this.credentialManager.verifyUserCredential(credId, address)
-            .catch(error => ({ address, error: error.message, isEligible: false }))
-        )
-      );
-      
-      results.push(...batchResults);
-      
-      // Rate limiting delay
-      await this.sleep(1000);
-    }
-
-    const eligible = results.filter(result => result.isEligible);
-    const notEligible = results.filter(result => !result.isEligible);
-
-    return {
-      totalProcessed: userAddresses.length,
-      eligible: eligible.length,
-      notEligible: notEligible.length,
-      eligibleUsers: eligible.map(r => r.address || r.userAddress),
-      notEligibleUsers: notEligible.map(r => r.address || r.userAddress),
-      results
-    };
-  }
-
-  async batchAddEligibleUsers(credId, userAddresses) {
-    // First verify which users are already eligible
-    const verificationResults = await this.batchVerifyUsers(credId, userAddresses);
-    const newUsers = verificationResults.notEligibleUsers;
-
-    if (newUsers.length === 0) {
-      return {
-        success: true,
-        message: 'All users already eligible',
-        alreadyEligible: verificationResults.eligible,
-        newlyAdded: 0
-      };
-    }
-
-    // Add new users in batches
-    const batches = this.chunkArray(newUsers, this.batchSize);
-    const addResults = [];
-
-    for (const batch of batches) {
-      const result = await this.credentialManager.addUsersToCredential(credId, batch);
-      addResults.push(result);
-      
-      // Rate limiting delay
-      await this.sleep(1000);
-    }
-
-    const successful = addResults.filter(r => r.success).length;
-
-    return {
-      success: successful === batches.length,
-      totalBatches: batches.length,
-      successfulBatches: successful,
-      alreadyEligible: verificationResults.eligible,
-      newlyAdded: newUsers.length,
-      results: addResults
-    };
-  }
-
-  chunkArray(array, chunkSize) {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += chunkSize) {
-      chunks.push(array.slice(i, i + chunkSize));
-    }
-    return chunks;
-  }
-
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-}
-```
-
-## 7. Verification Analytics
-
-### Track Verification Metrics
-
-```javascript
-class VerificationAnalytics {
-  constructor(accessToken) {
-    this.credentialManager = new CredentialManager(accessToken);
-  }
-
-  async getCredentialStats(credId) {
-    const query = `
-      query GetCredentialStats($credId: ID!) {
-        credential(id: $credId) {
-          id
-          name
-          itemCount
-          lastUpdate
-          syncStatus
-          credentialItems(first: 1000) {
-            totalCount
-            values {
-              address
-              allow
-            }
+          curatorSpace {
+            id
+            name
           }
+          chain
         }
-      }
-    `;
+      }`,
+      variables: { credId }
+    })
+  });
+  
+  const data = await response.json();
+  return data.data.credential;
+}
+```
 
-    const response = await this.credentialManager.executeQuery(query, { credId });
-    const credential = response.credential;
+### Verify User Eligibility
 
-    const activeHolders = credential.credentialItems.values.filter(item => item.allow);
-    const inactiveHolders = credential.credentialItems.values.filter(item => !item.allow);
+```javascript
+async function verifyUserEligibility(credId, userAddress, accessToken, campaignId = null) {
+  const response = await fetch('https://graphigo-business.prd.galaxy.eco/query', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'access-token': accessToken
+    },
+    body: JSON.stringify({
+      query: `query CheckUserEligibility($credId: ID!, $address: String!, $campaignId: ID) {
+        credential(id: $credId) {
+          id
+          name
+          eligible(address: $address, campaignId: $campaignId)
+          credType
+          credSource
+          syncStatus
+          lastSync
+        }
+      }`,
+      variables: { credId, address: userAddress, campaignId }
+    })
+  });
+  
+  const data = await response.json();
+  const credential = data.data.credential;
+  
+  return {
+    credentialId: credential.id,
+    credentialName: credential.name,
+    isEligible: credential.eligible === 1,
+    credentialType: credential.credType,
+    credentialSource: credential.credSource,
+    isActive: credential.syncStatus === 'SYNCED',
+    lastSync: credential.lastSync,
+    userAddress,
+    campaignId
+  };
+}
+```
 
-    return {
-      credentialId: credId,
-      credentialName: credential.name,
-      totalHolders: credential.itemCount,
-      activeHolders: activeHolders.length,
-      inactiveHolders: inactiveHolders.length,
-      lastUpdate: credential.lastUpdate,
-      syncStatus: credential.syncStatus,
-      activationRate: activeHolders.length / credential.itemCount
+### Verify Multiple Credentials
+
+```javascript
+async function verifyMultipleCredentials(credentialIds, userAddress, accessToken, campaignId = null) {
+  const verificationPromises = credentialIds.map(credId => 
+    verifyUserEligibility(credId, userAddress, accessToken, campaignId)
+      .catch(error => ({
+        credentialId: credId,
+        error: error.message,
+        isEligible: false,
+        userAddress,
+        campaignId
+      }))
+  );
+  
+  const results = await Promise.all(verificationPromises);
+  
+  const passed = results.filter(result => result.isEligible && !result.error);
+  const failed = results.filter(result => !result.isEligible || result.error);
+  
+  return {
+    userAddress,
+    campaignId,
+    totalChecked: credentialIds.length,
+    passed: passed.length,
+    failed: failed.length,
+    allPassed: passed.length === credentialIds.length,
+    results: { passed, failed }
+  };
+}
+```
+
+## Access Control System
+
+### Simple Access Control
+
+```javascript
+async function checkAccess(userAddress, requiredCredentials, accessToken, campaignId = null) {
+  const verification = await verifyMultipleCredentials(
+    requiredCredentials.map(req => req.credentialId),
+    userAddress,
+    accessToken,
+    campaignId
+  );
+  
+  // Check if all required credentials are met
+  const requiredIds = requiredCredentials
+    .filter(req => req.required !== false)
+    .map(req => req.credentialId);
+  
+  const passedRequired = verification.results.passed.filter(result =>
+    requiredIds.includes(result.credentialId)
+  );
+  
+  const hasAccess = passedRequired.length === requiredIds.length;
+  
+  return {
+    hasAccess,
+    userAddress,
+    campaignId,
+    requirements: {
+      total: requiredCredentials.length,
+      required: requiredIds.length,
+      satisfied: passedRequired.length
+    },
+    details: verification,
+    missing: requiredCredentials.filter(req =>
+      req.required !== false && 
+      !passedRequired.some(passed => passed.credentialId === req.credentialId)
+    )
+  };
+}
+```
+
+## Usage Examples
+
+### Basic Verification
+
+```javascript
+const accessToken = process.env.GALXE_ACCESS_TOKEN;
+
+// Check single user eligibility
+const result = await verifyUserEligibility(
+  '312969464', // Twitter follower credential
+  '0x1234567890123456789012345678901234567890',
+  accessToken
+);
+
+console.log(`User eligible: ${result.isEligible}`);
+console.log(`Credential: ${result.credentialName}`);
+console.log(`Type: ${result.credentialType}`);
+```
+
+### Multi-Credential Verification
+
+```javascript
+// Check multiple requirements
+const credentialIds = ['312969464', '312969465', '312969466'];
+const userAddress = '0x1234567890123456789012345678901234567890';
+
+const multiResult = await verifyMultipleCredentials(credentialIds, userAddress, accessToken);
+
+console.log(`Passed: ${multiResult.passed}/${multiResult.totalChecked} credentials`);
+console.log(`Access granted: ${multiResult.allPassed}`);
+
+if (!multiResult.allPassed) {
+  console.log('Failed credentials:', multiResult.results.failed.map(f => f.credentialName || f.credentialId));
+}
+```
+
+### Quest-Specific Verification
+
+```javascript
+// Check eligibility for specific quest
+const questResult = await verifyUserEligibility(
+  '312969464',
+  userAddress,
+  accessToken,
+  'GChdWUjXX3' // Quest ID
+);
+
+console.log(`Quest eligible: ${questResult.isEligible}`);
+```
+
+### Access Control System
+
+```javascript
+// Define access requirements
+const requirements = [
+  { credentialId: '312969464', description: 'Twitter Follower', required: true },
+  { credentialId: '312969465', description: 'Discord Member', required: true },
+  { credentialId: '312969466', description: 'NFT Holder', required: false }
+];
+
+// Check user access
+const accessCheck = await checkAccess(userAddress, requirements, accessToken);
+
+if (accessCheck.hasAccess) {
+  console.log('Access granted!');
+  console.log(`Satisfied ${accessCheck.requirements.satisfied}/${accessCheck.requirements.required} required credentials`);
+} else {
+  console.log('Access denied. Missing requirements:');
+  accessCheck.missing.forEach(req => {
+    console.log(`- ${req.description}`);
+  });
+}
+```
+
+## Common Patterns
+
+### User Onboarding Flow
+
+```javascript
+async function onboardUser(userAddress, accessToken) {
+  const requiredCredentials = [
+    { credentialId: '312969464', description: 'Twitter Follower', required: true },
+    { credentialId: '312969465', description: 'Discord Member', required: true }
+  ];
+  
+  const verification = await verifyMultipleCredentials(
+    requiredCredentials.map(r => r.credentialId), 
+    userAddress,
+    accessToken
+  );
+  
+  if (verification.allPassed) {
+    return { 
+      status: 'approved', 
+      message: 'Welcome! All requirements met.' 
     };
-  }
-
-  async compareCredentials(credentialIds) {
-    const statsPromises = credentialIds.map(credId => this.getCredentialStats(credId));
-    const allStats = await Promise.all(statsPromises);
-
-    return {
-      totalCredentials: credentialIds.length,
-      totalHolders: allStats.reduce((sum, stat) => sum + stat.totalHolders, 0),
-      averageHolders: allStats.reduce((sum, stat) => sum + stat.totalHolders, 0) / allStats.length,
-      credentials: allStats,
-      mostPopular: allStats.reduce((max, stat) => 
-        stat.totalHolders > max.totalHolders ? stat : max
-      ),
-      leastPopular: allStats.reduce((min, stat) => 
-        stat.totalHolders < min.totalHolders ? stat : min
-      )
+  } else {
+    const missing = requiredCredentials.filter(req =>
+      !verification.results.passed.some(p => p.credentialId === req.credentialId)
+    );
+    
+    return { 
+      status: 'pending', 
+      message: `Please complete: ${missing.map(m => m.description).join(', ')}`,
+      missingCredentials: missing
     };
   }
 }
 ```
 
-## Example: Complete Verification System
+### Access Gate Implementation
 
 ```javascript
-// Initialize verification system
-const accessToken = process.env.GALXE_ACCESS_TOKEN;
-const verificationSystem = {
-  manager: new CredentialManager(accessToken),
-  tiered: new TieredVerificationSystem(accessToken),
-  sync: new RealtimeVerificationSync(accessToken),
-  batch: new BatchVerificationProcessor(accessToken),
-  analytics: new VerificationAnalytics(accessToken)
-};
-
-// Complete verification workflow
-async function processUserVerification(userAddress, targetTier = 'basic') {
-  try {
-    console.log(`Starting verification for ${userAddress}`);
-
-    // 1. Check current verification level
-    const currentLevel = await verificationSystem.tiered.getUserVerificationLevel(userAddress);
-    console.log('Current level:', currentLevel);
-
-    // 2. Upgrade if needed
-    if (!currentLevel.achievedTiers.includes(targetTier)) {
-      console.log(`Upgrading to ${targetTier} tier...`);
-      const upgradeResult = await verificationSystem.tiered.upgradeUserTier(userAddress, targetTier);
-      console.log('Upgrade result:', upgradeResult);
+async function checkGateAccess(userAddress, requiredCredId, accessToken, questId = null) {
+  const result = await verifyUserEligibility(requiredCredId, userAddress, accessToken, questId);
+  
+  return {
+    allowed: result.isEligible,
+    reason: result.isEligible ? 'Access granted' : `Missing: ${result.credentialName}`,
+    credentialInfo: {
+      name: result.credentialName,
+      type: result.credentialType,
+      source: result.credentialSource
     }
+  };
+}
+```
 
-    // 3. Sync credentials for real-time accuracy
-    const tierConfig = verificationSystem.tiered.verificationTiers[targetTier];
-    for (const credId of tierConfig.credentialIds) {
-      verificationSystem.sync.queueSync(credId, userAddress);
-    }
+## Sync Status Handling
 
-    // 4. Final verification check
-    const finalLevel = await verificationSystem.tiered.getUserVerificationLevel(userAddress);
+### Check Credential Sync Status
+
+Credentials have different sync statuses that affect reliability:
+
+- **`SYNCED`**: Data is current and reliable
+- **`SYNCING`**: Data is being updated, may be stale
+
+```javascript
+async function waitForSync(credId, accessToken, maxWaitMs = 60000) {
+  const startTime = Date.now();
+  
+  while (Date.now() - startTime < maxWaitMs) {
+    const info = await getCredentialInfo(credId, accessToken);
     
-    return {
-      success: finalLevel.achievedTiers.includes(targetTier),
-      userAddress,
-      targetTier,
-      achievedTiers: finalLevel.achievedTiers,
-      highestTier: finalLevel.highestTier
-    };
-
-  } catch (error) {
-    console.error('Verification error:', error);
-    return {
-      success: false,
-      error: error.message,
-      userAddress
-    };
+    if (info.syncStatus === 'SYNCED') {
+      return { synced: true, waited: Date.now() - startTime };
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
   }
+  
+  return { synced: false, waited: maxWaitMs };
 }
 
 // Usage
-const userAddress = '0x1234567890123456789012345678901234567890';
-processUserVerification(userAddress, 'social').then(result => {
-  console.log('Verification complete:', result);
-});
+const syncCheck = await waitForSync('312969464', accessToken);
+if (syncCheck.synced) {
+  console.log(`Credential synced after ${syncCheck.waited}ms`);
+  // Now safe to check eligibility
+} else {
+  console.log('Credential still syncing, results may be stale');
+}
 ```
+
+## Best Practices
+
+1. **Caching**: Cache eligibility results for 5-10 minutes to reduce API calls
+2. **Sync Status**: Check `syncStatus` field before relying on eligibility results
+3. **Error Handling**: Always handle network errors and invalid credential IDs
+4. **Quest Context**: Use `campaignId` parameter for quest-specific verifications
+5. **Rate Limiting**: Implement delays between batch requests (200-500ms)
+
+## Understanding Sync Status
+
+- Always check the `syncStatus` field in responses
+- Only rely on results when status is `SYNCED`
+- For critical verifications, consider waiting for sync completion
+- Cache results appropriately based on sync status
 
 ## Next Steps
 
-- **[Leaderboard Integration](/galxe-integration/guides/leaderboards)** - Rankings and competitions
-- **[API Reference](/galxe-integration/api-reference/credential)** - Complete Credential API
-- **[Error Handling](/galxe-integration/resources/error-handling)** - Troubleshooting guide 
+- **[Quest Integration](/galxe-integration/guides/quests)** - Using credentials in quest requirements
+- **[Credential API Reference](/galxe-integration/api-reference/credential)** - Complete API documentation
+- **[Authentication](/galxe-integration/getting-started/authentication)** - Access token setup 

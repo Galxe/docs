@@ -3,123 +3,53 @@ title: "Galxe Integration"
 description: "Build powerful Web3 experiences with Galxe's comprehensive GraphQL API"
 ---
 
-## Learning Path
-
-**New to Galxe?** Follow this path:
-1. **[Quick Start](/galxe-integration/getting-started/quick-start)** - Get your first API call working (3 minutes)
-2. **[Authentication](/galxe-integration/getting-started/authentication)** - Setup secure access
-3. **Choose your use case:**
-   - **Quests** → [Quest API](/galxe-integration/api-reference/quest) + [Quest Guide](/galxe-integration/guides/quests)
-   - **Loyalty Programs** → [Space API](/galxe-integration/api-reference/space) + [Loyalty Guide](/galxe-integration/guides/loyalty-program)
-   - **Social Analytics** → [Starboard API](/galxe-integration/api-reference/starboard) + [Starboard Guide](/galxe-integration/guides/starboards)
-
-## GraphQL Endpoint & Authentication
-
-**API Endpoint**: `https://graphigo-business.prd.galaxy.eco/query`
-
-```bash
-curl -X POST https://graphigo-business.prd.galaxy.eco/query \
-  -H "Content-Type: application/json" \
-  -H "access-token: YOUR_ACCESS_TOKEN" \
-  -d '{"query": "query { __typename }"}'
-```
-
-Get your access token from [Galxe Dashboard Settings](https://dashboard.galxe.com).
-
-## Quick Example
-
-```bash
-# Test your connection
-curl -X POST https://graphigo-business.prd.galaxy.eco/query \
-  -H "Content-Type: application/json" \
-  -H "access-token: YOUR_ACCESS_TOKEN" \
-  -d '{"query": "query { __typename }"}'
-```
-
-## Core APIs
+## Learning Resources
 
 <CardGroup cols={2}>
-  <Card title="Quest API" icon="trophy" href="/galxe-integration/api-reference/quest">
-    **Quest Management**
-    
-    Retrieve quest details, participants, and track user eligibility for NFT and reward quests.
+  <Card title="Quick Start Guide" icon="rocket" href="/galxe-integration/getting-started/quick-start">
+    Get your first API call working in 3 minutes
   </Card>
-  
-  <Card title="Credential API" icon="shield-check" href="/galxe-integration/api-reference/credential">
-    **User Verification**
-    
-    Manage user credentials, verify eligibility, and handle identity verification workflows.
+  <Card title="Common Patterns" icon="code" href="/galxe-integration/getting-started/common-patterns">
+    Ready-to-use code snippets and GraphQL queries
   </Card>
-  
-  <Card title="Space API" icon="chart-bar" href="/galxe-integration/api-reference/space">
-    **Loyalty & Leaderboards**
-    
-    Build leaderboards, manage loyalty points, and create engaging competition systems.
+  <Card title="Authentication" icon="shield-check" href="/galxe-integration/getting-started/authentication">
+    Secure API access and token management
   </Card>
-  
-  <Card title="Starboard API" icon="users" href="/galxe-integration/api-reference/starboard">
-    **Twitter Influence Tracking**
-    
-    Track Twitter influence rankings, analyze social metrics, and monitor community engagement.
+  <Card title="Error Handling" icon="shield" href="/galxe-integration/resources/error-handling">
+    Handle errors and troubleshoot issues
   </Card>
 </CardGroup>
 
-## Getting Started
+## API Reference
 
 <CardGroup cols={2}>
-  <Card title="5-Minute Quick Start" icon="rocket" href="/galxe-integration/getting-started/quick-start">
-    Get your first API call working in minutes
+  <Card title="Quest API" icon="map" href="/galxe-integration/api-reference/quest">
+    Manage quests and check user eligibility
   </Card>
-  
-  <Card title="Authentication Setup" icon="key" href="/galxe-integration/getting-started/authentication">
-    Configure access tokens and permissions
+  <Card title="Space API" icon="chart-bar" href="/galxe-integration/api-reference/space">
+    Leaderboards, loyalty points, and rankings
   </Card>
-  
-  <Card title="Common Patterns" icon="puzzle-piece" href="/galxe-integration/getting-started/common-patterns">
-    Learn standard integration approaches
+  <Card title="Credential API" icon="check-circle" href="/galxe-integration/api-reference/credential">
+    User verification and credential management
   </Card>
-  
-  <Card title="Error Handling" icon="exclamation-triangle" href="/galxe-integration/resources/error-handling">
-    Handle errors and troubleshoot issues
+  <Card title="Starboard API" icon="star" href="/galxe-integration/api-reference/starboard">
+    Twitter influence tracking and social metrics
   </Card>
 </CardGroup>
 
 ## Integration Guides
 
 <CardGroup cols={2}>
-  <Card title="Quests" icon="images" href="/galxe-integration/guides/quests">
-    Complete quest workflows from setup to reward distribution
+  <Card title="Quest Integration" icon="play" href="/galxe-integration/guides/quests">
+    Complete quest workflow implementation
   </Card>
-  
-  <Card title="Loyalty Programs" icon="star" href="/galxe-integration/guides/loyalty-program">
-    Build point systems, quest-based rewards, and user engagement
+  <Card title="Leaderboards" icon="trophy" href="/galxe-integration/guides/leaderboards">
+    Real-time rankings and competitions
   </Card>
-  
+  <Card title="Loyalty Programs" icon="gift" href="/galxe-integration/guides/loyalty-program">
+    Points, rewards, and user engagement
+  </Card>
   <Card title="User Verification" icon="user-check" href="/galxe-integration/guides/user-verification">
-    Implement credential-based verification and access control
-  </Card>
-  
-  <Card title="Leaderboards" icon="ranking-star" href="/galxe-integration/guides/leaderboards">
-    Create competitive leaderboards and ranking systems
-  </Card>
-  
-  <Card title="Twitter Influence" icon="users" href="/galxe-integration/guides/starboards">
-    Build Twitter influence tracking and social analytics systems
-  </Card>
-</CardGroup>
-
-## Resources
-
-<CardGroup cols={3}>
-  <Card title="Changelog" icon="clock" href="/galxe-integration/resources/changelog">
-    Latest updates and API changes
-  </Card>
-  
-  <Card title="Rate Limits" icon="gauge-high" href="/galxe-integration/resources/rate-limits">
-    Understanding API limits and optimization
-  </Card>
-  
-  <Card title="Support" icon="life-ring" href="/galxe-integration/resources/support">
-    Get help and connect with the community
+    Identity verification and access control
   </Card>
 </CardGroup>

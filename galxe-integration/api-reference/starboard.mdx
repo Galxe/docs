@@ -1,26 +1,15 @@
 ---
 title: "Starboard API Reference"
-description: "Track Twitter influence rankings, social metrics, and community engagement"
+description: "Track Twitter influence rankings and social metrics"
 ---
 
 ## Overview
 
-- Query starboard information and metadata
-- Retrieve Twitter influence rankings and leaderboards
-- Track social metrics and engagement data
-- Monitor user influence scores over time
+The Starboard API provides access to Twitter influence rankings, social metrics, and engagement analytics.
 
 ## Core Queries
 
-### `starboard` - Get Starboard Details
-
-Find Starboard details and leaderboard data by Starboard ID.
-
-**Arguments**: `id` (required) - Starboard's unique ID
-
-**Key Fields**: `basicInfo`, `leaderboard` with Twitter user profiles and influence metrics
-
-#### Example: Basic Starboard Query
+### Get Starboard Information
 
 ```graphql
 query GetStarboard($id: ID!) {
@@ -30,6 +19,7 @@ query GetStarboard($id: ID!) {
       name
       projectName
       description
+      tags
       type
       reward {
         name
@@ -42,1335 +32,184 @@ query GetStarboard($id: ID!) {
 }
 ```
 
-**Response**:
-```json
-{
-  "data": {
-    "starboard": {
-      "basicInfo": {
-        "id": 1,
-        "name": "Twitter Influence Ranking",
-        "projectName": "Galxe Community",
-        "description": "Track and rank Twitter influence",
-        "type": "TWITTER",
-        "reward": {
-          "name": "Influence Badge",
-          "description": "Recognition for top Twitter influencers",
-          "startTime": 1699200000,
-          "endTime": 1701792000
-        }
-      }
-    }
-  }
-}
-```
-
-## Leaderboard System
-
 ### Get Starboard Leaderboard
 
-Retrieve paginated leaderboard rankings with social metrics.
-
 ```graphql
-query GetStarboardLeaderboard($id: ID!, $pagination: PaginationInput!) {
+query GetStarboardLeaderboard($id: ID!, $first: Int!, $after: String) {
   starboard(id: $id) {
-    basicInfo {
-      id
-      name
-    }
-    leaderboard(pagination: $pagination) {
+    leaderboard(
+      pagination: { 
+        forward: { 
+          first: $first
+          after: $after 
+        } 
+      }
+    ) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
       edges {
         node {
           xUserProfile {
-            id
-            name
             username
-            profileImageUrl
             followersCount
             verifiedType
           }
           rank {
             value
             delta
+            deltaRate
           }
           influenceScore {
             value
             delta
+            deltaRate
           }
-          change24H {
-            value
-          }
-          change7D {
-            value
-          }
+          change24H { value deltaRate }
+          change7D { value deltaRate }
+          change30D { value deltaRate }
         }
-        cursor
-      }
-      pageInfo {
-        hasNextPage
-        endCursor
       }
     }
   }
 }
 ```
 
-**Pagination Input**:
+### Search Specific User
+
+```graphql
+query SearchUser($id: ID!, $twitterId: String!) {
+  starboard(id: $id) {
+    leaderboard(
+      twitterId: $twitterId
+      pagination: { forward: { first: 1 } }
+    ) {
+      edges {
+        node {
+          rank { value }
+          influenceScore { value deltaRate }
+          xUserProfile {
+            username
+            followersCount
+            verifiedType
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+**Variables**:
 ```json
 {
   "id": "1",
+  "twitterId": "elonmusk"
+}
+```
+
+## Field Reference
+
+### Starboard Types
+
+| Type | Description |
+|------|-------------|
+| `TWITTER` | Twitter influence tracking |
+| `ONCHAIN` | On-chain activity tracking |
+
+### Verification Types
+
+| Type | Description |
+|------|-------------|
+| `blue` | Twitter Blue verification |
+| `business` | Business account verification |
+| `government` | Government account verification |
+| `none` | No verification |
+
+### StarboardMetricValue Structure
+
+All metrics include comprehensive tracking data:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `value` | `String!` | Current metric value |
+| `delta` | `Int!` | Absolute change from previous period |
+| `deltaRate` | `Float!` | Percentage change rate |
+| `percentage` | `Float!` | Relative percentage score |
+
+### Key Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `basicInfo` | `StarboardBasicInfo!` | Starboard metadata |
+| `leaderboard` | `StarboardLeaderboard` | Rankings and metrics |
+| `xUserProfile` | `XUserProfile` | Twitter user information |
+| `rank` | `StarboardMetricValue` | User's ranking position |
+| `influenceScore` | `StarboardMetricValue` | User's influence score |
+
+## Integration Patterns
+
+### Basic Leaderboard Query
+
+```bash
+curl -X POST https://graphigo-business.prd.galaxy.eco/query \
+  -H "Content-Type: application/json" \
+  -H "access-token: YOUR_ACCESS_TOKEN" \
+  -d '{
+    "query": "query GetStarboard($id: ID!) { starboard(id: $id) { basicInfo { name type } leaderboard(pagination: { forward: { first: 10 } }) { edges { node { rank { value } xUserProfile { username followersCount } } } } } }",
+    "variables": { "id": "1" }
+  }'
+```
+
+### Pagination Pattern
+
+Starboards use nested pagination structure:
+
+```json
+{
   "pagination": {
     "forward": {
       "first": 20,
-      "after": null
-    },
-    "sort": {
-      "field": "influenceScore",
-      "order": "DESC"
+      "after": "cursor_value"
     }
   }
 }
 ```
 
-## Code Examples
+### User Search
 
-### StarboardManager Implementation
+To find a specific Twitter user, use the `twitterId` parameter with their Twitter username.
 
-<CodeGroup>
+### Trend Analysis
 
-```javascript JavaScript
-class StarboardManager {
-  constructor(accessToken) {
-    this.accessToken = accessToken;
-    this.apiUrl = 'https://graphigo-business.prd.galaxy.eco/query';
-  }
+Use the change metrics to analyze user performance:
+- `change24H` - 24-hour trends
+- `change7D` - 7-day trends  
+- `change30D` - 30-day trends
 
-  async getStarboard(starboardId) {
-    const query = `
-      query GetStarboard($id: ID!) {
-        starboard(id: $id) {
-          basicInfo {
-            id
-            name
-            projectName
-            description
-            type
-          }
-        }
-      }
-    `;
-
-    const response = await this.executeQuery(query, { id: starboardId });
-    return response.starboard;
-  }
-
-  async getStarboardLeaderboard(starboardId, options = {}) {
-    const {
-      limit = 20,
-      cursor = null,
-      sortField = 'influenceScore'
-    } = options;
-
-    const pagination = {
-      forward: {
-        first: limit,
-        ...(cursor && { after: cursor })
-      },
-      sort: {
-        field: sortField,
-        order: 'DESC'
-      }
-    };
-
-    const query = `
-      query GetStarboardLeaderboard($id: ID!, $pagination: PaginationInput!) {
-        starboard(id: $id) {
-          basicInfo {
-            id
-            name
-          }
-          leaderboard(pagination: $pagination) {
-            edges {
-              node {
-                xUserProfile {
-                  id
-                  name
-                  username
-                  profileImageUrl
-                  followersCount
-                  verifiedType
-                }
-                rank {
-                  value
-                  delta
-                }
-                influenceScore {
-                  value
-                  delta
-                }
-                change24H {
-                  value
-                }
-                change7D {
-                  value
-                }
-              }
-              cursor
-            }
-            pageInfo {
-              hasNextPage
-              endCursor
-            }
-          }
-        }
-      }
-    `;
-
-    const response = await this.executeQuery(query, {
-      id: starboardId,
-      pagination
-    });
-
-    const starboardData = response.starboard;
-    return {
-      starboardInfo: starboardData.basicInfo,
-      rankings: starboardData.leaderboard.edges.map(edge => ({
-        ...edge.node,
-        cursor: edge.cursor
-      })),
-      pageInfo: starboardData.leaderboard.pageInfo
-    };
-  }
-
-  async getTopInfluencers(starboardId, count = 10) {
-    const leaderboard = await this.getStarboardLeaderboard(starboardId, { limit: count });
-    
-    return leaderboard.rankings.map((user) => ({
-      rank: parseInt(user.rank.value),
-      username: user.xUserProfile.username,
-      displayName: user.xUserProfile.name,
-      followers: user.xUserProfile.followersCount,
-      verified: user.xUserProfile.verifiedType,
-      influenceScore: parseFloat(user.influenceScore.value),
-      scoreChange24H: parseFloat(user.change24H.value),
-      isRising: user.rank.delta < 0 // Negative delta means rank improvement
-    }));
-  }
-
-  async executeQuery(query, variables) {
-    const response = await fetch(this.apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'access-token': this.accessToken
-      },
-      body: JSON.stringify({ query, variables })
-    });
-
-    const data = await response.json();
-
-    if (data.errors) {
-      throw new Error(data.errors[0].message);
-    }
-
-    return data.data;
-  }
-}
-
-// Usage Examples
-const starboardManager = new StarboardManager(process.env.GALXE_ACCESS_TOKEN);
-
-// Get starboard information
-const starboard = await starboardManager.getStarboard('1');
-console.log(`Starboard: ${starboard.basicInfo.name}`);
-
-// Get leaderboard rankings
-const leaderboard = await starboardManager.getStarboardLeaderboard('1', {
-  limit: 20,
-  sortField: 'influenceScore'
-});
-console.log('Top influencer:', leaderboard.rankings[0]?.xUserProfile.username);
-
-// Get top contributors
-const topInfluencers = await starboardManager.getTopInfluencers('1', 5);
-console.log('Top 5 influencers:', topInfluencers.map(u => u.username));
-```
-
-```go Go
-package main
-
-import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io"
-	"net/http"
-	"os"
-	"strconv"
-)
-
-type StarboardManager struct {
-	AccessToken string
-	APIURL      string
-	Client      *http.Client
-}
-
-type Starboard struct {
-	BasicInfo StarboardInfo `json:"basicInfo"`
-}
-
-type StarboardInfo struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	ProjectName string `json:"projectName"`
-	Description string `json:"description"`
-	Type        string `json:"type"`
-}
-
-type LeaderboardData struct {
-	StarboardInfo StarboardInfo   `json:"starboardInfo"`
-	Rankings      []InfluencerRank `json:"rankings"`
-	PageInfo      PageInfo         `json:"pageInfo"`
-}
-
-type InfluencerRank struct {
-	XUserProfile   TwitterProfile `json:"xUserProfile"`
-	Rank           RankData       `json:"rank"`
-	InfluenceScore ScoreData      `json:"influenceScore"`
-	Change24H      ChangeData     `json:"change24H"`
-	Change7D       ChangeData     `json:"change7D"`
-	Cursor         string         `json:"cursor"`
-}
-
-type TwitterProfile struct {
-	ID              string `json:"id"`
-	Name            string `json:"name"`
-	Username        string `json:"username"`
-	ProfileImageURL string `json:"profileImageUrl"`
-	FollowersCount  int    `json:"followersCount"`
-	VerifiedType    string `json:"verifiedType"`
-}
-
-type RankData struct {
-	Value string `json:"value"`
-	Delta int    `json:"delta"`
-}
-
-type ScoreData struct {
-	Value string `json:"value"`
-	Delta string `json:"delta"`
-}
-
-type ChangeData struct {
-	Value string `json:"value"`
-}
-
-type PageInfo struct {
-	HasNextPage bool   `json:"hasNextPage"`
-	EndCursor   string `json:"endCursor"`
-}
-
-type TopInfluencer struct {
-	Rank           int     `json:"rank"`
-	Username       string  `json:"username"`
-	DisplayName    string  `json:"displayName"`
-	Followers      int     `json:"followers"`
-	Verified       string  `json:"verified"`
-	InfluenceScore float64 `json:"influenceScore"`
-	ScoreChange24H float64 `json:"scoreChange24H"`
-	IsRising       bool    `json:"isRising"`
-}
-
-type StarboardOptions struct {
-	Limit     int
-	Cursor    *string
-	SortField string
-}
-
-func NewStarboardManager(accessToken string) *StarboardManager {
-	return &StarboardManager{
-		AccessToken: accessToken,
-		APIURL:      "https://graphigo-business.prd.galaxy.eco/query",
-		Client:      &http.Client{},
-	}
-}
-
-func (sm *StarboardManager) GetStarboard(starboardID string) (*Starboard, error) {
-	query := `
-		query GetStarboard($id: ID!) {
-			starboard(id: $id) {
-				basicInfo {
-					id
-					name
-					projectName
-					description
-					type
-				}
-			}
-		}
-	`
-
-	response, err := sm.executeQuery(query, map[string]interface{}{
-		"id": starboardID,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	starboardData, _ := json.Marshal(response["starboard"])
-	var starboard Starboard
-	json.Unmarshal(starboardData, &starboard)
-
-	return &starboard, nil
-}
-
-func (sm *StarboardManager) GetStarboardLeaderboard(starboardID string, options StarboardOptions) (*LeaderboardData, error) {
-	if options.Limit == 0 {
-		options.Limit = 20
-	}
-	if options.SortField == "" {
-		options.SortField = "influenceScore"
-	}
-
-	pagination := map[string]interface{}{
-		"forward": map[string]interface{}{
-			"first": options.Limit,
-		},
-		"sort": map[string]interface{}{
-			"field": options.SortField,
-			"order": "DESC",
-		},
-	}
-
-	if options.Cursor != nil {
-		pagination["forward"].(map[string]interface{})["after"] = *options.Cursor
-	}
-
-	query := `
-		query GetStarboardLeaderboard($id: ID!, $pagination: PaginationInput!) {
-			starboard(id: $id) {
-				basicInfo {
-					id
-					name
-				}
-				leaderboard(pagination: $pagination) {
-					edges {
-						node {
-							xUserProfile {
-								id
-								name
-								username
-								profileImageUrl
-								followersCount
-								verifiedType
-							}
-							rank {
-								value
-								delta
-							}
-							influenceScore {
-								value
-								delta
-							}
-							change24H {
-								value
-							}
-							change7D {
-								value
-							}
-						}
-						cursor
-					}
-					pageInfo {
-						hasNextPage
-						endCursor
-					}
-				}
-			}
-		}
-	`
-
-	response, err := sm.executeQuery(query, map[string]interface{}{
-		"id":         starboardID,
-		"pagination": pagination,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// Process response
-	starboardData := response["starboard"].(map[string]interface{})
-	leaderboardData := starboardData["leaderboard"].(map[string]interface{})
-	
-	result := &LeaderboardData{
-		Rankings: []InfluencerRank{},
-	}
-
-	// Convert basic info
-	basicInfoData, _ := json.Marshal(starboardData["basicInfo"])
-	json.Unmarshal(basicInfoData, &result.StarboardInfo)
-
-	// Convert page info
-	pageInfoData, _ := json.Marshal(leaderboardData["pageInfo"])
-	json.Unmarshal(pageInfoData, &result.PageInfo)
-
-	// Convert rankings
-	edges := leaderboardData["edges"].([]interface{})
-	for _, edge := range edges {
-		edgeMap := edge.(map[string]interface{})
-		node := edgeMap["node"]
-		cursor := edgeMap["cursor"].(string)
-
-		nodeData, _ := json.Marshal(node)
-		var influencerRank InfluencerRank
-		json.Unmarshal(nodeData, &influencerRank)
-		influencerRank.Cursor = cursor
-
-		result.Rankings = append(result.Rankings, influencerRank)
-	}
-
-	return result, nil
-}
-
-func (sm *StarboardManager) GetTopInfluencers(starboardID string, count int) ([]TopInfluencer, error) {
-	if count == 0 {
-		count = 10
-	}
-
-	leaderboard, err := sm.GetStarboardLeaderboard(starboardID, StarboardOptions{Limit: count})
-	if err != nil {
-		return nil, err
-	}
-
-	var topInfluencers []TopInfluencer
-	for _, user := range leaderboard.Rankings {
-		rank, _ := strconv.Atoi(user.Rank.Value)
-		influenceScore, _ := strconv.ParseFloat(user.InfluenceScore.Value, 64)
-		scoreChange24H, _ := strconv.ParseFloat(user.Change24H.Value, 64)
-
-		topInfluencers = append(topInfluencers, TopInfluencer{
-			Rank:           rank,
-			Username:       user.XUserProfile.Username,
-			DisplayName:    user.XUserProfile.Name,
-			Followers:      user.XUserProfile.FollowersCount,
-			Verified:       user.XUserProfile.VerifiedType,
-			InfluenceScore: influenceScore,
-			ScoreChange24H: scoreChange24H,
-			IsRising:       user.Rank.Delta < 0,
-		})
-	}
-
-	return topInfluencers, nil
-}
-
-func (sm *StarboardManager) executeQuery(query string, variables map[string]interface{}) (map[string]interface{}, error) {
-	reqBody := map[string]interface{}{
-		"query":     query,
-		"variables": variables,
-	}
-
-	jsonData, _ := json.Marshal(reqBody)
-	req, _ := http.NewRequest("POST", sm.APIURL, bytes.NewBuffer(jsonData))
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("access-token", sm.AccessToken)
-
-	resp, err := sm.Client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	body, _ := io.ReadAll(resp.Body)
-	var result map[string]interface{}
-	json.Unmarshal(body, &result)
-
-	if errors, exists := result["errors"]; exists {
-		return nil, fmt.Errorf("GraphQL error: %v", errors)
-	}
-
-	return result["data"].(map[string]interface{}), nil
-}
-
-// Usage Examples
-func main() {
-	starboardManager := NewStarboardManager(os.Getenv("GALXE_ACCESS_TOKEN"))
-
-	// Get starboard information
-	starboard, err := starboardManager.GetStarboard("1")
-	if err == nil {
-		fmt.Printf("Starboard: %s\n", starboard.BasicInfo.Name)
-	}
-
-	// Get leaderboard rankings
-	leaderboard, err := starboardManager.GetStarboardLeaderboard("1", StarboardOptions{
-		Limit:     20,
-		SortField: "influenceScore",
-	})
-	if err == nil && len(leaderboard.Rankings) > 0 {
-		fmt.Printf("Top influencer: %s\n", leaderboard.Rankings[0].XUserProfile.Username)
-	}
-
-	// Get top contributors
-	topInfluencers, err := starboardManager.GetTopInfluencers("1", 5)
-	if err == nil {
-		fmt.Print("Top 5 influencers: ")
-		for i, influencer := range topInfluencers {
-			if i > 0 {
-				fmt.Print(", ")
-			}
-			fmt.Print(influencer.Username)
-		}
-		fmt.Println()
-	}
-}
-```
-
-```python Python
-import asyncio
-import aiohttp
-import json
-import os
-from typing import Optional, Dict, Any, List
-
-class StarboardManager:
-    def __init__(self, access_token: str):
-        self.access_token = access_token
-        self.api_url = "https://graphigo-business.prd.galaxy.eco/query"
-        self.session: Optional[aiohttp.ClientSession] = None
-
-    async def __aenter__(self):
-        self.session = aiohttp.ClientSession()
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        if self.session:
-            await self.session.close()
-
-    async def get_starboard(self, starboard_id: str) -> Optional[Dict[str, Any]]:
-        query = """
-            query GetStarboard($id: ID!) {
-                starboard(id: $id) {
-                    basicInfo {
-                        id
-                        name
-                        projectName
-                        description
-                        type
-                    }
-                }
-            }
-        """
-
-        response = await self._execute_query(query, {"id": starboard_id})
-        return response.get("starboard")
-
-    async def get_starboard_leaderboard(
-        self, 
-        starboard_id: str, 
-        limit: int = 20,
-        cursor: Optional[str] = None,
-        sort_field: str = "influenceScore"
-    ) -> Optional[Dict[str, Any]]:
-        pagination = {
-            "forward": {
-                "first": limit
-            },
-            "sort": {
-                "field": sort_field,
-                "order": "DESC"
-            }
-        }
-        
-        if cursor:
-            pagination["forward"]["after"] = cursor
-
-        query = """
-            query GetStarboardLeaderboard($id: ID!, $pagination: PaginationInput!) {
-                starboard(id: $id) {
-                    basicInfo {
-                        id
-                        name
-                    }
-                    leaderboard(pagination: $pagination) {
-                        edges {
-                            node {
-                                xUserProfile {
-                                    id
-                                    name
-                                    username
-                                    profileImageUrl
-                                    followersCount
-                                    verifiedType
-                                }
-                                rank {
-                                    value
-                                    delta
-                                }
-                                influenceScore {
-                                    value
-                                    delta
-                                }
-                                change24H {
-                                    value
-                                }
-                                change7D {
-                                    value
-                                }
-                            }
-                            cursor
-                        }
-                        pageInfo {
-                            hasNextPage
-                            endCursor
-                        }
-                    }
-                }
-            }
-        """
-
-        response = await self._execute_query(query, {
-            "id": starboard_id,
-            "pagination": pagination
-        })
-        
-        starboard_data = response.get("starboard", {})
-        leaderboard_data = starboard_data.get("leaderboard", {})
-        
-        return {
-            "starboardInfo": starboard_data.get("basicInfo"),
-            "rankings": [
-                {**edge["node"], "cursor": edge["cursor"]}
-                for edge in leaderboard_data.get("edges", [])
-            ],
-            "pageInfo": leaderboard_data.get("pageInfo")
-        }
-
-    async def get_top_influencers(
-        self, 
-        starboard_id: str, 
-        count: int = 10
-    ) -> List[Dict[str, Any]]:
-        leaderboard = await self.get_starboard_leaderboard(
-            starboard_id, 
-            limit=count
-        )
-        
-        if not leaderboard or not leaderboard.get("rankings"):
-            return []
-        
-        top_influencers = []
-        for user in leaderboard["rankings"]:
-            profile = user.get("xUserProfile", {})
-            rank_data = user.get("rank", {})
-            influence_data = user.get("influenceScore", {})
-            change_24h = user.get("change24H", {})
-            
-            top_influencers.append({
-                "rank": int(rank_data.get("value", 0)),
-                "username": profile.get("username", ""),
-                "displayName": profile.get("name", ""),
-                "followers": profile.get("followersCount", 0),
-                "verified": profile.get("verifiedType", ""),
-                "influenceScore": float(influence_data.get("value", 0)),
-                "scoreChange24H": float(change_24h.get("value", 0)),
-                "isRising": rank_data.get("delta", 0) < 0
-            })
-        
-        return top_influencers
-
-    async def _execute_query(
-        self, 
-        query: str, 
-        variables: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        headers = {
-            "Content-Type": "application/json",
-            "access-token": self.access_token
-        }
-        
-        payload = {
-            "query": query,
-            "variables": variables
-        }
-
-        async with self.session.post(
-            self.api_url,
-            headers=headers,
-            json=payload
-        ) as response:
-            data = await response.json()
-            
-            if data.get("errors"):
-                raise Exception(f"GraphQL error: {data['errors'][0]['message']}")
-            
-            return data.get("data", {})
-
-# Usage Examples
-async def main():
-    async with StarboardManager(os.getenv("GALXE_ACCESS_TOKEN")) as starboard_manager:
-        # Get starboard information
-        starboard = await starboard_manager.get_starboard("1")
-        if starboard:
-            print(f"Starboard: {starboard['basicInfo']['name']}")
-
-        # Get leaderboard rankings
-        leaderboard = await starboard_manager.get_starboard_leaderboard(
-            "1", 
-            limit=20, 
-            sort_field="influenceScore"
-        )
-        if leaderboard and leaderboard["rankings"]:
-            top_user = leaderboard["rankings"][0]
-            print(f"Top influencer: {top_user['xUserProfile']['username']}")
-
-        # Get top contributors
-        top_influencers = await starboard_manager.get_top_influencers("1", 5)
-        usernames = [u["username"] for u in top_influencers]
-        print(f"Top 5 influencers: {', '.join(usernames)}")
-
-if __name__ == "__main__":
-    asyncio.run(main())
-```
-
-</CodeGroup>
-
-## Common Use Cases
-
-### Influence Score Analysis
-
-<CodeGroup>
-
-```javascript JavaScript
-async function analyzeInfluenceDistribution(starboardId) {
-  const leaderboard = await starboardManager.getStarboardLeaderboard(starboardId, {
-    limit: 100
-  });
-
-  const scores = leaderboard.rankings.map(user => 
-    parseFloat(user.influenceScore.value)
-  );
-
-  return {
-    totalUsers: scores.length,
-    averageScore: scores.reduce((sum, score) => sum + score, 0) / scores.length,
-    topScore: Math.max(...scores),
-    topGainers: leaderboard.rankings
-      .filter(user => parseFloat(user.change24H.value) > 0)
-      .sort((a, b) => parseFloat(b.change24H.value) - parseFloat(a.change24H.value))
-      .slice(0, 10)
-  };
-}
-```
-
-```go Go
-type InfluenceAnalysis struct {
-	TotalUsers   int                `json:"totalUsers"`
-	AverageScore float64            `json:"averageScore"`
-	TopScore     float64            `json:"topScore"`
-	TopGainers   []InfluencerRank   `json:"topGainers"`
-}
-
-func (sm *StarboardManager) AnalyzeInfluenceDistribution(starboardID string) (*InfluenceAnalysis, error) {
-	leaderboard, err := sm.GetStarboardLeaderboard(starboardID, StarboardOptions{Limit: 100})
-	if err != nil {
-		return nil, err
-	}
-
-	var scores []float64
-	var topGainers []InfluencerRank
-	totalScore := 0.0
-	maxScore := 0.0
-
-	for _, user := range leaderboard.Rankings {
-		score, _ := strconv.ParseFloat(user.InfluenceScore.Value, 64)
-		change24H, _ := strconv.ParseFloat(user.Change24H.Value, 64)
-
-		scores = append(scores, score)
-		totalScore += score
-		if score > maxScore {
-			maxScore = score
-		}
-
-		if change24H > 0 {
-			topGainers = append(topGainers, user)
-		}
-	}
-
-	// Sort top gainers by 24h change
-	sort.Slice(topGainers, func(i, j int) bool {
-		changeI, _ := strconv.ParseFloat(topGainers[i].Change24H.Value, 64)
-		changeJ, _ := strconv.ParseFloat(topGainers[j].Change24H.Value, 64)
-		return changeI > changeJ
-	})
-
-	// Keep only top 10 gainers
-	if len(topGainers) > 10 {
-		topGainers = topGainers[:10]
-	}
-
-	avgScore := 0.0
-	if len(scores) > 0 {
-		avgScore = totalScore / float64(len(scores))
-	}
-
-	return &InfluenceAnalysis{
-		TotalUsers:   len(scores),
-		AverageScore: avgScore,
-		TopScore:     maxScore,
-		TopGainers:   topGainers,
-	}, nil
-}
-```
-
-```python Python
-from typing import Dict, Any, List
-
-async def analyze_influence_distribution(
-    starboard_manager: StarboardManager, 
-    starboard_id: str
-) -> Dict[str, Any]:
-    leaderboard = await starboard_manager.get_starboard_leaderboard(
-        starboard_id, 
-        limit=100
-    )
-    
-    if not leaderboard or not leaderboard.get("rankings"):
-        return {"totalUsers": 0, "averageScore": 0, "topScore": 0, "topGainers": []}
-    
-    scores = []
-    top_gainers = []
-    
-    for user in leaderboard["rankings"]:
-        influence_score = float(user.get("influenceScore", {}).get("value", 0))
-        change_24h = float(user.get("change24H", {}).get("value", 0))
-        
-        scores.append(influence_score)
-        
-        if change_24h > 0:
-            top_gainers.append(user)
-    
-    # Sort top gainers by 24h change
-    top_gainers.sort(
-        key=lambda u: float(u.get("change24H", {}).get("value", 0)), 
-        reverse=True
-    )
-    
-    return {
-        "totalUsers": len(scores),
-        "averageScore": sum(scores) / len(scores) if scores else 0,
-        "topScore": max(scores) if scores else 0,
-        "topGainers": top_gainers[:10]
-    }
-```
-
-</CodeGroup>
-
-### Real-time Monitoring
-
-<CodeGroup>
-
-```javascript JavaScript
-class StarboardMonitor {
-  constructor(starboardManager) {
-    this.starboardManager = starboardManager;
-    this.subscriptions = new Map();
-  }
-
-  startMonitoring(starboardId, callback, options = {}) {
-    const { alertThresholds = {}, updateInterval = 300000 } = options;
-
-    const intervalId = setInterval(async () => {
-      try {
-        const currentData = await this.starboardManager.getStarboardLeaderboard(starboardId, {
-          limit: 50
-        });
-
-        const alerts = this.generateAlerts(currentData, alertThresholds);
-        
-        if (alerts.length > 0) {
-          callback({ type: 'alerts', data: alerts });
-        }
-
-        callback({ type: 'update', data: currentData });
-
-      } catch (error) {
-        callback({ type: 'error', error: error.message });
-      }
-    }, updateInterval);
-
-    this.subscriptions.set(starboardId, intervalId);
-    return starboardId;
-  }
-
-  stopMonitoring(starboardId) {
-    const intervalId = this.subscriptions.get(starboardId);
-    if (intervalId) {
-      clearInterval(intervalId);
-      this.subscriptions.delete(starboardId);
-    }
-  }
-
-  generateAlerts(leaderboard, thresholds) {
-    const alerts = [];
-
-    leaderboard.rankings.forEach(user => {
-      const influenceScore = parseFloat(user.influenceScore.value);
-      const change24H = parseFloat(user.change24H.value);
-
-      if (thresholds.highInfluence && influenceScore > thresholds.highInfluence) {
-        alerts.push({
-          type: 'HIGH_INFLUENCE',
-          user: user.xUserProfile.username,
-          message: `${user.xUserProfile.username} reached ${influenceScore} influence score`
-        });
-      }
-
-      if (thresholds.rapidGrowth && change24H > thresholds.rapidGrowth) {
-        alerts.push({
-          type: 'RAPID_GROWTH',
-          user: user.xUserProfile.username,
-          message: `${user.xUserProfile.username} gained ${change24H}% influence in 24h`
-        });
-      }
-    });
-
-    return alerts;
-  }
-}
-```
-
-```go Go
-type StarboardMonitor struct {
-	StarboardManager *StarboardManager
-	Subscriptions    map[string]chan bool
-	mu               sync.RWMutex
-}
-
-type AlertThresholds struct {
-	HighInfluence float64 `json:"highInfluence"`
-	RapidGrowth   float64 `json:"rapidGrowth"`
-}
-
-type MonitorOptions struct {
-	AlertThresholds AlertThresholds `json:"alertThresholds"`
-	UpdateInterval  time.Duration   `json:"updateInterval"`
-}
-
-type Alert struct {
-	Type    string `json:"type"`
-	User    string `json:"user"`
-	Message string `json:"message"`
-}
-
-type MonitorCallback func(data map[string]interface{})
-
-func NewStarboardMonitor(starboardManager *StarboardManager) *StarboardMonitor {
-	return &StarboardMonitor{
-		StarboardManager: starboardManager,
-		Subscriptions:    make(map[string]chan bool),
-	}
-}
-
-func (sm *StarboardMonitor) StartMonitoring(
-	starboardID string, 
-	callback MonitorCallback, 
-	options MonitorOptions,
-) string {
-	if options.UpdateInterval == 0 {
-		options.UpdateInterval = 5 * time.Minute
-	}
-
-	stopChan := make(chan bool)
-	sm.mu.Lock()
-	sm.Subscriptions[starboardID] = stopChan
-	sm.mu.Unlock()
-
-	go func() {
-		ticker := time.NewTicker(options.UpdateInterval)
-		defer ticker.Stop()
-
-		for {
-			select {
-			case <-stopChan:
-				return
-			case <-ticker.C:
-				currentData, err := sm.StarboardManager.GetStarboardLeaderboard(
-					starboardID, 
-					StarboardOptions{Limit: 50},
-				)
-				if err != nil {
-					callback(map[string]interface{}{
-						"type":  "error",
-						"error": err.Error(),
-					})
-					continue
-				}
-
-				alerts := sm.generateAlerts(currentData, options.AlertThresholds)
-				if len(alerts) > 0 {
-					callback(map[string]interface{}{
-						"type": "alerts",
-						"data": alerts,
-					})
-				}
-
-				callback(map[string]interface{}{
-					"type": "update",
-					"data": currentData,
-				})
-			}
-		}
-	}()
-
-	return starboardID
-}
-
-func (sm *StarboardMonitor) StopMonitoring(starboardID string) {
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
-
-	if stopChan, exists := sm.Subscriptions[starboardID]; exists {
-		close(stopChan)
-		delete(sm.Subscriptions, starboardID)
-	}
-}
-
-func (sm *StarboardMonitor) generateAlerts(
-	leaderboard *LeaderboardData, 
-	thresholds AlertThresholds,
-) []Alert {
-	var alerts []Alert
-
-	for _, user := range leaderboard.Rankings {
-		influenceScore, _ := strconv.ParseFloat(user.InfluenceScore.Value, 64)
-		change24H, _ := strconv.ParseFloat(user.Change24H.Value, 64)
-
-		if thresholds.HighInfluence > 0 && influenceScore > thresholds.HighInfluence {
-			alerts = append(alerts, Alert{
-				Type: "HIGH_INFLUENCE",
-				User: user.XUserProfile.Username,
-				Message: fmt.Sprintf(
-					"%s reached %.2f influence score", 
-					user.XUserProfile.Username, 
-					influenceScore,
-				),
-			})
-		}
-
-		if thresholds.RapidGrowth > 0 && change24H > thresholds.RapidGrowth {
-			alerts = append(alerts, Alert{
-				Type: "RAPID_GROWTH",
-				User: user.XUserProfile.Username,
-				Message: fmt.Sprintf(
-					"%s gained %.2f%% influence in 24h", 
-					user.XUserProfile.Username, 
-					change24H,
-				),
-			})
-		}
-	}
-
-	return alerts
-}
-```
-
-```python Python
-import asyncio
-from typing import Dict, Any, List, Callable, Optional
-
-class StarboardMonitor:
-    def __init__(self, starboard_manager: StarboardManager):
-        self.starboard_manager = starboard_manager
-        self.subscriptions: Dict[str, asyncio.Task] = {}
-
-    async def start_monitoring(
-        self,
-        starboard_id: str,
-        callback: Callable[[Dict[str, Any]], None],
-        alert_thresholds: Optional[Dict[str, float]] = None,
-        update_interval: int = 300
-    ) -> str:
-        if alert_thresholds is None:
-            alert_thresholds = {}
-
-        async def monitor_loop():
-            while True:
-                try:
-                    current_data = await self.starboard_manager.get_starboard_leaderboard(
-                        starboard_id, 
-                        limit=50
-                    )
-
-                    alerts = self._generate_alerts(current_data, alert_thresholds)
-                    
-                    if alerts:
-                        callback({"type": "alerts", "data": alerts})
-
-                    callback({"type": "update", "data": current_data})
-
-                except Exception as error:
-                    callback({"type": "error", "error": str(error)})
-
-                await asyncio.sleep(update_interval)
-
-        task = asyncio.create_task(monitor_loop())
-        self.subscriptions[starboard_id] = task
-        return starboard_id
-
-    def stop_monitoring(self, starboard_id: str) -> None:
-        if starboard_id in self.subscriptions:
-            task = self.subscriptions[starboard_id]
-            task.cancel()
-            del self.subscriptions[starboard_id]
-
-    def _generate_alerts(
-        self, 
-        leaderboard: Optional[Dict[str, Any]], 
-        thresholds: Dict[str, float]
-    ) -> List[Dict[str, str]]:
-        if not leaderboard or not leaderboard.get("rankings"):
-            return []
-
-        alerts = []
-        
-        for user in leaderboard["rankings"]:
-            profile = user.get("xUserProfile", {})
-            username = profile.get("username", "")
-            
-            influence_score = float(user.get("influenceScore", {}).get("value", 0))
-            change_24h = float(user.get("change24H", {}).get("value", 0))
-
-            if thresholds.get("highInfluence", 0) > 0 and influence_score > thresholds["highInfluence"]:
-                alerts.append({
-                    "type": "HIGH_INFLUENCE",
-                    "user": username,
-                    "message": f"{username} reached {influence_score} influence score"
-                })
-
-            if thresholds.get("rapidGrowth", 0) > 0 and change_24h > thresholds["rapidGrowth"]:
-                alerts.append({
-                    "type": "RAPID_GROWTH",
-                    "user": username,
-                    "message": f"{username} gained {change_24h}% influence in 24h"
-                })
-
-        return alerts
-```
-
-</CodeGroup>
-
-## Error Handling
-
-<CodeGroup>
-
-```javascript JavaScript
-async function safeStarboardQuery(starboardId) {
-  try {
-    const starboard = await starboardManager.getStarboard(starboardId);
-    return { success: true, data: starboard };
-  } catch (error) {
-    if (error.message.includes('rate limit')) {
-      return { success: false, error: 'RATE_LIMITED', retry: true };
-    }
-    
-    if (error.message.includes('not found')) {
-      return { success: false, error: 'STARBOARD_NOT_FOUND', retry: false };
-    }
-
-    return { success: false, error: 'UNKNOWN', message: error.message };
-  }
-}
-```
-
-```go Go
-type StarboardResult struct {
-	Success bool       `json:"success"`
-	Data    *Starboard `json:"data,omitempty"`
-	Error   string     `json:"error,omitempty"`
-	Retry   bool       `json:"retry,omitempty"`
-	Message string     `json:"message,omitempty"`
-}
-
-func (sm *StarboardManager) SafeStarboardQuery(starboardID string) *StarboardResult {
-	starboard, err := sm.GetStarboard(starboardID)
-	if err == nil {
-		return &StarboardResult{
-			Success: true,
-			Data:    starboard,
-		}
-	}
-
-	errorMsg := err.Error()
-	if strings.Contains(errorMsg, "rate limit") {
-		return &StarboardResult{
-			Success: false,
-			Error:   "RATE_LIMITED",
-			Retry:   true,
-		}
-	}
-
-	if strings.Contains(errorMsg, "not found") {
-		return &StarboardResult{
-			Success: false,
-			Error:   "STARBOARD_NOT_FOUND",
-			Retry:   false,
-		}
-	}
-
-	return &StarboardResult{
-		Success: false,
-		Error:   "UNKNOWN",
-		Message: errorMsg,
-	}
-}
-```
-
-```python Python
-from typing import Dict, Any
-
-async def safe_starboard_query(
-    starboard_manager: StarboardManager, 
-    starboard_id: str
-) -> Dict[str, Any]:
-    try:
-        starboard = await starboard_manager.get_starboard(starboard_id)
-        return {"success": True, "data": starboard}
-    except Exception as error:
-        error_msg = str(error).lower()
-        
-        if "rate limit" in error_msg:
-            return {
-                "success": False,
-                "error": "RATE_LIMITED",
-                "retry": True
-            }
-        
-        if "not found" in error_msg:
-            return {
-                "success": False,
-                "error": "STARBOARD_NOT_FOUND",
-                "retry": False
-            }
-
-        return {
-            "success": False,
-            "error": "UNKNOWN",
-            "message": str(error)
-        }
-```
-
-</CodeGroup>
+Each includes `value` (current metric) and `deltaRate` (percentage change).
 
 ## Best Practices
 
-1. **Pagination**: Use cursor-based pagination for efficient traversal
-2. **Caching**: Cache starboard data for frequently accessed rankings
-3. **Rate Limiting**: Implement delays between requests
-4. **Monitoring**: Set up alerts for significant influence score changes
-5. **Data Analysis**: Track trends over multiple time periods
+1. **Rate Limiting**: Limit monitoring requests to once every 5 minutes
+2. **Pagination**: Use forward pagination for efficient data retrieval
+3. **Caching**: Cache influence data for 60-300 seconds
+4. **Error Handling**: Handle cases where users are not tracked
+5. **Trend Monitoring**: Set alerts for significant score changes (±10%)
+6. **User Verification**: Check `verifiedType` for account authenticity
+
+## Common Errors
+
+| Error | Cause | Solution |
+|-------|--------|----------|
+| `Starboard not found` | Invalid starboard ID | Verify starboard ID exists |
+| `Twitter user not found` | User not tracked | Check if user is in starboard |
+| `Invalid pagination` | Malformed pagination input | Use proper PaginationInput structure |
+| `Rate limit exceeded` | Too many requests | Implement retry logic |
 
 ## Next Steps
 
-- **[Space API Reference](/galxe-integration/api-reference/space)** - Loyalty points and leaderboards
-- **[Quest API Reference](/galxe-integration/api-reference/quest)** - Quest management
-- **[Starboard Guide](/galxe-integration/guides/starboards)** - Implementation patterns
+- **[Starboard Integration Guide](/galxe-integration/guides/starboards)** - Complete implementation patterns
+- **[Authentication](/galxe-integration/getting-started/authentication)** - Access token setup
+- **[Common Patterns](/galxe-integration/getting-started/common-patterns)** - Reusable patterns

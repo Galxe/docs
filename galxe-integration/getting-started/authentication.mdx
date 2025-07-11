@@ -51,21 +51,89 @@ access_token = os.getenv('GALXE_ACCESS_TOKEN')
 
 ### Invalid Token
 ```json
-{"errors": [{"message": "invalid access token"}]}
+{
+  "errors": [{
+    "message": "Invalid access token: invalid token",
+    "extensions": {
+      "code": "INVALID_TOKEN",
+      "category": "AUTHENTICATION",
+      "http_status": 401,
+      "request_id": "req_123456789",
+      "timestamp": "2024-01-01T00:00:00Z"
+    }
+  }]
+}
 ```
 **Solution**: Regenerate token in dashboard settings
 
 ### Missing Header
 ```json
-{"errors": [{"message": "access token required"}]}
+{
+  "errors": [{
+    "message": "Access token is required",
+    "extensions": {
+      "code": "TOKEN_REQUIRED",
+      "category": "AUTHENTICATION",
+      "http_status": 401,
+      "request_id": "req_123456789",
+      "timestamp": "2024-01-01T00:00:00Z"
+    }
+  }]
+}
 ```
 **Solution**: Add `access-token` header to request
 
 ### Rate Limiting
 ```json
-{"errors": [{"message": "rate limit exceeded"}]}
+{
+  "errors": [{
+    "message": "API quota exceeded: daily limit reached",
+    "extensions": {
+      "code": "QUOTA_EXCEEDED",
+      "category": "RATE_LIMIT",
+      "http_status": 429,
+      "request_id": "req_123456789",
+      "timestamp": "2024-01-01T00:00:00Z",
+      "details": ["quota_type: daily", "limit: 1000"]
+    }
+  }]
+}
 ```
 **Solution**: Implement exponential backoff retry logic
+
+## Error Response Format
+
+All GraphQL errors follow a standardized format with additional metadata:
+
+```json
+{
+  "errors": [{
+    "message": "Human-readable error message",
+    "extensions": {
+      "code": "ERROR_CODE",           // Machine-readable error code
+      "category": "ERROR_CATEGORY",   // Error classification
+      "http_status": 400,             // Corresponding HTTP status
+      "request_id": "req_xxx",        // Request tracking ID
+      "timestamp": "2024-01-01T00:00:00Z",
+      "details": ["additional", "context"],  // Optional details array
+      "context": {                    // Optional context object
+        "field": "value"
+      }
+    }
+  }]
+}
+```
+
+### Error Codes and Categories
+
+| Code | Category | HTTP Status | Description |
+|------|----------|-------------|-------------|
+| `TOKEN_REQUIRED` | `AUTHENTICATION` | 401 | Access token missing |
+| `INVALID_TOKEN` | `AUTHENTICATION` | 401 | Access token invalid |
+| `QUOTA_EXCEEDED` | `RATE_LIMIT` | 429 | API quota exceeded |
+| `PERMISSION_DENIED` | `AUTHORIZATION` | 403 | Insufficient permissions |
+| `NOT_FOUND` | `NOT_FOUND` | 404 | Resource not found |
+| `INVALID_ARGUMENT` | `VALIDATION` | 400 | Invalid input parameters |
 
 ## Next Steps
 

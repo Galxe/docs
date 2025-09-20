@@ -109,6 +109,53 @@ query SearchUser($id: ID!, $twitterId: String!) {
 }
 ```
 
+### Get Twitter Handle by EVM Address
+
+```graphql
+query GetTwitterHandleByEvmAddress($id: ID!, $evmAddress: String!) {
+  starboard(id: $id) {
+    twitterHandleByEvmAddress(evmAddress: $evmAddress) {
+      evmAddress
+      mainAddress
+      twitterHandle
+      isPublic
+    }
+  }
+}
+```
+
+**Variables**:
+```json
+{
+  "id": "1",
+  "evmAddress": "0x1234567890abcdef1234567890abcdef12345678"
+}
+```
+
+### Get User Detail
+
+```graphql
+query GetUserDetail($id: ID!, $evmAddress: String!) {
+  starboard(id: $id) {
+    userDetail(evmAddress: $evmAddress) {
+      starboardId
+      twitterHandle
+      individual
+      aura
+      isPublic
+    }
+  }
+}
+```
+
+**Variables**:
+```json
+{
+  "id": "1",
+  "evmAddress": "0x1234567890abcdef1234567890abcdef12345678"
+}
+```
+
 ## Field Reference
 
 ### Starboard Types
@@ -147,6 +194,27 @@ All metrics include comprehensive tracking data:
 | `xUserProfile` | `XUserProfile` | Twitter user information |
 | `rank` | `StarboardMetricValue` | User's ranking position |
 | `influenceScore` | `StarboardMetricValue` | User's influence score |
+| `twitterHandleByEvmAddress` | `TwitterHandleByEvmAddress` | Twitter handle lookup by EVM address |
+| `userDetail` | `StarboardUserDetail` | Detailed user metrics for EVM address |
+
+### TwitterHandleByEvmAddress Type
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `evmAddress` | `String!` | The queried EVM address |
+| `mainAddress` | `String!` | The main associated address |
+| `twitterHandle` | `String!` | Twitter username for the address |
+| `isPublic` | `Boolean!` | Whether the profile is public |
+
+### StarboardUserDetail Type
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `starboardId` | `String!` | The starboard identifier |
+| `twitterHandle` | `String!` | Twitter username |
+| `individual` | `Int!` | Individual score metric |
+| `aura` | `Int!` | Aura score metric |
+| `isPublic` | `Boolean!` | Whether the profile is public |
 
 ## Integration Patterns
 

@@ -354,14 +354,14 @@ async function findUser(starboardId, twitterId, accessToken) {
       variables: { starboardId, twitterId }
     })
   });
-  
+
   const data = await response.json();
   const edges = data.data.starboard.leaderboard.edges;
-  
+
   if (edges.length === 0) {
     return null;
   }
-  
+
   const node = edges[0].node;
   return {
     username: node.xUserProfile.username,
@@ -373,6 +373,88 @@ async function findUser(starboardId, twitterId, accessToken) {
     score: parseFloat(node.influenceScore.value),
     scoreDelta: node.influenceScore.delta,
     scoreDeltaRate: node.influenceScore.deltaRate
+  };
+}
+
+### Get Twitter Handle by EVM Address
+
+```javascript
+async function getTwitterHandleByEvmAddress(starboardId, evmAddress, accessToken) {
+  const response = await fetch('https://graphigo-business.prd.galaxy.eco/query', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'access-token': accessToken
+    },
+    body: JSON.stringify({
+      query: `query GetTwitterHandleByEvmAddress($starboardId: ID!, $evmAddress: String!) {
+        starboard(id: $starboardId) {
+          twitterHandleByEvmAddress(evmAddress: $evmAddress) {
+            evmAddress
+            mainAddress
+            twitterHandle
+            isPublic
+          }
+        }
+      }`,
+      variables: { starboardId, evmAddress }
+    })
+  });
+
+  const data = await response.json();
+  const result = data.data.starboard.twitterHandleByEvmAddress;
+
+  if (!result) {
+    return null;
+  }
+
+  return {
+    evmAddress: result.evmAddress,
+    mainAddress: result.mainAddress,
+    twitterHandle: result.twitterHandle,
+    isPublic: result.isPublic
+  };
+}
+
+### Get User Detail by EVM Address
+
+```javascript
+async function getUserDetailByEvmAddress(starboardId, evmAddress, accessToken) {
+  const response = await fetch('https://graphigo-business.prd.galaxy.eco/query', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'access-token': accessToken
+    },
+    body: JSON.stringify({
+      query: `query GetUserDetail($starboardId: ID!, $evmAddress: String!) {
+        starboard(id: $starboardId) {
+          userDetail(evmAddress: $evmAddress) {
+            starboardId
+            twitterHandle
+            individual
+            aura
+            isPublic
+          }
+        }
+      }`,
+      variables: { starboardId, evmAddress }
+    })
+  });
+
+  const data = await response.json();
+  const result = data.data.starboard.userDetail;
+
+  if (!result) {
+    return null;
+  }
+
+  return {
+    starboardId: result.starboardId,
+    twitterHandle: result.twitterHandle,
+    individual: result.individual,
+    aura: result.aura,
+    isPublic: result.isPublic
   };
 }
 ```
@@ -457,7 +539,7 @@ leaderboard.rankings.forEach(user => {
 ### User Lookup and Analysis
 
 ```javascript
-// Find specific user
+// Find specific user by Twitter ID
 const userAnalysis = await analyzeUserTrends('1', 'elonmusk', accessToken);
 if (userAnalysis.message) {
   console.log(userAnalysis.message);
@@ -465,6 +547,23 @@ if (userAnalysis.message) {
   console.log(`@${userAnalysis.user.username}`);
   console.log(`Rank: #${userAnalysis.ranking.current} (${userAnalysis.ranking.delta > 0 ? '+' : ''}${userAnalysis.ranking.delta})`);
   console.log(`Score: ${userAnalysis.influence.score} (${userAnalysis.performance.trending})`);
+}
+
+// Get Twitter handle by EVM address
+const twitterInfo = await getTwitterHandleByEvmAddress('1', '0x1234567890abcdef', accessToken);
+if (twitterInfo) {
+  console.log(`Address ${twitterInfo.evmAddress} is linked to @${twitterInfo.twitterHandle}`);
+  console.log(`Main address: ${twitterInfo.mainAddress}`);
+  console.log(`Public profile: ${twitterInfo.isPublic}`);
+}
+
+// Get detailed user metrics by EVM address
+const userDetail = await getUserDetailByEvmAddress('1', '0x1234567890abcdef', accessToken);
+if (userDetail) {
+  console.log(`@${userDetail.twitterHandle} metrics:`);
+  console.log(`Individual score: ${userDetail.individual}`);
+  console.log(`Aura score: ${userDetail.aura}`);
+  console.log(`Public profile: ${userDetail.isPublic}`);
 }
 ```
 
@@ -522,6 +621,9 @@ performers.biggestMovers.forEach(user => {
 - **User Verification**: Check Twitter verification status
 - **Trend Analysis**: Identify growth patterns and momentum
 - **Performance Comparison**: Compare multiple users or time periods
+- **Address-to-Twitter Mapping**: Link EVM addresses to Twitter profiles using `twitterHandleByEvmAddress`
+- **User Metrics by Address**: Get detailed user scores (individual, aura) using `userDetail`
+- **Cross-Platform Identity**: Connect on-chain addresses with social media presence
 
 ## Next Steps
 

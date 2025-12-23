@@ -244,8 +244,7 @@
     {
       "group": "Galxe ID Integration",
       "pages": [
-        "galxe-id/galxe-id-integration/galxe-id-oauth",
-        "galxe-id/galxe-id-integration/galxe-passport-oauth"
+        "galxe-id/galxe-id-integration/galxe-id-oauth"
       ]
     },
     {

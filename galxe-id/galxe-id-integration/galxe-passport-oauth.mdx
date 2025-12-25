@@ -1,0 +1,74 @@
+---
+title: "Galxe Passport Oauth"
+---
+
+Galxe Passport Oauth does not allow the acquisition of KYC data for the time being, but you can determine whether the user has a Pass through the following methods
+
+## Contract Information
+
+The Galxe Passport is an NFT contract deployed on Binance Smart Chain (BSC) that serves as proof of identity within the Galxe ecosystem.
+
+- **Contract Address**: `0xe84050261cb0a35982ea0f6f3d9dff4b8ed3c012`
+- **Network**: Binance Smart Chain (BSC Mainnet)
+- **Contract Explorer**: [BscScan](https://bscscan.com/address/0xe84050261cb0a35982ea0f6f3d9dff4b8ed3c012#readContract)
+
+## Verification Methods
+
+### Method 1: Using Galxe Credential
+
+You can verify Passport ownership using the Galxe credential:
+
+- **Credential Link**: [Galxe Passport V2 Holders](https://app.galxe.com/quest/credential/191835644327796737)
+
+This credential automatically tracks users who hold a Galxe Passport.
+
+### Method 2: Direct Contract Call
+
+Call the `balanceOf` method on the contract to check if a user owns a Passport.
+
+**Method Signature**: `balanceOf(address user) returns (uint256)`
+
+- Returns `1` if the user owns a Passport
+- Returns `0` if the user does not own a Passport
+
+## Using curl to Call balanceOf
+
+```bash
+# Set variables
+RPC_URL="https://bsc-dataseed1.binance.org/"
+CONTRACT_ADDRESS="0xe84050261cb0a35982ea0f6f3d9dff4b8ed3c012"
+USER_ADDRESS="0x1234567890123456789012345678901234567890"
+
+# Method selector for balanceOf(address) = 0x70a08231
+# Pad user address to 32 bytes (remove '0x' prefix and pad with zeros)
+PADDED_ADDRESS=$(echo $USER_ADDRESS | sed 's/0x//' | xargs -I {} printf "%064s" {})
+DATA="0x70a08231${PADDED_ADDRESS}"
+
+# Call the contract
+curl -X POST $RPC_URL \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"jsonrpc\": \"2.0\",
+    \"method\": \"eth_call\",
+    \"params\": [{
+      \"to\": \"$CONTRACT_ADDRESS\",
+      \"data\": \"$DATA\"
+    }, \"latest\"],
+    \"id\": 1
+  }"
+```
+
+**Response Example:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x0000000000000000000000000000000000000000000000000000000000000001"
+}
+```
+
+Convert the hexadecimal result to decimal:
+
+- `0x0000...0001` = `1` (user has Passport)
+- `0x0000...0000` = `0` (user does not have Passport)

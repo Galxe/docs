@@ -1,9 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "name": "Galxe Docs",
-  "theme": "mint",
+  "theme": "quartz",
   "colors": {
-    "primary": "#6366f1"
+    "primary": "#6366f1",
+    "light": "#8b5cf6",
+    "dark": "#6366f1"
   },
   "navigation": {
     "tabs": [

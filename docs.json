@@ -1,5 +1,10 @@
 {
+  "$schema": "https://mintlify.com/docs.json",
   "name": "Galxe Docs",
+  "theme": "mint",
+  "colors": {
+    "primary": "#6366f1"
+  },
   "navigation": {
     "tabs": [
       {
@@ -261,12 +266,12 @@
         {
           "anchor": "Help Center",
           "href": "https://help.galxe.com/en/",
-          "icon": "block-question"
+          "icon": "circle-question"
         },
         {
           "anchor": "Legal",
           "href": "https://docs.galxe.com/about/legal",
-          "icon": "window"
+          "icon": "scale-balanced"
         }
       ]
     }

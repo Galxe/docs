@@ -1,0 +1,274 @@
+{
+  "name": "Galxe Docs",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "About",
+        "groups": [
+          {
+            "group": "Platform Overview",
+            "pages": [
+              "about/introduction",
+              "about/official-channels"
+            ]
+          },
+          {
+            "group": "GAL",
+            "pages": [
+              "about/gal/dao",
+              "about/gal/tokenomics"
+            ]
+          },
+          {
+            "group": "Legal",
+            "pages": [
+              "about/legal/terms-of-service",
+              "about/legal/privacy-policy",
+              "about/legal/staking-terms-and-conditions",
+              "about/legal/passport-terms-of-use",
+              "about/legal/passport-privacy-policy"
+            ]
+          },
+          {
+            "group": "Community Programs",
+            "pages": [
+              "about/community-programs/galxe-contributor",
+              "about/community-programs/galxe-astronaut"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Galxe Identity Protocol",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "identity/introduction",
+              "identity/sdk"
+            ]
+          },
+          {
+            "group": "Tutorials",
+            "pages": [
+              "identity/tutorials/simple-workflow",
+              "identity/tutorials/use-nebra-upa"
+            ]
+          },
+          {
+            "group": "Introduction",
+            "pages": [
+              "identity/introduction/background",
+              "identity/introduction/overview",
+              "identity/introduction/concepts",
+              "identity/introduction/roles",
+              "identity/introduction/case-studies"
+            ]
+          },
+          {
+            "group": "Specification",
+            "pages": [
+              "identity/specification/overview",
+              "identity/specification/type-dsl",
+              "identity/specification/primitive-types",
+              "identity/specification/credential-format",
+              "identity/specification/technical-components",
+              "identity/specification/workflow"
+            ]
+          },
+          {
+            "group": "Use Cases",
+            "pages": [
+              "identity/use-cases/galxe-passport",
+              "identity/use-cases/ideas"
+            ]
+          },
+          {
+            "group": "Future Works",
+            "pages": [
+              "identity/future-works/future-works"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "identity/resources/contracts"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Galxe Quest",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "quest/introduction"
+            ]
+          },
+          {
+            "group": "Credential Advanced",
+            "pages": [
+              {
+                "group": "Overview",
+                "pages": [
+                  "quest/credential-api/overview/introduction",
+                  "quest/credential-api/overview/cross-domain-check"
+                ]
+              },
+              {
+                "group": "API Credential",
+                "pages": [
+                  "quest/credential-api/api-cred/introduction",
+                  "quest/credential-api/api-cred/config"
+                ]
+              },
+              {
+                "group": "REST Credential",
+                "pages": [
+                  "quest/credential-api/rest-cred/introduction",
+                  "quest/credential-api/rest-cred/single-config",
+                  "quest/credential-api/rest-cred/multi-config"
+                ]
+              },
+              {
+                "group": "GraphQL Credential",
+                "pages": [
+                  "quest/credential-api/graphql-cred/introduction",
+                  "quest/credential-api/graphql-cred/single-config",
+                  "quest/credential-api/graphql-cred/multi-config"
+                ]
+              },
+              {
+                "group": "Contract Query Credential",
+                "pages": [
+                  "quest/credential-api/contract-query-cred/introduction",
+                  "quest/credential-api/contract-query-cred/config"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Smart Contract",
+            "pages": [
+              "quest/smart-contract/introduction",
+              {
+                "group": "Contracts",
+                "pages": [
+                  "quest/smart-contract/contracts/starnft",
+                  "quest/smart-contract/contracts/spacestation"
+                ]
+              },
+              "quest/smart-contract/audit",
+              "quest/smart-contract/subgraph"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Galxe Integration",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "galxe-integration/introduction",
+              "galxe-integration/getting-started/quick-start",
+              "galxe-integration/getting-started/authentication",
+              "galxe-integration/getting-started/common-patterns"
+            ]
+          },
+          {
+            "group": "Integration Guides",
+            "pages": [
+              "galxe-integration/guides/quests",
+              "galxe-integration/guides/loyalty-program",
+              "galxe-integration/guides/user-verification",
+              "galxe-integration/guides/leaderboards",
+              "galxe-integration/guides/starboards"
+            ]
+          },
+          {
+            "group": "API Reference",
+            "pages": [
+              "galxe-integration/api-reference/quest",
+              "galxe-integration/api-reference/credential",
+              "galxe-integration/api-reference/space",
+              "galxe-integration/api-reference/starboard"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "galxe-integration/resources/rate-limits",
+              "galxe-integration/resources/error-handling",
+              "galxe-integration/resources/changelog",
+              "galxe-integration/resources/support"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Galxe ID",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "galxe-id/introduction"
+            ]
+          },
+          {
+            "group": "Applications",
+            "pages": [
+              "galxe-id/galxe-passport/introduction"
+            ]
+          },
+          {
+            "group": "Galxe ID Integration",
+            "pages": [
+              "galxe-id/galxe-id-integration/galxe-id-oauth"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Galxe Loyalty Points",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "loyalty-points/getting-started/introduction",
+              "loyalty-points/getting-started/quick-start",
+              "loyalty-points/getting-started/hook",
+              "loyalty-points/getting-started/api"
+            ]
+          },
+          {
+            "group": "Contract",
+            "pages": [
+              "loyalty-points/contracts/loyalty-point",
+              "loyalty-points/contracts/loyalty-point-factory"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Alva Docs ↗",
+        "href": "https://docs.alva.xyz"
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Help Center",
+          "href": "https://help.galxe.com/en/",
+          "icon": "block-question"
+        },
+        {
+          "anchor": "Legal",
+          "href": "https://docs.galxe.com/about/legal",
+          "icon": "window"
+        }
+      ]
+    }
+  }
+}

@@ -98,7 +98,8 @@
       "group": "Tutorials",
       "pages": [
         "identity/tutorials/simple-workflow",
-        "identity/tutorials/use-nebra-upa"
+        "identity/tutorials/use-nebra-upa",
+        "identity/tutorials/use-zkVerify"
       ]
     },
     {

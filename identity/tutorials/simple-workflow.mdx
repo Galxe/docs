@@ -55,7 +55,7 @@ import {
 } from "@galxe-identity-protocol/sdk";
 import { ethers } from "ethers";
 
-// conviniently unwrap the result of a function call by throwing an error if the result is an error.
+// conveniently unwrap the result of a function call by throwing an error if the result is an error.
 const unwrap = errors.unwrap;
 
 // Use cloudflare's free open rpc in this example.
@@ -63,7 +63,7 @@ const MAINNET_RPC = "https://cloudflare-eth.com";
 const provider = new ethers.JsonRpcProvider(MAINNET_RPC);
 
 // This is a dummy issuer's EVM address that has been registered on mainnet.
-// Because it authroize the private key that is public to everyone,
+// Because it authorize the private key that is public to everyone,
 // it should not be used in production!
 const dummyIssuerEvmAddr = "0x15f4a32c40152a0f48E61B7aed455702D1Ea725e";
 ```
